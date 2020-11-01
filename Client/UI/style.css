@@ -1,0 +1,216 @@
+body {
+	font-family: Roboto, sans-serif;
+	-webkit-user-select: none;
+	user-select: none;
+	margin: 0px;
+	padding: 0px;
+	background-size: 100%;
+}
+
+#players_heads {
+	text-align: center;
+	margin-top: 25px;
+}
+
+
+.head {
+	display: inline-block;
+	width: 20px;
+	height: 30px;
+	background-size: 100% auto;
+	background-repeat: no-repeat;
+	margin: 3px;
+}
+
+.survivor_head_alive {
+	background-image: url("images/worker.png");
+}
+
+.survivor_head_dead {
+	background-image: url("images/worker_dead.png");
+}
+
+.survivor_head_escaped {
+	background-image: url("images/worker_escaped.png");
+}
+
+.knight_head_alive {
+	background-image: url("images/knight.png");
+}
+
+.knight_head_dead {
+	background-image: url("images/knight_dead.png");
+}
+
+#status_bar div {
+	background-color: #000000b8;
+	display: inline-block;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+}
+
+#clock {
+	width: 75px;
+	margin-left: 25px;
+}
+
+#label {
+	width: 250px;
+}
+
+#special {
+	width: 70px;
+	font-size: 15px;
+}
+
+#special.ready {
+	color: #2adb3e;
+}
+
+#special_cooldown {
+	display: block;
+	font-size: 16px;
+	position: relative;
+	line-height: 55px;
+	bottom: 7px;
+}
+
+#special_label {
+	display: block;
+	position: absolute;
+	bottom: -15px;
+	font-size: 10px;
+	width: 70px;
+}
+
+#label_big {
+	position: absolute;
+	top: 50%;
+	transform: translate(0, -50%);
+	color: white;
+	font-size: 60px;
+	width: 100%;
+	text-align: center;
+	font-family: 'Creepster', cursive;
+}
+
+#logo {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+#radar {
+	width: 50px;
+	background-size: 50%;
+	background-repeat: no-repeat;
+	background-position: 50% 5px;
+	position: relative;
+}
+
+#flashlight {
+	width: 70px;
+	background-size: 40%;
+	background-repeat: no-repeat;
+	background-position: 50% 5px;
+	position: relative;
+	background-image: url("./images/flashlight_disabled.png");
+}
+
+#flashlight.enabled {
+	background-image: url("./images/flashlight_enabled.png");
+}
+
+#flashlight_label {
+	position: absolute;
+	font-size: 10px;
+	width: 100%;
+	top: 15px;
+	left: 0;
+}
+
+#status_bar {
+	color: white;
+	position: absolute;
+	bottom: 25px;
+	font-size: 22px;
+	width: 100%;
+	text-align: left;
+}
+
+#radar_label {
+	position: absolute;
+	font-size: 10px;
+	width: 100%;
+	top: 15px;
+	left: 0;
+}
+
+#radar_inner {
+	background-color: #0000 !important;
+	position: absolute;
+	background-size: 50%;
+	background-repeat: no-repeat;
+	background-position: 50% 5px;
+	top: 0;
+	width: 100%;
+	left: 0;
+}
+
+#radar.survivor #radar_inner {
+	background-image: url("./images/pumpkin_enabled.png");
+}
+
+#radar.knight #radar_inner {
+	background-image: url("./images/workers_enabled.png");
+}
+
+#radar.survivor {
+	background-image: url("./images/pumpkin_disabled.png");
+}
+
+#radar.knight {
+	background-image: url("./images/workers_disabled.png");
+}
+
+#horseman_paper, #survivor_paper {
+	position: absolute;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	left: 50%;
+	background-size: 50%;
+	background-position: 50%;
+	background-repeat: no-repeat;
+	height: 100%;
+	top: 50%;
+}
+
+#horseman_paper {
+	background-image: url("./images/paper_horseman.png");
+}
+
+#survivor_paper {
+	background-image: url("./images/paper_survivor.png");
+}
+
+#pumpkins_found {
+	position: relative;
+	background-size: 50%;
+	background-repeat: no-repeat;
+	background-position: 50% 5px;
+	background-image: url("./images/pumpkins.png");
+	width: 50px;
+	float: right;
+	margin-right: 25px;
+}
+
+#pumpkins_found_count {
+	background-color: transparent !important;
+    position: absolute;
+    font-size: 14px;
+    width: 100%;
+    top: 13px;
+	left: 0;
+}
