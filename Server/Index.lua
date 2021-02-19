@@ -259,7 +259,7 @@ Halloween = {
 }
 
 
-Trigger:on("BeginOverlap", function(trigger, actor_triggering)
+Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
 	if (actor_triggering:GetType() ~= "Character") then return end
 
 	-- Only triggers for Survivors
@@ -319,7 +319,7 @@ Trigger:on("BeginOverlap", function(trigger, actor_triggering)
 end)
 
 -- When player fully connects (custom event)
-Events:on("PlayerReady", function(player)
+Events:Subscribe("PlayerReady", function(player)
 	-- Sends the current state of the game to him
 	Events:CallRemote("UpdateMatchState", player, {Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins})
 
@@ -331,7 +331,7 @@ Events:on("PlayerReady", function(player)
 end)
 
 -- Console commands
-Server:on("Console", function(text)
+Server:Subscribe("Console", function(text)
 	-- To start the game
 	if (text == "start" and Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
 		UpdateMatchState(MATCH_STATES.WARM_UP)
@@ -339,13 +339,13 @@ Server:on("Console", function(text)
 end)
 
 -- If player disconnects, kills the character
-Player:on("UnPossess", function (player, character, is_disconnecting)
+Player:Subscribe("UnPossess", function (player, character, is_disconnecting)
 	if (is_disconnecting and player:GetValue("IsAlive")) then
 		character:SetHealth(0)
 	end
 end)
 
-Character:on("Death", function(character)
+Character:Subscribe("Death", function(character)
 	if (Halloween.match_state ~= MATCH_STATES.IN_PROGRESS and Halloween.match_state ~= MATCH_STATES.WARM_UP) then return end
 
 	local player = character:GetValue("Player")
@@ -615,7 +615,7 @@ function DecreaseRemainingTime()
 	return (Halloween.remaining_time <= 0)
 end
 
-Events:on("ToggleFlashlight", function(player)
+Events:Subscribe("ToggleFlashlight", function(player)
 	local character = player:GetControlledCharacter()
 	if (character == nil) then return end
 
@@ -654,7 +654,7 @@ Events:on("ToggleFlashlight", function(player)
 end)
 
 -- Knights Special Power (Q)
-Events:on("TriggerSpecial", function(player)
+Events:Subscribe("TriggerSpecial", function(player)
 	if (player:GetValue("Role") == ROLES.KNIGHT and Halloween.match_state == MATCH_STATES.IN_PROGRESS and player:GetValue("IsAlive")) then
 		if (Halloween.current_knights_special_cooldown > 0) then
 			Server:SendChatMessage(player, "<red>The Special is on cooldown!</>")
@@ -668,6 +668,6 @@ Events:on("TriggerSpecial", function(player)
 	end
 end)
 
-Package:on("Unload", function()
+Package:Subscribe("Unload", function()
 	ClearServer()
 end)

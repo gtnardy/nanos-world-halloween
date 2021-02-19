@@ -11,20 +11,20 @@ Halloween = {
 HUD = nil
 
 -- Creates a WebUI for the Inventory when the package loads
-Package:on("Load", function()
+Package:Subscribe("Load", function()
 	HUD = WebUI("HUD", "file:///UI/index.html")
 	Sound(Vector(), "CityPark::A_Music_End", true, true, 0.5)
 end)
 
 -- Destroys the WebUI when the package unloads
-Package:on("Unload", function()
+Package:Subscribe("Unload", function()
 	HUD:Destroy()
 end)
 
 Client:SetHighlightColor(Color(3, 0, 0, 0.05))
 
 -- Set's someone Role
-Events:on("SetPlayerRole", function(player, role)
+Events:Subscribe("SetPlayerRole", function(player, role)
 	player:SetValue("Role", role)
 
 	-- If it's me
@@ -46,7 +46,7 @@ Events:on("SetPlayerRole", function(player, role)
 	end
 end)
 
-Client:on("KeyUp", function(KeyName)
+Client:Subscribe("KeyUp", function(KeyName)
 	if (KeyName == "F") then
 		Events:CallRemote("ToggleFlashlight", {})
 	elseif (KeyName == "Left") then
@@ -86,22 +86,22 @@ function SpectateNext(index_increment)
 	Client:Spectate(players[Halloween.current_spectating_index])
 end
 
-Events:on("MatchWillBegin", function()
+Events:Subscribe("MatchWillBegin", function()
 	Sound(Vector(), "CityPark::A_Announcer_MatchBegin", true, true, 1, 0.9)
 end)
 
-Events:on("MatchEnding", function()
+Events:Subscribe("MatchEnding", function()
 	Sound(Vector(), "CityPark::A_Announcer_Cooldown", true, true, 1, 0.9)
 end)
 
-Events:on("FlashlightToggled", function(player, location, enabled)
+Events:Subscribe("FlashlightToggled", function(player, location, enabled)
 	Sound(location, "CityPark::A_Flashlight", false)
 	if (player == NanosWorld:GetLocalPlayer()) then
 		HUD:CallEvent("FlashlightToggled", {enabled})
 	end
 end)
 
-Events:on("SurvivorWins", function()
+Events:Subscribe("SurvivorWins", function()
 	HUD:CallEvent("SetLabelBig", {"SURVIVORS WIN!"})
 
 	if (Halloween.current_role == ROLES.SURVIVOR) then
@@ -111,7 +111,7 @@ Events:on("SurvivorWins", function()
 	end 
 end)
 
-Events:on("KnightWins", function()
+Events:Subscribe("KnightWins", function()
 	HUD:CallEvent("SetLabelBig", {"HORSELESS HEADLESS HORSEMAN WIN!"})
 	
 	if (Halloween.current_role == ROLES.KNIGHT) then
@@ -121,7 +121,7 @@ Events:on("KnightWins", function()
 	end
 end)
 
-Events:on("UpdateMatchState", function(new_state, remaining_time, total_pumpkins)
+Events:Subscribe("UpdateMatchState", function(new_state, remaining_time, total_pumpkins)
 	remaining_time = remaining_time - 1
 	Halloween.match_state = new_state
 	Halloween.total_pumpkins = total_pumpkins
@@ -157,7 +157,7 @@ Events:on("UpdateMatchState", function(new_state, remaining_time, total_pumpkins
 	end
 end)
 
-Events:on("CharacterDeath", function(character, role)
+Events:Subscribe("CharacterDeath", function(character, role)
 	-- Sets his corpose as Highlight for 5 seconds
 	if (Halloween.current_role == ROLES.SURVIVOR) then
 		character:SetHighlightEnabled(true)
@@ -179,13 +179,13 @@ Events:on("CharacterDeath", function(character, role)
 	end
 end)
 
-Events:on("SetSpecialCooldown", function(current_knights_special_cooldown)
+Events:Subscribe("SetSpecialCooldown", function(current_knights_special_cooldown)
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		HUD:CallEvent("SetSpecialCooldown", {current_knights_special_cooldown})
 	end
 end)
 
-Events:on("TriggerSpecial", function(location)
+Events:Subscribe("TriggerSpecial", function(location)
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		-- Makes everyone red for 10 seconds
 		for k, character in pairs(NanosWorld:GetCharacters()) do
@@ -218,19 +218,19 @@ Timer:SetTimeout(3000, function()
 	return false
 end)
 
-Events:on("PumpkinFound", function(pumpkin_location)
+Events:Subscribe("PumpkinFound", function(pumpkin_location)
 	Sound(pumpkin_location, "CityPark::A_Pumpkin_Pickup", false)
 
 	Halloween.pumpkins_found = Halloween.pumpkins_found + 1
 	HUD:CallEvent("UpdatePumpkinsFound", {Halloween.total_pumpkins, Halloween.pumpkins_found})
 end)
 
-Events:on("TrapdoorOpened", function(trapdoor)
+Events:Subscribe("TrapdoorOpened", function(trapdoor)
 	Halloween.is_trapdoor_opened = true
 	Sound(trapdoor:GetLocation(), "CityPark::A_Hatch_Cue", false, false, 0, 2, 1, 1000, 25000, 1, true)
 end)
 
-Events:on("SurvivorEscaped", function()
+Events:Subscribe("SurvivorEscaped", function()
 	HUD:CallEvent("EscapeSurvivor", {})
 	Sound(Vector(), "CityPark::A_Pumpkin_Pickup", true)
 end)
