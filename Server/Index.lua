@@ -623,7 +623,7 @@ Events:Subscribe("ToggleFlashlight", function(player)
 	if (light == nil) then return end
 
 	if (light:GetValue("Enabled")) then
-		light:SetTintColor(Color(0, 0, 0))
+		light:SetColor(Color(0, 0, 0))
 		light:SetValue("Enabled", false)
 
 		Events:BroadcastRemote("FlashlightToggled", {player, character:GetLocation(), false})
@@ -637,7 +637,7 @@ Events:Subscribe("ToggleFlashlight", function(player)
 			character:AddStaticMeshAttached("pumpkin", "CityPark::SM_MinerHat", "head", Vector(5, 5, 0), Rotator(-90, 0, 0))
 		end
 	else
-		light:SetTintColor(Color(0.73, 0.67, 0.42))
+		light:SetColor(Color(0.73, 0.67, 0.42))
 		light:SetValue("Enabled", true)
 
 		Events:BroadcastRemote("FlashlightToggled", {player, character:GetLocation(), true})
