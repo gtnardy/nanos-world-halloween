@@ -3,7 +3,7 @@ Halloween Special game mode for nanos world
 
 Download Assets: https://github.com/gtnardy/nanos-world-halloween/releases/download/v1.0.0/HalloweenCityPark.zip
 
-Start the round: type `start` in the console.
+Start the round: type `start` in the console or `/start` in the chat.
 
 ## Screenshots
 
