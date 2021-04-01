@@ -330,11 +330,24 @@ Events:Subscribe("PlayerReady", function(player)
 	end
 end)
 
+function StartMatch()
+	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
+		UpdateMatchState(MATCH_STATES.WARM_UP)
+	end	
+end
+
 -- Console commands
 Server:Subscribe("Console", function(text)
 	-- To start the game
-	if (text == "start" and Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
-		UpdateMatchState(MATCH_STATES.WARM_UP)
+	if (text == "start") then
+		StartMatch()
+	end
+end)
+
+Server:Subscribe("Chat", function(text, player)
+	-- To start the game
+	if (text == "/start") then
+		StartMatch()
 	end
 end)
 
