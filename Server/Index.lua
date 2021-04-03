@@ -212,7 +212,7 @@ HalloweenSettings = {
 		return random_weapon[math.random(#random_weapon)](Vector(), Rotator())
 	end,
 	pumpkin_spawn = function(location, rotation)
-		local pumpkin = Prop(location, rotation, "CityPark::SM_Pumpkin_Lit", 0, false, false)
+		local pumpkin = Prop(location, rotation, "HalloweenCityPark::SM_Pumpkin_Lit", 0, false, false)
 		local trigger = Trigger(location, 200)
 		trigger:SetValue("Pumpkin", pumpkin)
 	end,
@@ -220,7 +220,7 @@ HalloweenSettings = {
 		-- Spawn Trapdoor
 		local random_position = HalloweenSettings.trapdoor_spawn_locations[math.random(#HalloweenSettings.trapdoor_spawn_locations)]
 
-		Halloween.trapdoor = Prop(random_position.location, random_position.rotation, "CityPark::SM_Trapdoor_Closed", 0, false, false)
+		Halloween.trapdoor = Prop(random_position.location, random_position.rotation, "HalloweenCityPark::SM_Trapdoor_Closed", 0, false, false)
 
 		-- Spawns a Trigger for this Trapdoor
 		local trigger = Trigger(random_position.location, 300)
@@ -306,7 +306,7 @@ Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
 			local rotation = Halloween.trapdoor:GetRotation()
 
 			Halloween.trapdoor:Destroy() 
-			Halloween.trapdoor = Prop(location, rotation, "CityPark::SM_Trapdoor_Opened", 0, false, false)
+			Halloween.trapdoor = Prop(location, rotation, "HalloweenCityPark::SM_Trapdoor_Opened", 0, false, false)
 			Light(location + Vector(0, 0, 100), Rotator(), Color(0.73, 0.67, 0.42), 0, 10, 1000)
 			Halloween.is_trapdoor_opened = true
 
@@ -469,7 +469,7 @@ function SpawnCharacter(player)
 		player_character_model = "NanosWorld::SK_PostApocalyptic"
 		character_spawn_location = HalloweenSettings.survivors_spawn_locations[math.random(#HalloweenSettings.survivors_spawn_locations)]
 	else
-		player_character_model = "CityPark::SK_GothicKnight"
+		player_character_model = "HalloweenCityPark::SK_GothicKnight"
 		character_spawn_location = HalloweenSettings.knights_spawn_locations[math.random(#HalloweenSettings.knights_spawn_locations)]
 	end
 
@@ -478,7 +478,7 @@ function SpawnCharacter(player)
 
 	-- Specific settings for Survivor or Knight
 	if (player_role == ROLES.SURVIVOR) then
-		character:AddStaticMeshAttached("pumpkin", "CityPark::SM_MinerHat_Lit", "head", Vector(5, 5, 0), Rotator(-90, 0, 0))
+		character:AddStaticMeshAttached("pumpkin", "HalloweenCityPark::SM_MinerHat_Lit", "head", Vector(5, 5, 0), Rotator(-90, 0, 0))
 		character:SetSpeedMultiplier(1.15)
 		character:SetCameraMode(1)
 		character:SetTeam(1)
@@ -491,7 +491,7 @@ function SpawnCharacter(player)
 
 		weapon = HalloweenSettings.weapon_survivor()
 	else
-		character:AddStaticMeshAttached("pumpkin", "CityPark::SM_Pumpkin_Lit", "head", Vector(-10, 5, 0), Rotator(-90, 0, 0))
+		character:AddStaticMeshAttached("pumpkin", "HalloweenCityPark::SM_Pumpkin_Lit", "head", Vector(-10, 5, 0), Rotator(-90, 0, 0))
 		character:SetSpeedMultiplier(1.15)
 		character:SetCameraMode(2)
 		character:SetTeam(2)
@@ -645,9 +645,9 @@ Events:Subscribe("ToggleFlashlight", function(player)
 
 		-- Toggle head's mesh dark
 		if (player:GetValue("Role") == ROLES.KNIGHT) then
-			character:AddStaticMeshAttached("pumpkin", "CityPark::SM_Pumpkin", "head", Vector(-10, 5, 0), Rotator(-90, 0, 0))
+			character:AddStaticMeshAttached("pumpkin", "HalloweenCityPark::SM_Pumpkin", "head", Vector(-10, 5, 0), Rotator(-90, 0, 0))
 		else
-			character:AddStaticMeshAttached("pumpkin", "CityPark::SM_MinerHat", "head", Vector(5, 5, 0), Rotator(-90, 0, 0))
+			character:AddStaticMeshAttached("pumpkin", "HalloweenCityPark::SM_MinerHat", "head", Vector(5, 5, 0), Rotator(-90, 0, 0))
 		end
 	else
 		light:SetColor(Color(0.73, 0.67, 0.42))
@@ -659,9 +659,9 @@ Events:Subscribe("ToggleFlashlight", function(player)
 
 		-- Toggle head's mesh bright
 		if (player:GetValue("Role") == ROLES.KNIGHT) then
-			character:AddStaticMeshAttached("pumpkin", "CityPark::SM_Pumpkin_Lit", "head", Vector(-10, 5, 0), Rotator(-90, 0, 0))
+			character:AddStaticMeshAttached("pumpkin", "HalloweenCityPark::SM_Pumpkin_Lit", "head", Vector(-10, 5, 0), Rotator(-90, 0, 0))
 		else
-			character:AddStaticMeshAttached("pumpkin", "CityPark::SM_MinerHat_Lit", "head", Vector(5, 5, 0), Rotator(-90, 0, 0))
+			character:AddStaticMeshAttached("pumpkin", "HalloweenCityPark::SM_MinerHat_Lit", "head", Vector(5, 5, 0), Rotator(-90, 0, 0))
 		end
 	end
 end)

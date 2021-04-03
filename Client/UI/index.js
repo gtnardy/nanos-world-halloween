@@ -37,38 +37,38 @@ setInterval(function() {
 	}
 }, 1000);
 
-Events.on("AddSurvivor", function() {
+Events.Subscribe("AddSurvivor", function() {
 	$("#survivor_heads").append($('<span class="head survivor_head_alive">'));
 });
 
-Events.on("KillSurvivor", function() {
+Events.Subscribe("KillSurvivor", function() {
 	$(".survivor_head_alive").first().remove();
 	$("#survivor_heads").prepend($('<span class="head survivor_head_dead">'));
 });
 
-Events.on("EscapeSurvivor", function() {
+Events.Subscribe("EscapeSurvivor", function() {
 	$(".survivor_head_alive").first().remove();
 	$("#survivor_heads").prepend($('<span class="head survivor_head_escaped">'));
 });
 
-Events.on("AddKnight", function() {
+Events.Subscribe("AddKnight", function() {
 	$("#knight_heads").append($('<span class="head knight_head_alive">'));
 });
 
-Events.on("KillKnight", function() {
+Events.Subscribe("KillKnight", function() {
 	$(".knight_head_alive").first().remove();
 	$("#knight_heads").prepend($('<span class="head knight_head_dead">'));
 });
 
-Events.on("SetLabel", function(label) {
+Events.Subscribe("SetLabel", function(label) {
 	$("#label").html(label);
 });
 
-Events.on("SetLabelBig", function(label) {
+Events.Subscribe("SetLabelBig", function(label) {
 	$("#label_big").html(label);
 });
 
-Events.on("ClearHUD", function() {
+Events.Subscribe("ClearHUD", function() {
 	$("#knight_heads").html("");
 	$("#survivor_heads").html("");
 	$("#survivor_heads").html("");
@@ -81,7 +81,7 @@ Events.on("ClearHUD", function() {
 	special_cooldown = 0;
 });
 
-Events.on("IAmKnight", function() {
+Events.Subscribe("IAmKnight", function() {
 	$("#special").show();
 	
 	$("#radar").removeClass("survivor");
@@ -90,7 +90,7 @@ Events.on("IAmKnight", function() {
 	$("#horseman_paper").show().delay(30000).fadeOut();
 });
 
-Events.on("IAmSurvivor", function() {
+Events.Subscribe("IAmSurvivor", function() {
 	$("#special").css("display", "none");
 
 	$("#radar").removeClass("knight");
@@ -99,27 +99,27 @@ Events.on("IAmSurvivor", function() {
 	$("#survivor_paper").show().delay(30000).fadeOut();
 });
 
-Events.on("FlashlightToggled", function(enabled) {
+Events.Subscribe("FlashlightToggled", function(enabled) {
 	if (enabled)
 		$("#flashlight").addClass("enabled");
 	else
 		$("#flashlight").removeClass("enabled");
 });
 
-Events.on("TriggerRadar", function() {
+Events.Subscribe("TriggerRadar", function() {
 	$("#radar_inner").show().delay(1000).fadeOut(1000);
 });
 
-Events.on("SetSpecialCooldown", function(cooldown) {
+Events.Subscribe("SetSpecialCooldown", function(cooldown) {
 	special_cooldown = cooldown;
 	$("#special_cooldown").html(special_cooldown);
 	$("#special").removeClass("ready");
 });
 
-Events.on("SetClock", function(remaining_time) {
+Events.Subscribe("SetClock", function(remaining_time) {
 	current_time = remaining_time;
 });
 
-Events.on("UpdatePumpkinsFound", function(total_pumpkins, current_pumpkins) {
+Events.Subscribe("UpdatePumpkinsFound", function(total_pumpkins, current_pumpkins) {
 	$("#pumpkins_found_count").html(current_pumpkins + " / " + total_pumpkins);
 });
