@@ -21,7 +21,7 @@ Package:Subscribe("Unload", function()
 	HUD:Destroy()
 end)
 
-Client:SetHighlightColor(Color(3, 0, 0, 0.05))
+Client:SetHighlightColor(Color(3, 0, 0, 0.75), 0)
 
 -- Set's someone Role
 Events:Subscribe("SetPlayerRole", function(player, role)
@@ -160,10 +160,10 @@ end)
 Events:Subscribe("CharacterDeath", function(character, role)
 	-- Sets his corpose as Highlight for 5 seconds
 	if (Halloween.current_role == ROLES.SURVIVOR) then
-		character:SetHighlightEnabled(true)
+		character:SetHighlightEnabled(true, 0)
 		Timer:SetTimeout(5000, function(_char)
 			if (_char and _char:IsValid()) then
-				_char:SetHighlightEnabled(false)
+				_char:SetHighlightEnabled(false, 0)
 			end
 			return false
 		end, {character})
@@ -191,19 +191,19 @@ Events:Subscribe("TriggerSpecial", function(location)
 		for k, character in pairs(NanosWorld:GetCharacters()) do
 			local player = character:GetPlayer()
 			if (player and player:GetValue("Role") == ROLES.SURVIVOR and player ~= NanosWorld:GetLocalPlayer()) then
-				character:SetHighlightEnabled(true)
+				character:SetHighlightEnabled(true, 0)
 			end
 		end
 	else
 		local character = NanosWorld:GetLocalPlayer():GetControlledCharacter()
 		if (character) then
-			character:SetHighlightEnabled(true)
+			character:SetHighlightEnabled(true, 0)
 		end
 	end
 
 	Timer:SetTimeout(10000, function()
 		for k, character in pairs(NanosWorld:GetCharacters()) do
-			character:SetHighlightEnabled(false)
+			character:SetHighlightEnabled(false, 0)
 		end
 		return false
 	end)

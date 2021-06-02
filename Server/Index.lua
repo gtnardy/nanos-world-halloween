@@ -197,7 +197,8 @@ HalloweenSettings = {
 			"NanosWorld::A_Shotgun_Shot",				
 			"NanosWorld::AM_Mannequin_Reload_Shotgun",	
 			"NanosWorld::AM_Mannequin_Sight_Fire_Heavy",
-			""											
+			"",
+			CrosshairType.Shotgun
 		)
 	end,
 	weapon_survivor = function()
@@ -213,7 +214,7 @@ HalloweenSettings = {
 	end,
 	pumpkin_spawn = function(location, rotation)
 		local pumpkin = Prop(location, rotation, "HalloweenCityPark::SM_Pumpkin_Lit", 0, false, false)
-		local trigger = Trigger(location, 200)
+		local trigger = Trigger(location, Rotator(), Vector(200))
 		trigger:SetValue("Pumpkin", pumpkin)
 	end,
 	entities_spawn = function()
@@ -223,7 +224,7 @@ HalloweenSettings = {
 		Halloween.trapdoor = Prop(random_position.location, random_position.rotation, "HalloweenCityPark::SM_Trapdoor_Closed", 0, false, false)
 
 		-- Spawns a Trigger for this Trapdoor
-		local trigger = Trigger(random_position.location, 300)
+		local trigger = Trigger(random_position.location, Rotator(), Vector(300))
 		trigger:SetValue("Trapdoor", true)
 
 		-- Spawns Pumpkins
@@ -280,7 +281,7 @@ Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
 
 		VerifyWinners()
 
-		Server:BroadcastChatMessage("A Survivor has <green>escaped</> alive!")
+		Server:BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' has <green>escaped</> alive!")
 		Events:BroadcastRemote("SurvivorEscaped", {})
 
 		return
@@ -297,7 +298,7 @@ Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
 
 		Halloween.pumpkins_found = Halloween.pumpkins_found + 1
 
-		Server:BroadcastChatMessage("A Survivor found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
+		Server:BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
 		Events:BroadcastRemote("PumpkinFound", {pumpkin_location})
 		
 		-- If already found enough Pumpkins, opens the Door
@@ -373,6 +374,7 @@ Character:Subscribe("Death", function(character)
 		character:SetValue("Light", nil)
 	end
 
+	Server:BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' has been <red>killed</>!")
 	Server:SendChatMessage(player, "You are <red>dead</>! You can spectate other players by switching <bold>Left</> or <bold>Right</> keys!")
 
 	-- Unpossess the Character after 2 seconds
@@ -486,7 +488,9 @@ function SpawnCharacter(player)
 		-- Survivor light
 		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.76, 0.46), 1, 2, 5000, 25, 0.95, 15000, false, true, true)
 		my_light:SetValue("Enabled", true)
-		my_light:AttachTo(character, "head", Vector(50, 30, 0), Rotator(0, 87, 0))
+		my_light:AttachTo(character, AttachmentRule.SnapToTarget, "head")
+		my_light:SetRelativeLocation(Vector(50, 30, 0))
+		my_light:SetRelativeRotation(Rotator(0, 87, 0))
 		character:SetValue("Light", my_light)
 
 		weapon = HalloweenSettings.weapon_survivor()
@@ -502,7 +506,9 @@ function SpawnCharacter(player)
 		-- Knight light
 		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.66, 0.57), 1, 2, 7500, 60, 0, 15000, false, true, true)
 		my_light:SetValue("Enabled", true)
-		my_light:AttachTo(character, "head", Vector(15, 35, 0), Rotator(0, 85, 0))
+		my_light:AttachTo(character, AttachmentRule.SnapToTarget, "head")
+		my_light:SetRelativeLocation(Vector(15, 35, 0))
+		my_light:SetRelativeRotation(Rotator(0, 85, 0))
 		character:SetValue("Light", my_light)
 
 		weapon = HalloweenSettings.weapon_knight()
@@ -526,6 +532,7 @@ function SetPlayerRole(player, role)
 	player:SetValue("Role", role)
 
 	if (role == ROLES.KNIGHT) then
+		Server:BroadcastChatMessage(player:GetName() .. " is a <red>Horseless Headless Horseman</>!")
 		Server:SendChatMessage(player, "You are a <red>Horseless Headless Horseman</>!")
 	elseif (role == ROLES.SURVIVOR) then
 		Server:SendChatMessage(player, "You are a <blue>Survivor</>!")
