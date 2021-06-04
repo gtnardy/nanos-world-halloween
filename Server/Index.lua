@@ -324,6 +324,8 @@ Events:Subscribe("PlayerReady", function(player)
 	-- Sends the current state of the game to him
 	Events:CallRemote("UpdateMatchState", player, {Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins})
 
+	Server:BroadcastChatMessage("<green>" .. player:GetName() .. "</> has joined the server!")
+
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
 		Server:SendChatMessage(player, "<grey>Welcome to the Server! Waiting for host to start! Use Headphones to have a better experience!</>")
 	else

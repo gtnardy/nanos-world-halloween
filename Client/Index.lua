@@ -21,7 +21,7 @@ Package:Subscribe("Unload", function()
 	HUD:Destroy()
 end)
 
-Client:SetHighlightColor(Color(3, 0, 0, 0.75), 0)
+Client:SetHighlightColor(Color(3, 0, 0, 1.5), 0)
 
 -- Set's someone Role
 Events:Subscribe("SetPlayerRole", function(player, role)
