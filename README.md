@@ -5,6 +5,9 @@ Download Assets: https://github.com/gtnardy/nanos-world-halloween/releases/downl
 
 Start the round: type `start` in the console or `/start` in the chat.
 
+![nanos world halloween](https://user-images.githubusercontent.com/6226807/121760179-c6759d00-caff-11eb-8d59-9ecaba1cf31f.jpg)
+
+
 ## Screenshots
 
 ![](https://i.imgur.com/4t9A4C9.png)
