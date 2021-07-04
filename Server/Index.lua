@@ -1,4 +1,4 @@
-Package:RequirePackage("NanosWorldWeapons")
+Package.RequirePackage("NanosWorldWeapons")
 
 -- Static Settings
 HalloweenSettings = {
@@ -260,7 +260,7 @@ Halloween = {
 }
 
 
-Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
+Trigger.Subscribe("BeginOverlap", function(trigger, actor_triggering)
 	if (actor_triggering:GetType() ~= "Character") then return end
 
 	-- Only triggers for Survivors
@@ -270,19 +270,19 @@ Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
 	-- If triggered Trapdoor
 	if (trigger:GetValue("Trapdoor")) then
 		if (not Halloween.is_trapdoor_opened) then return end
-		
+
 		-- Player escaped!
 		actor_triggering:Destroy()
 
 		player:SetValue("IsAlive", false)
 		player:GetValue("Weapon"):Destroy()
-	
+
 		Halloween.players_saved = Halloween.players_saved + 1
 
 		VerifyWinners()
 
-		Server:BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' has <green>escaped</> alive!")
-		Events:BroadcastRemote("SurvivorEscaped", {})
+		Server.BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' has <green>escaped</> alive!")
+		Events.BroadcastRemote("SurvivorEscaped")
 
 		return
 	end
@@ -298,9 +298,9 @@ Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
 
 		Halloween.pumpkins_found = Halloween.pumpkins_found + 1
 
-		Server:BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
-		Events:BroadcastRemote("PumpkinFound", {pumpkin_location})
-		
+		Server.BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
+		Events.BroadcastRemote("PumpkinFound", pumpkin_location)
+
 		-- If already found enough Pumpkins, opens the Door
 		if (Halloween.pumpkins_found >= Halloween.total_pumpkins) then
 			local location = Halloween.trapdoor:GetLocation()
@@ -311,8 +311,8 @@ Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
 			Light(location + Vector(0, 0, 100), Rotator(), Color(0.73, 0.67, 0.42), 0, 10, 1000)
 			Halloween.is_trapdoor_opened = true
 
-			Server:BroadcastChatMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
-			Events:BroadcastRemote("TrapdoorOpened", {Halloween.trapdoor})
+			Server.BroadcastChatMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
+			Events.BroadcastRemote("TrapdoorOpened", Halloween.trapdoor)
 		end
 
 		return
@@ -320,16 +320,16 @@ Trigger:Subscribe("BeginOverlap", function(trigger, actor_triggering)
 end)
 
 -- When player fully connects (custom event)
-Events:Subscribe("PlayerReady", function(player)
+Events.Subscribe("PlayerReady", function(player)
 	-- Sends the current state of the game to him
-	Events:CallRemote("UpdateMatchState", player, {Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins})
+	Events.CallRemote("UpdateMatchState", player, Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins)
 
-	Server:BroadcastChatMessage("<green>" .. player:GetName() .. "</> has joined the server!")
+	Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has joined the server!")
 
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
-		Server:SendChatMessage(player, "<grey>Welcome to the Server! Waiting for host to start! Use Headphones to have a better experience!</>")
+		Server.SendChatMessage(player, "<grey>Welcome to the Server! Waiting for host to start! Use Headphones to have a better experience!</>")
 	else
-		Server:SendChatMessage(player, "<grey>Welcome to the Server! Please wait until the match finishes! Use Headphones to have a better experience!</>")
+		Server.SendChatMessage(player, "<grey>Welcome to the Server! Please wait until the match finishes! Use Headphones to have a better experience!</>")
 	end
 end)
 
@@ -340,14 +340,14 @@ function StartMatch()
 end
 
 -- Console commands
-Server:Subscribe("Console", function(text)
+Server.Subscribe("Console", function(text)
 	-- To start the game
 	if (text == "start") then
 		StartMatch()
 	end
 end)
 
-Server:Subscribe("Chat", function(text, player)
+Server.Subscribe("Chat", function(text, player)
 	-- To start the game
 	if (text == "/start") then
 		StartMatch()
@@ -355,13 +355,13 @@ Server:Subscribe("Chat", function(text, player)
 end)
 
 -- If player disconnects, kills the character
-Player:Subscribe("UnPossess", function (player, character, is_disconnecting)
+Player.Subscribe("UnPossess", function (player, character, is_disconnecting)
 	if (is_disconnecting and player:GetValue("IsAlive")) then
 		character:SetHealth(0)
 	end
 end)
 
-Character:Subscribe("Death", function(character)
+Character.Subscribe("Death", function(character)
 	if (Halloween.match_state ~= MATCH_STATES.IN_PROGRESS and Halloween.match_state ~= MATCH_STATES.WARM_UP) then return end
 
 	local player = character:GetValue("Player")
@@ -376,18 +376,17 @@ Character:Subscribe("Death", function(character)
 		character:SetValue("Light", nil)
 	end
 
-	Server:BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' has been <red>killed</>!")
-	Server:SendChatMessage(player, "You are <red>dead</>! You can spectate other players by switching <bold>Left</> or <bold>Right</> keys!")
+	Server.BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' has been <red>killed</>!")
+	Server.SendChatMessage(player, "You are <red>dead</>! You can spectate other players by switching <bold>Left</> or <bold>Right</> keys!")
 
 	-- Unpossess the Character after 2 seconds
-	Timer:SetTimeout(2000, function(p)
+	Timer.SetTimeout(function(p)
 		if (p and p:IsValid()) then
 			p:UnPossess()
 		end
-		return false
-	end, {player})
+	end, 2000, player)
 
-	Events:BroadcastRemote("CharacterDeath", {character, player:GetValue("Role")})
+	Events.BroadcastRemote("CharacterDeath", character, player:GetValue("Role"))
 
 	-- Check winning conditions
 	VerifyWinners()
@@ -398,7 +397,7 @@ function VerifyWinners()
 	local knights_count = 0
 
 	-- Check how many is still alive, and how many is Knight
-	for k, player in pairs(NanosWorld:GetPlayers()) do
+	for k, player in pairs(Player.GetAll()) do
 		if (player:GetValue("IsAlive")) then
 			alive_players_count = alive_players_count + 1
 
@@ -429,13 +428,13 @@ end
 
 function FinishRound(role_winner)
 	if (role_winner == ROLES.SURVIVOR) then
-		Package:Log("[Halloween] Round finished! Survivors win!")
-		Server:BroadcastChatMessage("Round finished! <blue>Survivors</> Win!")
-		Events:BroadcastRemote("SurvivorWins", {})
+		Package.Log("[Halloween] Round finished! Survivors win!")
+		Server.BroadcastChatMessage("Round finished! <blue>Survivors</> Win!")
+		Events.BroadcastRemote("SurvivorWins")
 	else
-		Package:Log("[Halloween] Round finished! Knights win!")
-		Server:BroadcastChatMessage("Round finished! <red>Horseless Headless Horseman</> Win!")
-		Events:BroadcastRemote("KnightWins", {})
+		Package.Log("[Halloween] Round finished! Knights win!")
+		Server.BroadcastChatMessage("Round finished! <red>Horseless Headless Horseman</> Win!")
+		Events.BroadcastRemote("KnightWins")
 	end
 
 	UpdateMatchState(MATCH_STATES.POST_TIME)
@@ -534,13 +533,13 @@ function SetPlayerRole(player, role)
 	player:SetValue("Role", role)
 
 	if (role == ROLES.KNIGHT) then
-		Server:BroadcastChatMessage(player:GetName() .. " is a <red>Horseless Headless Horseman</>!")
-		Server:SendChatMessage(player, "You are a <red>Horseless Headless Horseman</>!")
+		Server.BroadcastChatMessage(player:GetName() .. " is a <red>Horseless Headless Horseman</>!")
+		Server.SendChatMessage(player, "You are a <red>Horseless Headless Horseman</>!")
 	elseif (role == ROLES.SURVIVOR) then
-		Server:SendChatMessage(player, "You are a <blue>Survivor</>!")
+		Server.SendChatMessage(player, "You are a <blue>Survivor</>!")
 	end
 
-	Events:BroadcastRemote("SetPlayerRole", {player, role})
+	Events.BroadcastRemote("SetPlayerRole", player, role)
 end
 
 function UpdateMatchState(new_state)
@@ -551,50 +550,50 @@ function UpdateMatchState(new_state)
 		Halloween.remaining_time = HalloweenSettings.warmup_time
 
 		-- Incridible random function to select random Knights
-		local player_count = #NanosWorld:GetPlayers()
+		local player_count = Player.GetCount()
 		local player_list = {}
-	
+
 		local knight_count = math.ceil(player_count * HalloweenSettings.percent_knights)
 
-		for k, player in pairs(NanosWorld:GetPlayers()) do
+		for k, player in pairs(Player.GetAll()) do
 			local pos = math.random(1, #player_list + 1)
 			table.insert(player_list, pos, player)
 		end
-	
+
 		for k, player in pairs(player_list) do
 			Halloween.initial_player_count = Halloween.initial_player_count + 1
-	
+
 			if (k <= knight_count) then
 				SetPlayerRole(player, ROLES.KNIGHT)
 			else
 				SetPlayerRole(player, ROLES.SURVIVOR)
 			end
-	
+
 			SpawnCharacter(player)
 		end
-	
+
 		Halloween.total_pumpkins = #player_list * 2
-	
+
 		HalloweenSettings.entities_spawn()
 
-		Package:Log("[Halloween] Warm-up! We have " .. tostring(knight_count) .. " Knights and " .. tostring(player_count - knight_count) .. " Survivors!")
+		Package.Log("[Halloween] Warm-up! We have " .. tostring(knight_count) .. " Knights and " .. tostring(player_count - knight_count) .. " Survivors!")
 
 	elseif (new_state == MATCH_STATES.IN_PROGRESS) then
-		Package:Log("[Halloween] Round started!")
-		Server:BroadcastChatMessage("<grey>Round Started!</>")
+		Package.Log("[Halloween] Round started!")
+		Server.BroadcastChatMessage("<grey>Round Started!</>")
 
 		Halloween.current_knights_special_cooldown = 15
-		Events:BroadcastRemote("SetSpecialCooldown", {Halloween.current_knights_special_cooldown})
-	
-		for k, character in pairs(NanosWorld:GetCharacters()) do
+		Events.BroadcastRemote("SetSpecialCooldown", Halloween.current_knights_special_cooldown)
+
+		for k, character in pairs(Character.GetAll()) do
 			character:SetMovementEnabled(true)
 		end
-	
+
 		Halloween.remaining_time = HalloweenSettings.match_time
-	
+
 	elseif (new_state == MATCH_STATES.WAITING_PLAYERS) then
-		Package:Log("[Halloween] Waiting for Host to start the match... Type 'start' here to start!")
-		Server:BroadcastChatMessage("<grey>Waiting for Host...</>")
+		Package.Log("[Halloween] Waiting for Host to start the match... Type 'start' here to start!")
+		Server.BroadcastChatMessage("<grey>Waiting for Host...</>")
 
 		ClearServer()
 
@@ -602,22 +601,22 @@ function UpdateMatchState(new_state)
 		Halloween.remaining_time = HalloweenSettings.post_time
 	end
 
-	Events:BroadcastRemote("UpdateMatchState", {new_state, Halloween.remaining_time, Halloween.total_pumpkins})
+	Events.BroadcastRemote("UpdateMatchState", new_state, Halloween.remaining_time, Halloween.total_pumpkins)
 end
 
 -- Server Tick to check remaining times
-Timer:SetTimeout(1000, function()
+Timer.SetInterval(function()
 	if (Halloween.match_state == MATCH_STATES.WARM_UP) then
 		if (DecreaseRemainingTime()) then
 			UpdateMatchState(MATCH_STATES.IN_PROGRESS)
 		elseif (Halloween.remaining_time == 15) then
-			Events:BroadcastRemote("MatchWillBegin", {})
+			Events.BroadcastRemote("MatchWillBegin")
 		end
 	elseif (Halloween.match_state == MATCH_STATES.IN_PROGRESS) then
 		if (DecreaseRemainingTime()) then
 			FinishRound(ROLES.KNIGHT)
 		elseif (Halloween.remaining_time == 13) then
-			Events:BroadcastRemote("MatchEnding", {})
+			Events.BroadcastRemote("MatchEnding")
 		end
 
 		if (Halloween.current_knights_special_cooldown > 0) then
@@ -630,14 +629,14 @@ Timer:SetTimeout(1000, function()
 			UpdateMatchState(MATCH_STATES.WAITING_PLAYERS)
 		end
 	end
-end, {})
+end, 1000)
 
 function DecreaseRemainingTime()
 	Halloween.remaining_time = Halloween.remaining_time - 1
 	return (Halloween.remaining_time <= 0)
 end
 
-Events:Subscribe("ToggleFlashlight", function(player)
+Events.Subscribe("ToggleFlashlight", function(player)
 	local character = player:GetControlledCharacter()
 	if (character == nil) then return end
 
@@ -648,7 +647,7 @@ Events:Subscribe("ToggleFlashlight", function(player)
 		light:SetColor(Color(0, 0, 0))
 		light:SetValue("Enabled", false)
 
-		Events:BroadcastRemote("FlashlightToggled", {player, character:GetLocation(), false})
+		Events.BroadcastRemote("FlashlightToggled", player, character:GetLocation(), false)
 
 		character:RemoveStaticMeshAttached("pumpkin")
 
@@ -662,7 +661,7 @@ Events:Subscribe("ToggleFlashlight", function(player)
 		light:SetColor(Color(0.73, 0.67, 0.42))
 		light:SetValue("Enabled", true)
 
-		Events:BroadcastRemote("FlashlightToggled", {player, character:GetLocation(), true})
+		Events.BroadcastRemote("FlashlightToggled", player, character:GetLocation(), true)
 
 		character:RemoveStaticMeshAttached("pumpkin")
 
@@ -676,20 +675,20 @@ Events:Subscribe("ToggleFlashlight", function(player)
 end)
 
 -- Knights Special Power (Q)
-Events:Subscribe("TriggerSpecial", function(player)
+Events.Subscribe("TriggerSpecial", function(player)
 	if (player:GetValue("Role") == ROLES.KNIGHT and Halloween.match_state == MATCH_STATES.IN_PROGRESS and player:GetValue("IsAlive")) then
 		if (Halloween.current_knights_special_cooldown > 0) then
-			Server:SendChatMessage(player, "<red>The Special is on cooldown!</>")
+			Server.SendChatMessage(player, "<red>The Special is on cooldown!</>")
 			return
 		end
 
 		Halloween.current_knights_special_cooldown = HalloweenSettings.knights_special_cooldown
 
-		Events:BroadcastRemote("SetSpecialCooldown", {Halloween.current_knights_special_cooldown})
-		Events:BroadcastRemote("TriggerSpecial", {player:GetControlledCharacter():GetLocation()})
+		Events.BroadcastRemote("SetSpecialCooldown", Halloween.current_knights_special_cooldown)
+		Events.BroadcastRemote("TriggerSpecial", player:GetControlledCharacter():GetLocation())
 	end
 end)
 
-Package:Subscribe("Unload", function()
+Package.Subscribe("Unload", function()
 	ClearServer()
 end)
