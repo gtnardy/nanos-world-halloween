@@ -13,7 +13,7 @@ HUD = nil
 -- Creates a WebUI for the Inventory when the package loads
 Package.Subscribe("Load", function()
 	HUD = WebUI("HUD", "file:///UI/index.html")
-	Sound(Vector(), "HalloweenCityPark::A_Music_End", true, true, 0.5)
+	Sound(Vector(), "halloween-city-park::A_Music_End", true, true, 0.5)
 end)
 
 -- Destroys the WebUI when the package unloads
@@ -28,7 +28,7 @@ Events.Subscribe("SetPlayerRole", function(player, role)
 	player:SetValue("Role", role)
 
 	-- If it's me
-	if (NanosWorld:GetLocalPlayer() == player) then
+	if (Client.GetLocalPlayer() == player) then
 		Halloween.current_role = role
 		if (role == ROLES.KNIGHT) then
 			HUD:CallEvent("IAmKnight")
@@ -36,7 +36,7 @@ Events.Subscribe("SetPlayerRole", function(player, role)
 			HUD:CallEvent("IAmSurvivor")
 		end
 
-		Sound(Vector(), "HalloweenCityPark::A_Paper", true)
+		Sound(Vector(), "halloween-city-park::A_Paper", true)
 	end
 
 	if (role == ROLES.KNIGHT) then
@@ -56,19 +56,19 @@ Client.Subscribe("KeyUp", function(KeyName)
 	elseif (KeyName == "Right") then
 		SpectateNext(1)
 	elseif (KeyName == "SpaceBar") then
-		if (NanosWorld.GetLocalPlayer():GetControlledCharacter()) then return end
+		if (Client.GetLocalPlayer():GetControlledCharacter()) then return end
 		Client.Unspectate()
 	end
 end)
 
 -- Spectate function
 function SpectateNext(index_increment)
-	if (NanosWorld:GetLocalPlayer():GetControlledCharacter()) then return end
+	if (Client.GetLocalPlayer():GetControlledCharacter()) then return end
 	Halloween.current_spectating_index = Halloween.current_spectating_index + index_increment
 
 	local players = {}
 	for k, v in pairs(Player.GetAll()) do
-		if (v ~= NanosWorld:GetLocalPlayer() and v:GetControlledCharacter() ~= nil) then
+		if (v ~= Client.GetLocalPlayer() and v:GetControlledCharacter() ~= nil) then
 			table.insert(players, v)
 		end
 	end
@@ -87,16 +87,16 @@ function SpectateNext(index_increment)
 end
 
 Events.Subscribe("MatchWillBegin", function()
-	Sound(Vector(), "HalloweenCityPark::A_Announcer_MatchBegin", true, true, 1, 0.9)
+	Sound(Vector(), "halloween-city-park::A_Announcer_MatchBegin", true, true, 1, 0.9)
 end)
 
 Events.Subscribe("MatchEnding", function()
-	Sound(Vector(), "HalloweenCityPark::A_Announcer_Cooldown", true, true, 1, 0.9)
+	Sound(Vector(), "halloween-city-park::A_Announcer_Cooldown", true, true, 1, 0.9)
 end)
 
 Events.Subscribe("FlashlightToggled", function(player, location, enabled)
-	Sound(location, "HalloweenCityPark::A_Flashlight", false)
-	if (player == NanosWorld:GetLocalPlayer()) then
+	Sound(location, "halloween-city-park::A_Flashlight", false)
+	if (player == Client.GetLocalPlayer()) then
 		HUD:CallEvent("FlashlightToggled", enabled)
 	end
 end)
@@ -105,9 +105,9 @@ Events.Subscribe("SurvivorWins", function()
 	HUD:CallEvent("SetLabelBig", "SURVIVORS WIN!")
 
 	if (Halloween.current_role == ROLES.SURVIVOR) then
-		Sound(Vector(), "HalloweenCityPark::A_Announcer_Victory", true)
+		Sound(Vector(), "halloween-city-park::A_Announcer_Victory", true)
 	else
-		Sound(Vector(), "HalloweenCityPark::A_Announcer_Defeat", true)
+		Sound(Vector(), "halloween-city-park::A_Announcer_Defeat", true)
 	end 
 end)
 
@@ -115,9 +115,9 @@ Events.Subscribe("KnightWins", function()
 	HUD:CallEvent("SetLabelBig", "HORSELESS HEADLESS HORSEMAN WIN!")
 
 	if (Halloween.current_role == ROLES.KNIGHT) then
-		Sound(Vector(), "HalloweenCityPark::A_Announcer_Victory", true)
+		Sound(Vector(), "halloween-city-park::A_Announcer_Victory", true)
 	else
-		Sound(Vector(), "HalloweenCityPark::A_Announcer_Defeat", true)
+		Sound(Vector(), "halloween-city-park::A_Announcer_Defeat", true)
 	end
 end)
 
@@ -153,7 +153,7 @@ Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_p
 
 		HUD:CallEvent("SetClock", remaining_time)
 		HUD:CallEvent("SetLabel", "POST TIME")
-		Sound(Vector(), "HalloweenCityPark::A_Music_End", true, true, 0.5)
+		Sound(Vector(), "halloween-city-park::A_Music_End", true, true, 0.5)
 	end
 end)
 
@@ -171,10 +171,10 @@ Events.Subscribe("CharacterDeath", function(character, role)
 	-- Triggers a Scream at the location
 	if (role == ROLES.KNIGHT) then
 		HUD:CallEvent("KillKnight")
-		Sound(character:GetLocation(), "HalloweenCityPark::A_Monster_Shout", false, true, 0, 1, 1, 5000, 50000, 1, true)
+		Sound(character:GetLocation(), "halloween-city-park::A_Monster_Shout", false, true, 0, 1, 1, 5000, 50000, 1, true)
 	else
 		HUD:CallEvent("KillSurvivor")
-		Sound(character:GetLocation(), "HalloweenCityPark::A_Scream", false, true, 0, 1, 1, 5000, 50000, 1, true)
+		Sound(character:GetLocation(), "halloween-city-park::A_Scream", false, true, 0, 1, 1, 5000, 50000, 1, true)
 	end
 end)
 
@@ -189,12 +189,12 @@ Events.Subscribe("TriggerSpecial", function(location)
 		-- Makes everyone red for 10 seconds
 		for k, character in pairs(Character.GetAll()) do
 			local player = character:GetPlayer()
-			if (player and player:GetValue("Role") == ROLES.SURVIVOR and player ~= NanosWorld.GetLocalPlayer()) then
+			if (player and player:GetValue("Role") == ROLES.SURVIVOR and player ~= Client.GetLocalPlayer()) then
 				character:SetHighlightEnabled(true, 0)
 			end
 		end
 	else
-		local character = NanosWorld.GetLocalPlayer():GetControlledCharacter()
+		local character = Client.GetLocalPlayer():GetControlledCharacter()
 		if (character) then
 			character:SetHighlightEnabled(true, 0)
 		end
@@ -207,7 +207,7 @@ Events.Subscribe("TriggerSpecial", function(location)
 	end, 10000)
 
 	-- Spawns a evil Laugh at the location of the Knight
-	Sound(location, "HalloweenCityPark::A_Evil_Laugh", false, true, 0, 5, 1, 5000, 50000, 1, true)
+	Sound(location, "halloween-city-park::A_Evil_Laugh", false, true, 0, 5, 1, 5000, 50000, 1, true)
 end)
 
 -- Player is ready after 3 seconds the Package is loaded
@@ -216,7 +216,7 @@ Timer.SetTimeout(3000, function()
 end)
 
 Events.Subscribe("PumpkinFound", function(pumpkin_location)
-	Sound(pumpkin_location, "HalloweenCityPark::A_Pumpkin_Pickup", false)
+	Sound(pumpkin_location, "halloween-city-park::A_Pumpkin_Pickup", false)
 
 	Halloween.pumpkins_found = Halloween.pumpkins_found + 1
 	HUD:CallEvent("UpdatePumpkinsFound", Halloween.total_pumpkins, Halloween.pumpkins_found)
@@ -224,17 +224,17 @@ end)
 
 Events.Subscribe("TrapdoorOpened", function(trapdoor)
 	Halloween.is_trapdoor_opened = true
-	Sound(trapdoor:GetLocation(), "HalloweenCityPark::A_Hatch_Cue", false, false, 0, 2, 1, 1000, 25000, 1, true)
+	Sound(trapdoor:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, 0, 2, 1, 1000, 25000, 1, true)
 end)
 
 Events.Subscribe("SurvivorEscaped", function()
 	HUD:CallEvent("EscapeSurvivor")
-	Sound(Vector(), "HalloweenCityPark::A_Pumpkin_Pickup", true)
+	Sound(Vector(), "halloween-city-park::A_Pumpkin_Pickup", true)
 end)
 
 -- Radar triggers at each 4 seconds
 Timer.SetInterval(function()
-	local local_character = NanosWorld.GetLocalPlayer():GetControlledCharacter()
+	local local_character = Client.GetLocalPlayer():GetControlledCharacter()
 	if (not local_character or Halloween.match_state ~= MATCH_STATES.IN_PROGRESS) then return end
 
 	if (Halloween.current_role == ROLES.KNIGHT) then
@@ -247,7 +247,7 @@ Timer.SetInterval(function()
 				local pitch = 1
 				if distance < 2000 then pitch = 1.5 end
 
-				Sound(Vector(), "HalloweenCityPark::A_Sonar_Ping", true, true, 0, 0.5, pitch)
+				Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, 0, 0.5, pitch)
 
 				return
 			end
@@ -256,13 +256,13 @@ Timer.SetInterval(function()
 		if (not Halloween.is_trapdoor_opened) then
 			for k, p in pairs(Prop) do
 				local distance = local_character:GetLocation():Distance(p:GetLocation())
-				if (p:GetAssetName() == "HalloweenCityPark::SM_Pumpkin_Lit" and distance < 5000) then
+				if (p:GetAssetName() == "halloween-city-park::SM_Pumpkin_Lit" and distance < 5000) then
 					HUD:CallEvent("TriggerRadar")
 
 					local pitch = 1
 					if distance < 2000 then pitch = 1.5 end
 
-					Sound(Vector(), "HalloweenCityPark::A_Sonar_Ping", true, true, 0, 0.5, pitch)
+					Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, 0, 0.5, pitch)
 					return
 				end
 			end
