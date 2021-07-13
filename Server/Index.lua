@@ -163,7 +163,7 @@ HalloweenSettings = {
 		return Weapon(
 			Vector(),
 			Rotator(),
-			"NanosWorld::SK_Moss500",
+			"nanos-world::SK_Moss500",
 			0,						
 			true,					
 			4,						
@@ -187,16 +187,16 @@ HalloweenSettings = {
 			true,					
 			false,					
 			"",											
-			"NanosWorld::P_Weapon_BarrelSmoke",			
-			"NanosWorld::P_Weapon_Shells_12Gauge",		
-			"NanosWorld::A_Shotgun_Dry",				
-			"NanosWorld::A_Shotgun_Load_Bullet",		
+			"nanos-world::P_Weapon_BarrelSmoke",			
+			"nanos-world::P_Weapon_Shells_12Gauge",		
+			"nanos-world::A_Shotgun_Dry",				
+			"nanos-world::A_Shotgun_Load_Bullet",		
 			"",											
-			"NanosWorld::A_AimZoom",					
-			"NanosWorld::A_Rattle",						
-			"NanosWorld::A_Shotgun_Shot",				
-			"NanosWorld::AM_Mannequin_Reload_Shotgun",	
-			"NanosWorld::AM_Mannequin_Sight_Fire_Heavy",
+			"nanos-world::A_AimZoom",					
+			"nanos-world::A_Rattle",						
+			"nanos-world::A_Shotgun_Shot",				
+			"nanos-world::AM_Mannequin_Reload_Shotgun",	
+			"nanos-world::AM_Mannequin_Sight_Fire_Heavy",
 			"",
 			CrosshairType.Shotgun
 		)
@@ -469,7 +469,7 @@ function SpawnCharacter(player)
 
 	-- Spawns specific Mesh and location for Survivor or Knight
 	if (player_role == ROLES.SURVIVOR) then
-		player_character_model = "NanosWorld::SK_PostApocalyptic"
+		player_character_model = "nanos-world::SK_PostApocalyptic"
 		character_spawn_location = HalloweenSettings.survivors_spawn_locations[math.random(#HalloweenSettings.survivors_spawn_locations)]
 	else
 		player_character_model = "halloween-city-park::SK_GothicKnight"
