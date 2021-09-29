@@ -1,4 +1,4 @@
-Package.RequirePackage("NanosWorldWeapons")
+Package.RequirePackage("nanos-world-weapons")
 
 -- Static Settings
 HalloweenSettings = {
@@ -198,7 +198,7 @@ HalloweenSettings = {
 			"nanos-world::AM_Mannequin_Reload_Shotgun",	
 			"nanos-world::AM_Mannequin_Sight_Fire_Heavy",
 			"",
-			CrosshairType.Shotgun
+			"nanos-world::MI_Crosshair_Shotgun"
 		)
 	end,
 	weapon_survivor = function()
@@ -306,7 +306,7 @@ Trigger.Subscribe("BeginOverlap", function(trigger, actor_triggering)
 			local location = Halloween.trapdoor:GetLocation()
 			local rotation = Halloween.trapdoor:GetRotation()
 
-			Halloween.trapdoor:Destroy() 
+			Halloween.trapdoor:Destroy()
 			Halloween.trapdoor = Prop(location, rotation, "halloween-city-park::SM_Trapdoor_Opened", 0, false, false)
 			Light(location + Vector(0, 0, 100), Rotator(), Color(0.73, 0.67, 0.42), 0, 10, 1000)
 			Halloween.is_trapdoor_opened = true
@@ -380,11 +380,12 @@ Character.Subscribe("Death", function(character)
 	Server.SendChatMessage(player, "You are <red>dead</>! You can spectate other players by switching <bold>Left</> or <bold>Right</> keys!")
 
 	-- Unpossess the Character after 2 seconds
-	Timer.SetTimeout(function(p)
-		if (p and p:IsValid()) then
+	Timer.Bind(
+		Timer.SetTimeout(function(p)
 			p:UnPossess()
-		end
-	end, 2000, player)
+		end, 2000, player),
+		player
+	)
 
 	Events.BroadcastRemote("CharacterDeath", character, player:GetValue("Role"))
 
@@ -449,15 +450,11 @@ function ClearServer()
 	Halloween.players_saved = 0
 	Halloween.initial_player_count = 0
 
-	local actors_to_destroy = {}
-
-	for k, e in pairs(Character) do table.insert(actors_to_destroy, e) end
-	for k, e in pairs(Prop) do table.insert(actors_to_destroy, e) end
-	for k, e in pairs(Weapon) do table.insert(actors_to_destroy, e) end
-	for k, e in pairs(Trigger) do table.insert(actors_to_destroy, e) end
-	for k, e in pairs(Light) do table.insert(actors_to_destroy, e) end
-
-	for k, e in pairs(actors_to_destroy) do e:Destroy() end
+	for k, e in pairs(Character.GetAll()) do e:Destroy() end
+	for k, e in pairs(Prop.GetAll()) do e:Destroy() end
+	for k, e in pairs(Weapon.GetAll()) do e:Destroy() end
+	for k, e in pairs(Trigger.GetAll()) do e:Destroy() end
+	for k, e in pairs(Light.GetAll()) do e:Destroy() end
 end
 
 -- Spawns a character for a given player
@@ -485,7 +482,7 @@ function SpawnCharacter(player)
 		character:SetSpeedMultiplier(1.15)
 		character:SetCameraMode(1)
 		character:SetTeam(1)
-		
+
 		-- Survivor light
 		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.76, 0.46), 1, 2, 5000, 25, 0.95, 15000, false, true, true)
 		my_light:SetValue("Enabled", true)
@@ -503,7 +500,7 @@ function SpawnCharacter(player)
 		character:SetMaxHealth(1000)
 		character:SetHealth(1000)
 		character:SetScale(Vector(1.5, 1.5, 1.5))
-		
+
 		-- Knight light
 		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.66, 0.57), 1, 2, 7500, 60, 0, 15000, false, true, true)
 		my_light:SetValue("Enabled", true)
@@ -516,7 +513,7 @@ function SpawnCharacter(player)
 	end
 
 	player:Possess(character)
-	
+
 	player:SetValue("Character", character)
 	player:SetValue("Weapon", weapon)
 	player:SetValue("IsAlive", true)

@@ -21,7 +21,7 @@ Package.Subscribe("Unload", function()
 	HUD:Destroy()
 end)
 
-Client.SetHighlightColor(Color(3, 0, 0, 1.5), 0)
+Client.SetHighlightColor(Color(3, 0, 0, 1.5), 0, HighlightMode.Always)
 
 -- Set's someone Role
 Events.Subscribe("SetPlayerRole", function(player, role)
@@ -138,9 +138,7 @@ Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_p
 		Halloween.pumpkins_found = 0
 		Halloween.is_trapdoor_opened = false
 
-		local sounds = {}
-		for k, s in pairs(Sound) do table.insert(sounds, s) end
-		for k, s in pairs(sounds) do s:Destroy() end
+		for k, s in pairs(Sound.GetAll()) do s:Destroy() end
 
 		HUD:CallEvent("ClearHUD")
 		HUD:CallEvent("SetLabel", "WAITING FOR HOST")
@@ -161,11 +159,12 @@ Events.Subscribe("CharacterDeath", function(character, role)
 	-- Sets his corpose as Highlight for 5 seconds
 	if (Halloween.current_role == ROLES.SURVIVOR) then
 		character:SetHighlightEnabled(true, 0)
-		Timer.SetTimeout(function(_char)
-			if (_char and _char:IsValid()) then
+		Timer.Bind(
+			Timer.SetTimeout(function(_char)
 				_char:SetHighlightEnabled(false, 0)
-			end
-		end, 5000, character)
+			end, 5000, character),
+			character
+		)
 	end
 
 	-- Triggers a Scream at the location
@@ -211,9 +210,9 @@ Events.Subscribe("TriggerSpecial", function(location)
 end)
 
 -- Player is ready after 3 seconds the Package is loaded
-Timer.SetTimeout(3000, function()
+Timer.SetTimeout(function()
 	Events.CallRemote("PlayerReady")
-end)
+end, 3000)
 
 Events.Subscribe("PumpkinFound", function(pumpkin_location)
 	Sound(pumpkin_location, "halloween-city-park::A_Pumpkin_Pickup", false)
@@ -237,6 +236,7 @@ Timer.SetInterval(function()
 	local local_character = Client.GetLocalPlayer():GetControlledCharacter()
 	if (not local_character or Halloween.match_state ~= MATCH_STATES.IN_PROGRESS) then return end
 
+	-- TODO: if more than 2 pumpkins is close, it triggers the first even if it's distant
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		for k, c in pairs(Character) do
 			local distance = local_character:GetLocation():Distance(c:GetLocation())
