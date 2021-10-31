@@ -1,22 +1,48 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
+
+		<!-- Main -->
 		<script src="jquery-3.5.1.min.js"></script>
 		<script src="index.js"></script>
-		<link href='http://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
-		<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet"> 
 		<link rel="stylesheet" href="style.css">
+
+		<!-- Scoreboard -->
+		<script src="scoreboard/scoreboard.js"></script>
+		<link rel="stylesheet" href="scoreboard/scoreboard.css">
+
+		<!-- Google Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto&display=swap" rel="stylesheet"> 
 	</head>
 	<body>
+		<div id="mvp">
+			<div id="mvp_pumpkins">
+				<span id="mvp_pumpkins_value"></span>
+				<span id="mvp_pumpkins_label">Most Picked Up Pumpkins</span>
+			</div>
+			<div id="mvp_player">
+				<span id="mvp_value"></span>
+				<span id="mvp_label">MVP</span>
+			</div>
+			<div id="mvp_damage">
+				<span id="mvp_damage_value"></span>
+				<span id="mvp_damage_label">Most Damage</span>
+			</div>
+		</div>
+
 		<div id="label_big"></div>
 		<div id="horseman_paper"></div>
 		<div id="survivor_paper"></div>
 		<img id="logo" src="./images/logo.png" />
+		<img id="map" src="./images/map.jpg" />
 
 		<div id="players_heads">
 			<div id="survivor_heads"></div>
 			<div id="knight_heads"></div>
 		</div>
+
 		<div id="status_bar">
 			<div id="clock">
 				00:00
@@ -30,6 +56,9 @@
 			</div>
 			<div id="flashlight" class="enabled"> 
 				<span id="flashlight_label">TORCH (F)</span>
+			</div>
+			<div id="map_status"> 
+				<span id="map_label">MAP (M)</span>
 			</div>
 			<div id="special">
 				<span id="special_cooldown">0</span>

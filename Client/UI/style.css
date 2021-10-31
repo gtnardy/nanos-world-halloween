@@ -5,6 +5,7 @@ body {
 	margin: 0px;
 	padding: 0px;
 	background-size: 100%;
+	color: white;
 }
 
 #players_heads {
@@ -86,8 +87,7 @@ body {
 
 #label_big {
 	position: absolute;
-	top: 50%;
-	transform: translate(0, -50%);
+	top: 20%;
 	color: white;
 	font-size: 60px;
 	width: 100%;
@@ -95,11 +95,16 @@ body {
 	font-family: 'Creepster', cursive;
 }
 
-#logo {
+#logo, #map {
 	position: absolute;
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
+}
+
+#map {
+	display: none;
+	opacity: 0.95;
 }
 
 #radar {
@@ -108,6 +113,27 @@ body {
 	background-repeat: no-repeat;
 	background-position: 50% 5px;
 	position: relative;
+}
+
+#map_status {
+	width: 60px;
+	background-size: 38%;
+	background-repeat: no-repeat;
+	background-position: 50% 6px;
+	position: relative;
+	background-image: url("./images/map_disabled.png");
+}
+
+#map_status.enabled {
+	background-image: url("./images/map_enabled.png");
+}
+
+#map_label {
+	position: absolute;
+	font-size: 10px;
+	width: 100%;
+	top: 15px;
+	left: 0;
 }
 
 #flashlight {
@@ -176,6 +202,7 @@ body {
 }
 
 #horseman_paper, #survivor_paper {
+	display: none;
 	position: absolute;
 	transform: translate(-50%, -50%);
 	width: 100%;
@@ -213,4 +240,38 @@ body {
     width: 100%;
     top: 13px;
 	left: 0;
+}
+
+#mvp {
+	text-align: center;
+	position: absolute;
+	top: 45%;
+	width: 100%;
+	color: white;
+	display: none;
+}
+
+#mvp > div {
+	width: 350px;
+	display: inline-block;
+}
+
+#mvp span {
+	display: block;
+}
+
+#mvp_label {
+	font-size: 25px;
+}
+
+#mvp_value {
+	font-size: 45px;
+}
+
+#mvp_pumpkins_label, #mvp_damage_label {
+
+}
+
+#mvp_pumpkins_value, #mvp_damage_value {
+	font-size: 30px;
 }

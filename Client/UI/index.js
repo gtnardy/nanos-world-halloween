@@ -2,8 +2,6 @@ var special_cooldown = 0;
 var current_time = 0;
 
 $(document).ready(function() {
-	$("#horseman_paper").hide();
-	$("#survivor_paper").hide();
 	$("#special").hide();
 	$("#radar_inner").hide();
 
@@ -64,8 +62,13 @@ Events.Subscribe("SetLabel", function(label) {
 	$("#label").html(label);
 });
 
-Events.Subscribe("SetLabelBig", function(label) {
+Events.Subscribe("SetLabelBig", function(label, player_mvp, player_most_damage, player_most_pumpkins) {
 	$("#label_big").html(label);
+
+	$("#mvp").show();
+	$("#mvp_pumpkins_value").html(player_most_pumpkins);
+	$("#mvp_damage_value").html(player_most_damage);
+	$("#mvp_value").html(player_mvp);
 });
 
 Events.Subscribe("ClearHUD", function() {
@@ -75,6 +78,7 @@ Events.Subscribe("ClearHUD", function() {
 	$("#special").hide();
 	$("#pumpkins_found_count").html("0 / 0");
 	$("#label").html("");
+	$("#mvp").hide();
 	$("#label_big").html("");
 
 	current_time = 0;
@@ -97,6 +101,19 @@ Events.Subscribe("IAmSurvivor", function() {
 	$("#radar").addClass("survivor");
 
 	$("#survivor_paper").show().delay(30000).fadeOut();
+});
+
+Events.Subscribe("MapToggled", function(enabled) {
+	if (enabled)
+	{
+		$("#map").show();
+		$("#map_status").addClass("enabled");
+	}
+	else
+	{
+		$("#map").hide();
+		$("#map_status").removeClass("enabled");
+	}
 });
 
 Events.Subscribe("FlashlightToggled", function(enabled) {

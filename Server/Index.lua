@@ -4,8 +4,12 @@ Package.RequirePackage("nanos-world-weapons")
 HalloweenSettings = {
 	warmup_time = 40,
 	match_time = 600,
-	post_time = 20,
-	percent_knights = 0.2,
+	post_time = 25,
+	preparing_time = 10,
+	players_to_start = 4,
+	players_per_knight = 6,
+	pumpkins_per_player = 2,
+	pumpkins_extra_percent = 0.2,
 	knights_special_cooldown = 30,
 	knights_spawn_locations = {
 		Vector(-59018.000, 2641.000, -608.891),
@@ -160,68 +164,77 @@ HalloweenSettings = {
 		{location = Vector(-61077.000, -7504.000, 441.000), rotation = Rotator(-5.624763, 42.187393, -0.000275)},
 	},
 	weapon_knight = function()
-		return Weapon(
-			Vector(),
-			Rotator(),
-			"nanos-world::SK_Moss500",
-			0,						
-			true,					
-			4,						
-			1000,					
-			4,						
-			20,						
-			85,		-- spread				
-			10,						
-			1,						
-			5000,					
-			7500,					
-			Color(10000, 20, 0),	
-			0.75,					
-			Vector(0, 0, -12.5),	
-			Rotator(-1, 0, 0),		
-			Vector(38, 2, 2.5),		
-			Rotator(-5, 0, -180),	
-			Vector(-5, 0, 0),		
-			1,						
-			1,						
-			true,					
-			false,					
-			"",											
-			"nanos-world::P_Weapon_BarrelSmoke",			
-			"nanos-world::P_Weapon_Shells_12Gauge",		
-			"nanos-world::A_Shotgun_Dry",				
-			"nanos-world::A_Shotgun_Load_Bullet",		
-			"",											
-			"nanos-world::A_AimZoom",					
-			"nanos-world::A_Rattle",						
-			"nanos-world::A_Shotgun_Shot",				
-			"nanos-world::AM_Mannequin_Reload_Shotgun",	
-			"nanos-world::AM_Mannequin_Sight_Fire_Heavy",
-			"",
-			"nanos-world::MI_Crosshair_Shotgun"
-		)
+		local random_weapon = {
+			NanosWorldWeapons.Moss500,
+			NanosWorldWeapons.Ithaca37,
+			NanosWorldWeapons.Rem870,
+			NanosWorldWeapons.SPAS12,
+		}
+
+		local weapon = random_weapon[math.random(#random_weapon)](Vector(), Rotator())
+
+		weapon:SetDamage(10)
+		weapon:SetCadence(1.5)
+		weapon:SetRecoil(5)
+		weapon:SetSpread(70)
+
+		return weapon
 	end,
 	weapon_survivor = function()
 		local random_weapon = {
 			NanosWorldWeapons.Glock,
-			-- NanosWorldWeapons.AK47,
-			-- NanosWorldWeapons.AK74U,
-			-- NanosWorldWeapons.GE36,
-			-- NanosWorldWeapons.AP5,
+			NanosWorldWeapons.Makarov,
+			NanosWorldWeapons.M1911,
 		}
 
-		return random_weapon[math.random(#random_weapon)](Vector(), Rotator())
+		local weapon = random_weapon[math.random(#random_weapon)](Vector(), Rotator())
+
+		weapon:SetDamage(20)
+		weapon:SetCadence(0.35)
+		weapon:SetRecoil(1)
+		weapon:SetSpread(50)
+
+		return weapon
 	end,
 	pumpkin_spawn = function(location, rotation)
-		local pumpkin = Prop(location, rotation, "halloween-city-park::SM_Pumpkin_Lit", 0, false, false)
-		local trigger = Trigger(location, Rotator(), Vector(200))
-		trigger:SetValue("Pumpkin", pumpkin)
+		local pumpkin = Prop(location, rotation, "halloween-city-park::SM_Pumpkin_Lit", CollisionType.NoCollision, false, true, true)
+
+		pumpkin:Subscribe("Interact", function(prop, character)
+			local player = character:GetPlayer()
+			if (not player:GetValue("IsAlive") or player:GetValue("Role") ~= ROLES.SURVIVOR) then return end
+
+			-- Picked up the Pumpkin, destroys it
+			local pumpkin_location = prop:GetLocation()
+			prop:Destroy()
+
+			Halloween.pumpkins_found = Halloween.pumpkins_found + 1
+
+			player:SetValue("PickedUpPumpkins", player:GetValue("PickedUpPumpkins", 0) + 1, true)
+
+			Server.BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
+			Events.BroadcastRemote("PumpkinFound", pumpkin_location)
+
+			-- If already found enough Pumpkins, opens the Door
+			if (Halloween.pumpkins_found >= Halloween.total_pumpkins) then
+				local trapdoor_location = Halloween.trapdoor:GetLocation()
+				local trapdoor_rotation = Halloween.trapdoor:GetRotation()
+
+				Halloween.trapdoor:Destroy()
+				Halloween.trapdoor = StaticMesh(trapdoor_location, trapdoor_rotation, "halloween-city-park::SM_Trapdoor_Opened", CollisionType.NoCollision)
+				Light(trapdoor_location + Vector(0, 0, 100), Rotator(), Color(0.73, 0.67, 0.42), 0, 10, 1000)
+				Halloween.is_trapdoor_opened = true
+
+				Server.BroadcastChatMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
+				Events.BroadcastRemote("TrapdoorOpened", Halloween.trapdoor)
+			end
+			return false
+		end)
 	end,
 	entities_spawn = function()
 		-- Spawn Trapdoor
 		local random_position = HalloweenSettings.trapdoor_spawn_locations[math.random(#HalloweenSettings.trapdoor_spawn_locations)]
 
-		Halloween.trapdoor = Prop(random_position.location, random_position.rotation, "halloween-city-park::SM_Trapdoor_Closed", 0, false, false)
+		Halloween.trapdoor = StaticMesh(random_position.location, random_position.rotation, "halloween-city-park::SM_Trapdoor_Closed", CollisionType.NoCollision)
 
 		-- Spawns a Trigger for this Trapdoor
 		local trigger = Trigger(random_position.location, Rotator(), Vector(300))
@@ -234,7 +247,7 @@ HalloweenSettings = {
 		end
 
 		-- Spawns 20% more pumpkins thant he needed
-		local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins * 1.2)
+		local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins * HalloweenSettings.pumpkins_extra_percent)
 
 		-- Minimum pumpkins spawned
 		total_pumpkins_to_spawn = math.min(math.max(total_pumpkins_to_spawn, 5), #HalloweenSettings.pumpkins_spawn_locations)
@@ -286,37 +299,6 @@ Trigger.Subscribe("BeginOverlap", function(trigger, actor_triggering)
 
 		return
 	end
-
-	-- If triggered Pumpkin
-	local pumpkin = trigger:GetValue("Pumpkin")
-	if (not Halloween.is_trapdoor_opened and pumpkin and pumpkin:IsValid()) then
-
-		-- Picked up the Pumpkin, destroys it
-		local pumpkin_location = pumpkin:GetLocation()
-		pumpkin:Destroy()
-		trigger:Destroy()
-
-		Halloween.pumpkins_found = Halloween.pumpkins_found + 1
-
-		Server.BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
-		Events.BroadcastRemote("PumpkinFound", pumpkin_location)
-
-		-- If already found enough Pumpkins, opens the Door
-		if (Halloween.pumpkins_found >= Halloween.total_pumpkins) then
-			local location = Halloween.trapdoor:GetLocation()
-			local rotation = Halloween.trapdoor:GetRotation()
-
-			Halloween.trapdoor:Destroy()
-			Halloween.trapdoor = Prop(location, rotation, "halloween-city-park::SM_Trapdoor_Opened", 0, false, false)
-			Light(location + Vector(0, 0, 100), Rotator(), Color(0.73, 0.67, 0.42), 0, 10, 1000)
-			Halloween.is_trapdoor_opened = true
-
-			Server.BroadcastChatMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
-			Events.BroadcastRemote("TrapdoorOpened", Halloween.trapdoor)
-		end
-
-		return
-	end
 end)
 
 -- When player fully connects (custom event)
@@ -324,11 +306,15 @@ Events.Subscribe("PlayerReady", function(player)
 	-- Sends the current state of the game to him
 	Events.CallRemote("UpdateMatchState", player, Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins)
 
-	Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has joined the server!")
-
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
-		Server.SendChatMessage(player, "<grey>Welcome to the Server! Waiting for host to start! Use Headphones to have a better experience!</>")
+		Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has joined the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.players_to_start .. ")!")
+		Server.SendChatMessage(player, "<grey>Welcome to the Server! Waiting players to start the match! Use Headphones to have a better experience!</>")
+
+		if (Player.GetCount() >= HalloweenSettings.players_to_start) then
+			UpdateMatchState(MATCH_STATES.PREPARING)
+		end
 	else
+		Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has joined the server as Spectator!")
 		Server.SendChatMessage(player, "<grey>Welcome to the Server! Please wait until the match finishes! Use Headphones to have a better experience!</>")
 	end
 end)
@@ -336,7 +322,7 @@ end)
 function StartMatch()
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
 		UpdateMatchState(MATCH_STATES.WARM_UP)
-	end	
+	end
 end
 
 -- Console commands
@@ -351,13 +337,71 @@ Server.Subscribe("Chat", function(text, player)
 	-- To start the game
 	if (text == "/start") then
 		StartMatch()
+		return false
 	end
 end)
 
 -- If player disconnects, kills the character
-Player.Subscribe("UnPossess", function (player, character, is_disconnecting)
-	if (is_disconnecting and player:GetValue("IsAlive")) then
+Player.Subscribe("Destroy", function (player)
+	local character = player:GetControlledCharacter()
+	if (character) then
 		character:SetHealth(0)
+	end
+
+	Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has left the server")
+end)
+
+Character.Subscribe("WeaponAimModeChanged", function(character, old_state, new_state)
+	local player = character:GetPlayer()
+	local player_role = player:GetValue("Role")
+
+	if (player_role == ROLES.SURVIVOR) then
+		local weapon = player:GetValue("Weapon")
+		local light = character:GetValue("Light")
+		if (new_state == AimMode.None) then
+			light:AttachTo(character, AttachmentRule.SnapToTarget, "head")
+			light:SetRelativeLocation(Vector(0, 15, 0))
+			light:SetRelativeRotation(Rotator(0, 87, 0))
+		elseif (old_state == AimMode.None) then
+			light:AttachTo(weapon, AttachmentRule.SnapToTarget, "muzzle")
+			light:SetRelativeLocation(Vector(-50, -10, 5))
+		end
+	end
+end)
+
+-- Adds damage dealt when damaging
+Character.Subscribe("TakeDamage", function(character, damage, bone, type, from, instigator, causer)
+	-- If it's suicide, ignore it
+	if (not instigator or instigator == character:GetPlayer()) then
+		return
+	end
+
+	-- Clamps the damage to Health
+	local health = character:GetHealth()
+	local true_damage = health < damage and health or damage
+
+	instigator:SetValue("DamageDealt", instigator:GetValue("DamageDealt", 0) + true_damage, true)
+end)
+
+Character.Subscribe("SwimmingModeChanged", function(character, old_state, new_state)
+	local timer_damage = character:GetValue("TimerDamage")
+
+	if (timer_damage) then
+		Timer.ClearInterval(timer_damage)
+		character:SetValue("TimerDamage", nil)
+	end
+
+	if (new_state == SwimmingMode.Underwater) then
+		timer_damage = Timer.SetInterval(function(c)
+			c:ApplyDamage(5)
+		end, 3000, character)
+
+		Timer.Bind(
+			timer_damage,
+			character
+		)
+
+		character:SetValue("TimerDamage", timer_damage)
 	end
 end)
 
@@ -398,7 +442,7 @@ function VerifyWinners()
 	local knights_count = 0
 
 	-- Check how many is still alive, and how many is Knight
-	for k, player in pairs(Player.GetAll()) do
+	for k, player in pairs(Player.GetPairs()) do
 		if (player:GetValue("IsAlive")) then
 			alive_players_count = alive_players_count + 1
 
@@ -428,14 +472,46 @@ function VerifyWinners()
 end
 
 function FinishRound(role_winner)
+	-- TODO: first to escape
+
+	local player_mvp = nil
+	local value_mvp = 0
+
+	local player_most_damage = nil
+	local value_most_damage = 0
+
+	local player_most_pumpkins = nil
+	local value_most_pumpkins = 0
+
+	for k, player in pairs(Player.GetPairs()) do
+		local damage = player:GetValue("DamageDealt", 0)
+		local pumpkins = player:GetValue("PickedUpPumpkins", 0)
+		local score_mvp = damage + pumpkins * 100
+
+		if (pumpkins > value_most_pumpkins or (not player_most_pumpkins and player:GetValue("Role") == ROLES.SURVIVOR)) then
+			player_most_pumpkins = player
+			value_most_pumpkins = pumpkins
+		end
+
+		if (damage > value_most_damage or not player_most_damage) then
+			player_most_damage = player
+			value_most_damage = damage
+		end
+
+		if (score_mvp > value_mvp or not player_mvp) then
+			player_mvp = player
+			value_mvp = damage
+		end
+	end
+
 	if (role_winner == ROLES.SURVIVOR) then
 		Package.Log("[Halloween] Round finished! Survivors win!")
 		Server.BroadcastChatMessage("Round finished! <blue>Survivors</> Win!")
-		Events.BroadcastRemote("SurvivorWins")
+		Events.BroadcastRemote("SurvivorWins", player_mvp:GetName(), player_most_damage:GetName() .. " - " .. value_most_damage, player_most_pumpkins:GetName() .. " - " .. value_most_pumpkins)
 	else
 		Package.Log("[Halloween] Round finished! Knights win!")
 		Server.BroadcastChatMessage("Round finished! <red>Horseless Headless Horseman</> Win!")
-		Events.BroadcastRemote("KnightWins")
+		Events.BroadcastRemote("KnightWins", player_mvp:GetName(), player_most_damage:GetName() .. " - " .. value_most_damage, player_most_pumpkins:GetName() .. " - " .. value_most_pumpkins)
 	end
 
 	UpdateMatchState(MATCH_STATES.POST_TIME)
@@ -452,6 +528,7 @@ function ClearServer()
 
 	for k, e in pairs(Character.GetAll()) do e:Destroy() end
 	for k, e in pairs(Prop.GetAll()) do e:Destroy() end
+	for k, e in pairs(StaticMesh.GetAll()) do e:Destroy() end
 	for k, e in pairs(Weapon.GetAll()) do e:Destroy() end
 	for k, e in pairs(Trigger.GetAll()) do e:Destroy() end
 	for k, e in pairs(Light.GetAll()) do e:Destroy() end
@@ -482,27 +559,33 @@ function SpawnCharacter(player)
 		character:SetSpeedMultiplier(1.15)
 		character:SetCameraMode(1)
 		character:SetTeam(1)
+		character:SetCanDrop(false)
 
 		-- Survivor light
-		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.76, 0.46), 1, 2, 5000, 25, 0.95, 15000, false, true, true)
+		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.76, 0.46), LightType.Spot, 0.15, 6000, 25, 0.95, 15000, false, true, true)
 		my_light:SetValue("Enabled", true)
+		my_light:SetTextureLightProfile(LightProfile.Shattered_02)
 		my_light:AttachTo(character, AttachmentRule.SnapToTarget, "head")
-		my_light:SetRelativeLocation(Vector(50, 30, 0))
+		my_light:SetRelativeLocation(Vector(0, 15, 0))
 		my_light:SetRelativeRotation(Rotator(0, 87, 0))
 		character:SetValue("Light", my_light)
 
 		weapon = HalloweenSettings.weapon_survivor()
+
+	-- Knight
 	else
 		character:AddStaticMeshAttached("pumpkin", "halloween-city-park::SM_Pumpkin_Lit", "head", Vector(-10, 5, 0), Rotator(-90, 0, 0))
-		character:SetSpeedMultiplier(1.15)
+		character:SetSpeedMultiplier(1.25)
 		character:SetCameraMode(2)
 		character:SetTeam(2)
+		character:SetCanDrop(false)
 		character:SetMaxHealth(1000)
 		character:SetHealth(1000)
 		character:SetScale(Vector(1.5, 1.5, 1.5))
+		character:SetPainSound("nanos-world::A_Male_01_Growl")
 
 		-- Knight light
-		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.66, 0.57), 1, 2, 7500, 60, 0, 15000, false, true, true)
+		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.66, 0.57), LightType.Spot, 2, 7500, 60, 0, 15000, false, true, true)
 		my_light:SetValue("Enabled", true)
 		my_light:AttachTo(character, AttachmentRule.SnapToTarget, "head")
 		my_light:SetRelativeLocation(Vector(15, 35, 0))
@@ -531,7 +614,6 @@ function SetPlayerRole(player, role)
 
 	if (role == ROLES.KNIGHT) then
 		Server.BroadcastChatMessage(player:GetName() .. " is a <red>Horseless Headless Horseman</>!")
-		Server.SendChatMessage(player, "You are a <red>Horseless Headless Horseman</>!")
 	elseif (role == ROLES.SURVIVOR) then
 		Server.SendChatMessage(player, "You are a <blue>Survivor</>!")
 	end
@@ -546,18 +628,24 @@ function UpdateMatchState(new_state)
 		-- During warm-up, set all player's a role and spawns a Character for each
 		Halloween.remaining_time = HalloweenSettings.warmup_time
 
-		-- Incridible random function to select random Knights
+		-- Incredible random function to select random Knights
 		local player_count = Player.GetCount()
 		local player_list = {}
 
-		local knight_count = math.ceil(player_count * HalloweenSettings.percent_knights)
+		local knight_count = math.ceil(player_count / HalloweenSettings.players_per_knight)
 
-		for k, player in pairs(Player.GetAll()) do
+		math.randomseed(os.time())
+
+		for k, player in pairs(Player.GetPairs()) do
 			local pos = math.random(1, #player_list + 1)
 			table.insert(player_list, pos, player)
 		end
 
 		for k, player in pairs(player_list) do
+			-- Cleanup Player  data
+			player:SetValue("PickedUpPumpkins", 0, true)
+			player:SetValue("DamageDealt", 0, true)
+
 			Halloween.initial_player_count = Halloween.initial_player_count + 1
 
 			if (k <= knight_count) then
@@ -569,7 +657,7 @@ function UpdateMatchState(new_state)
 			SpawnCharacter(player)
 		end
 
-		Halloween.total_pumpkins = #player_list * 2
+		Halloween.total_pumpkins = #player_list * HalloweenSettings.pumpkins_per_player
 
 		HalloweenSettings.entities_spawn()
 
@@ -582,15 +670,15 @@ function UpdateMatchState(new_state)
 		Halloween.current_knights_special_cooldown = 15
 		Events.BroadcastRemote("SetSpecialCooldown", Halloween.current_knights_special_cooldown)
 
-		for k, character in pairs(Character.GetAll()) do
+		for k, character in pairs(Character.GetPairs()) do
 			character:SetMovementEnabled(true)
 		end
 
 		Halloween.remaining_time = HalloweenSettings.match_time
 
 	elseif (new_state == MATCH_STATES.WAITING_PLAYERS) then
-		Package.Log("[Halloween] Waiting for Host to start the match... Type 'start' here to start!")
-		Server.BroadcastChatMessage("<grey>Waiting for Host...</>")
+		Package.Log("[Halloween] Waiting for players to start the match... Type 'start' here to force start!")
+		Server.BroadcastChatMessage("<grey>Waiting for players (" .. Player.GetCount() .. "/" .. HalloweenSettings.players_to_start .. ").</>")
 
 		ClearServer()
 
@@ -603,7 +691,11 @@ end
 
 -- Server Tick to check remaining times
 Timer.SetInterval(function()
-	if (Halloween.match_state == MATCH_STATES.WARM_UP) then
+	if (Halloween.match_state == MATCH_STATES.PREPARING) then
+		if (DecreaseRemainingTime()) then
+			UpdateMatchState(MATCH_STATES.WARM_UP)
+		end
+	elseif (Halloween.match_state == MATCH_STATES.WARM_UP) then
 		if (DecreaseRemainingTime()) then
 			UpdateMatchState(MATCH_STATES.IN_PROGRESS)
 		elseif (Halloween.remaining_time == 15) then
@@ -623,7 +715,11 @@ Timer.SetInterval(function()
 
 	elseif (Halloween.match_state == MATCH_STATES.POST_TIME) then
 		if (DecreaseRemainingTime()) then
-			UpdateMatchState(MATCH_STATES.WAITING_PLAYERS)
+			if (Player.GetCount() >= HalloweenSettings.players_to_start) then
+				UpdateMatchState(MATCH_STATES.PREPARING)
+			else
+				UpdateMatchState(MATCH_STATES.WAITING_PLAYERS)
+			end
 		end
 	end
 end, 1000)
@@ -683,7 +779,33 @@ Events.Subscribe("TriggerSpecial", function(player)
 
 		Events.BroadcastRemote("SetSpecialCooldown", Halloween.current_knights_special_cooldown)
 		Events.BroadcastRemote("TriggerSpecial", player:GetControlledCharacter():GetLocation())
+
+		for k, character in pairs(Character.GetPairs()) do
+			local controller = character:GetPlayer()
+			if (controller and controller:GetValue("Role") == ROLES.KNIGHT) then
+				character:SetSpeedMultiplier(1.5)
+				character:SetFOVMultiplier(1.2)
+			end
+		end
+
+		-- Resets all Knights speed after 5 seconds
+		Timer.SetTimeout(function()
+			for k, character in pairs(Character.GetPairs()) do
+				local controller = character:GetPlayer()
+				if (controller and controller:GetValue("Role") == ROLES.KNIGHT) then
+					character:SetSpeedMultiplier(1.15)
+					character:SetFOVMultiplier(1)
+				end
+			end
+		end, 5000)
 	end
+end)
+
+Package.Subscribe("Load", function()
+	-- Spawns a Moon
+	local moon = StaticMesh(Vector(0, 0, 25000), Rotator(), "nanos-world::SM_Sphere")
+	moon:SetScale(Vector(10, 10, 10))
+	moon:SetMaterialColorParameter("Emissive", Color(100, 35, 15))
 end)
 
 Package.Subscribe("Unload", function()

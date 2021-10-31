@@ -5,6 +5,7 @@ Halloween = {
 	is_trapdoor_opened = false,
 	total_pumpkins = 0,
 	pumpkins_found = 0,
+	flashlight_enabled = true,
 }
 
 -- Stores the UI Instance
@@ -13,12 +14,7 @@ HUD = nil
 -- Creates a WebUI for the Inventory when the package loads
 Package.Subscribe("Load", function()
 	HUD = WebUI("HUD", "file:///UI/index.html")
-	Sound(Vector(), "halloween-city-park::A_Music_End", true, true, 0.5)
-end)
-
--- Destroys the WebUI when the package unloads
-Package.Subscribe("Unload", function()
-	HUD:Destroy()
+	Sound(Vector(), "halloween-city-park::A_Music_End", true, true, SoundType.SFX, 0.5)
 end)
 
 Client.SetHighlightColor(Color(3, 0, 0, 1.5), 0, HighlightMode.Always)
@@ -46,20 +42,58 @@ Events.Subscribe("SetPlayerRole", function(player, role)
 	end
 end)
 
-Client.Subscribe("KeyUp", function(KeyName)
-	if (KeyName == "F") then
-		Events.CallRemote("ToggleFlashlight")
-	elseif (KeyName == "Left") then
-		SpectateNext(-1)
-	elseif (KeyName == "Q") then
-		Events.CallRemote("TriggerSpecial")
-	elseif (KeyName == "Right") then
-		SpectateNext(1)
-	elseif (KeyName == "SpaceBar") then
-		if (Client.GetLocalPlayer():GetControlledCharacter()) then return end
-		Client.Unspectate()
-	end
+-- Configures Keybindings Inputs
+Input.Register("HalloweenFlashlight", "F")
+Input.Register("HalloweenSpecial", "Q")
+Input.Register("SpectatePrev", "Left")
+Input.Register("SpectateNext", "Right")
+Input.Register("Unspectate", "SpaceBar")
+Input.Register("Map", "M")
+
+Input.Bind("HalloweenFlashlight", InputEvent.Pressed, function()
+	Events.CallRemote("ToggleFlashlight")
 end)
+
+Input.Bind("HalloweenSpecial", InputEvent.Pressed, function()
+	Events.CallRemote("TriggerSpecial")
+end)
+
+Input.Bind("SpectatePrev", InputEvent.Pressed, function()
+	SpectateNext(-1)
+end)
+
+Input.Bind("SpectateNext", InputEvent.Pressed, function()
+	SpectateNext(1)
+end)
+
+Input.Bind("Map", InputEvent.Pressed, function()
+	if (Halloween.match_state ~= MATCH_STATES.IN_PROGRESS) then return end
+
+	HUD:CallEvent("MapToggled", true)
+	Sound(Vector(), "halloween-city-park::A_Paper", true)
+end)
+
+Input.Bind("Map", InputEvent.Released, function()
+	if (Halloween.match_state ~= MATCH_STATES.IN_PROGRESS) then return end
+
+	HUD:CallEvent("MapToggled", false)
+	Sound(Vector(), "halloween-city-park::A_Paper", true)
+end)
+
+Input.Bind("Unspectate", InputEvent.Pressed, function()
+	if (Client.GetLocalPlayer():GetControlledCharacter()) then return end
+	Client.Unspectate()
+end)
+
+-- Flick the Flashlight
+Timer.SetInterval(function()
+	if (Halloween.current_role == ROLES.SURVIVOR and Halloween.match_state == MATCH_STATES.IN_PROGRESS and Halloween.flashlight_enabled and math.random() <= 0.05) then
+		Events.CallRemote("ToggleFlashlight")
+		Timer.SetTimeout(function()
+			Events.CallRemote("ToggleFlashlight")
+		end, 150)
+	end
+end, 15000)
 
 -- Spectate function
 function SpectateNext(index_increment)
@@ -67,7 +101,7 @@ function SpectateNext(index_increment)
 	Halloween.current_spectating_index = Halloween.current_spectating_index + index_increment
 
 	local players = {}
-	for k, v in pairs(Player.GetAll()) do
+	for k, v in pairs(Player.GetPairs()) do
 		if (v ~= Client.GetLocalPlayer() and v:GetControlledCharacter() ~= nil) then
 			table.insert(players, v)
 		end
@@ -87,32 +121,35 @@ function SpectateNext(index_increment)
 end
 
 Events.Subscribe("MatchWillBegin", function()
-	Sound(Vector(), "halloween-city-park::A_Announcer_MatchBegin", true, true, 1, 0.9)
+	Sound(Vector(), "halloween-city-park::A_Announcer_MatchBegin", true, true)
 end)
 
 Events.Subscribe("MatchEnding", function()
-	Sound(Vector(), "halloween-city-park::A_Announcer_Cooldown", true, true, 1, 0.9)
+	Sound(Vector(), "halloween-city-park::A_Announcer_Cooldown", true, true)
 end)
 
 Events.Subscribe("FlashlightToggled", function(player, location, enabled)
-	Sound(location, "halloween-city-park::A_Flashlight", false)
+	Halloween.flashlight_enabled = enabled
+
+	Sound(location, "halloween-city-park::A_Flashlight")
+
 	if (player == Client.GetLocalPlayer()) then
 		HUD:CallEvent("FlashlightToggled", enabled)
 	end
 end)
 
-Events.Subscribe("SurvivorWins", function()
-	HUD:CallEvent("SetLabelBig", "SURVIVORS WIN!")
+Events.Subscribe("SurvivorWins", function(player_mvp, player_most_damage, player_most_pumpkins)
+	HUD:CallEvent("SetLabelBig", "SURVIVORS WIN!", player_mvp, player_most_damage, player_most_pumpkins)
 
 	if (Halloween.current_role == ROLES.SURVIVOR) then
 		Sound(Vector(), "halloween-city-park::A_Announcer_Victory", true)
 	else
 		Sound(Vector(), "halloween-city-park::A_Announcer_Defeat", true)
-	end 
+	end
 end)
 
-Events.Subscribe("KnightWins", function()
-	HUD:CallEvent("SetLabelBig", "HORSELESS HEADLESS HORSEMAN WIN!")
+Events.Subscribe("KnightWins", function(player_mvp, player_most_damage, player_most_pumpkins)
+	HUD:CallEvent("SetLabelBig", "HORSELESS HEADLESS HORSEMAN WIN!", player_mvp, player_most_damage, player_most_pumpkins)
 
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		Sound(Vector(), "halloween-city-park::A_Announcer_Victory", true)
@@ -121,12 +158,15 @@ Events.Subscribe("KnightWins", function()
 	end
 end)
 
-Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_pumpkins)
-	remaining_time = remaining_time - 1
-	Halloween.match_state = new_state
+Events.Subscribe("UpdateMatchState", function(new_state, _remaining_time, total_pumpkins)
+	remaining_time = _remaining_time - 1
 	Halloween.total_pumpkins = total_pumpkins
 
-	if (new_state == MATCH_STATES.WARM_UP) then
+	if (new_state == MATCH_STATES.PREPARING) then
+
+		HUD:CallEvent("SetClock", remaining_time)
+		HUD:CallEvent("SetLabel", "STARTING")
+	elseif (new_state == MATCH_STATES.WARM_UP) then
 
 		HUD:CallEvent("SetClock", remaining_time)
 		HUD:CallEvent("UpdatePumpkinsFound", total_pumpkins, 0)
@@ -137,11 +177,14 @@ Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_p
 		Halloween.current_spectating_index = 1
 		Halloween.pumpkins_found = 0
 		Halloween.is_trapdoor_opened = false
+		Halloween.flashlight_enabled = true
 
-		for k, s in pairs(Sound.GetAll()) do s:Destroy() end
+		if (Halloween.match_state ~= 0) then
+			for k, s in pairs(Sound.GetAll()) do s:Destroy() end
+		end
 
 		HUD:CallEvent("ClearHUD")
-		HUD:CallEvent("SetLabel", "WAITING FOR HOST")
+		HUD:CallEvent("SetLabel", "WAITING PLAYERS")
 	elseif (new_state == MATCH_STATES.IN_PROGRESS) then
 
 		HUD:CallEvent("SetClock", remaining_time)
@@ -151,8 +194,10 @@ Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_p
 
 		HUD:CallEvent("SetClock", remaining_time)
 		HUD:CallEvent("SetLabel", "POST TIME")
-		Sound(Vector(), "halloween-city-park::A_Music_End", true, true, 0.5)
+		Sound(Vector(), "halloween-city-park::A_Music_End", true, true, SoundType.SFX, 0.5)
 	end
+
+	Halloween.match_state = new_state
 end)
 
 Events.Subscribe("CharacterDeath", function(character, role)
@@ -170,10 +215,10 @@ Events.Subscribe("CharacterDeath", function(character, role)
 	-- Triggers a Scream at the location
 	if (role == ROLES.KNIGHT) then
 		HUD:CallEvent("KillKnight")
-		Sound(character:GetLocation(), "halloween-city-park::A_Monster_Shout", false, true, 0, 1, 1, 5000, 50000, 1, true)
+		Sound(character:GetLocation(), "halloween-city-park::A_Monster_Shout", false, true, SoundType.SFX, 1, 1, 5000, 50000, AttenuationFunction.Logarithmic, true)
 	else
 		HUD:CallEvent("KillSurvivor")
-		Sound(character:GetLocation(), "halloween-city-park::A_Scream", false, true, 0, 1, 1, 5000, 50000, 1, true)
+		Sound(character:GetLocation(), "halloween-city-park::A_Scream", false, true, SoundType.SFX, 1, 1, 5000, 50000, AttenuationFunction.Logarithmic, true)
 	end
 end)
 
@@ -186,7 +231,7 @@ end)
 Events.Subscribe("TriggerSpecial", function(location)
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		-- Makes everyone red for 10 seconds
-		for k, character in pairs(Character.GetAll()) do
+		for k, character in pairs(Character.GetPairs()) do
 			local player = character:GetPlayer()
 			if (player and player:GetValue("Role") == ROLES.SURVIVOR and player ~= Client.GetLocalPlayer()) then
 				character:SetHighlightEnabled(true, 0)
@@ -200,13 +245,19 @@ Events.Subscribe("TriggerSpecial", function(location)
 	end
 
 	Timer.SetTimeout(function()
-		for k, character in pairs(Character.GetAll()) do
+		for k, character in pairs(Character.GetPairs()) do
 			character:SetHighlightEnabled(false, 0)
 		end
 	end, 10000)
 
-	-- Spawns a evil Laugh at the location of the Knight
-	Sound(location, "halloween-city-park::A_Evil_Laugh", false, true, 0, 5, 1, 5000, 50000, 1, true)
+	-- Spawns a evil Laugh at the location of the Knights
+	for k, character in pairs(Character.GetPairs()) do
+		local player = character:GetPlayer()
+		if (player and player:GetValue("Role") == ROLES.KNIGHT) then
+			local laugh = Sound(location, "halloween-city-park::A_Evil_Laugh", false, true, SoundType.SFX, 5, 1, 5000, 50000, AttenuationFunction.Logarithmic, true)
+			laugh:AttachTo(character)
+		end
+	end
 end)
 
 -- Player is ready after 3 seconds the Package is loaded
@@ -223,7 +274,7 @@ end)
 
 Events.Subscribe("TrapdoorOpened", function(trapdoor)
 	Halloween.is_trapdoor_opened = true
-	Sound(trapdoor:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, 0, 2, 1, 1000, 25000, 1, true)
+	Sound(trapdoor:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, SoundType.SFX, 2, 1, 1000, 25000, AttenuationFunction.Logarithmic, true)
 end)
 
 Events.Subscribe("SurvivorEscaped", function()
@@ -247,7 +298,7 @@ Timer.SetInterval(function()
 				local pitch = 1
 				if distance < 2000 then pitch = 1.5 end
 
-				Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, 0, 0.5, pitch)
+				Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, SoundType.SFX, 0.5, pitch)
 
 				return
 			end
@@ -262,10 +313,13 @@ Timer.SetInterval(function()
 					local pitch = 1
 					if distance < 2000 then pitch = 1.5 end
 
-					Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, 0, 0.5, pitch)
+					Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, SoundType.SFX, 0.5, pitch)
 					return
 				end
 			end
 		end
 	end
 end, 4000)
+
+
+Package.Require("Scoreboard.lua")
