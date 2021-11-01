@@ -289,7 +289,7 @@ Trigger.Subscribe("BeginOverlap", function(trigger, actor_triggering)
 		-- Player escaped!
 		actor_triggering:Destroy()
 
-		player:SetValue("IsAlive", false)
+		player:SetValue("IsAlive", false, true)
 		player:GetValue("Weapon"):Destroy()
 
 		Halloween.players_saved = Halloween.players_saved + 1
@@ -306,7 +306,7 @@ end)
 -- When player fully connects (custom event)
 Events.Subscribe("PlayerReady", function(player)
 	-- Sends the current state of the game to him
-	Events.CallRemote("UpdateMatchState", player, Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins)
+	Events.CallRemote("UpdateMatchState", player, Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins, Halloween.pumpkins_found)
 
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
 		Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has joined the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.players_to_start .. ")!")
@@ -317,7 +317,7 @@ Events.Subscribe("PlayerReady", function(player)
 		end
 	else
 		Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has joined the server as Spectator!")
-		Server.SendChatMessage(player, "<grey>Welcome to the Server! Please wait until the match finishes! Use Headphones to have a better experience!</>")
+		Server.SendChatMessage(player, "<grey>Welcome to the Server! Please wait until the match finishes! Use Arrow Keys to Spectate other players! Use Headphones to have a better experience!</>")
 	end
 end)
 
@@ -412,7 +412,7 @@ Character.Subscribe("Death", function(character)
 
 	local player = character:GetValue("Player")
 
-	player:SetValue("IsAlive", false)
+	player:SetValue("IsAlive", false, true)
 	player:GetValue("Weapon"):Destroy()
 
 	local light = character:GetValue("Light")
@@ -601,7 +601,7 @@ function SpawnCharacter(player)
 
 	player:SetValue("Character", character)
 	player:SetValue("Weapon", weapon)
-	player:SetValue("IsAlive", true)
+	player:SetValue("IsAlive", true, true)
 
 	character:PickUp(weapon)
 

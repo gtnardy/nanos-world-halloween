@@ -74,7 +74,6 @@ Events.Subscribe("SetLabelBig", function(label, player_mvp, player_most_damage, 
 Events.Subscribe("ClearHUD", function() {
 	$("#knight_heads").html("");
 	$("#survivor_heads").html("");
-	$("#survivor_heads").html("");
 	$("#special").hide();
 	$("#pumpkins_found_count").html("0 / 0");
 	$("#label").html("");

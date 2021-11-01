@@ -158,12 +158,13 @@ Events.Subscribe("KnightWins", function(player_mvp, player_most_damage, player_m
 	end
 end)
 
-Events.Subscribe("UpdateMatchState", function(new_state, _remaining_time, total_pumpkins)
-	remaining_time = _remaining_time - 1
+Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_pumpkins, pumpkins_found)
+	remaining_time = remaining_time - 1
 	Halloween.total_pumpkins = total_pumpkins
 
 	if (new_state == MATCH_STATES.PREPARING) then
 
+		HUD:CallEvent("ClearHUD")
 		HUD:CallEvent("SetClock", remaining_time)
 		HUD:CallEvent("SetLabel", "STARTING")
 	elseif (new_state == MATCH_STATES.WARM_UP) then
@@ -189,6 +190,31 @@ Events.Subscribe("UpdateMatchState", function(new_state, _remaining_time, total_
 
 		HUD:CallEvent("SetClock", remaining_time)
 		HUD:CallEvent("SetLabel", "IN PROGRESS")
+
+		-- Means the Match is in progress and I'm a spectator
+		if (Halloween.current_role == 0) then
+			HUD:CallEvent("UpdatePumpkinsFound", total_pumpkins, pumpkins_found)
+
+			-- Updates amount of knights and survivors 
+			for k, p in pairs(Player.GetPairs()) do
+				local role = p:GetValue("Role")
+				local is_alive = p:GetValue("IsAlive")
+
+				if (role == ROLES.KNIGHT) then
+					HUD:CallEvent("AddKnight")
+
+					if (not is_alive) then
+						HUD:CallEvent("KillKnight")
+					end
+				else
+					HUD:CallEvent("AddSurvivor")
+
+					if (not is_alive) then
+						HUD:CallEvent("KillSurvivor")
+					end
+				end
+			end
+		end
 
 	elseif (new_state == MATCH_STATES.POST_TIME) then
 
