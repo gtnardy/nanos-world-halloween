@@ -7,9 +7,9 @@ HalloweenSettings = {
 	post_time = 25,
 	preparing_time = 10,
 	players_to_start = 4,
-	players_per_knight = 6,
+	players_per_knight = 5,
 	pumpkins_per_player = 2,
-	pumpkins_extra_percent = 0.2,
+	pumpkins_extra_percent = 1.4,
 	knights_special_cooldown = 30,
 	knights_spawn_locations = {
 		Vector(-59018.000, 2641.000, -608.891),
@@ -173,7 +173,7 @@ HalloweenSettings = {
 
 		local weapon = random_weapon[math.random(#random_weapon)](Vector(), Rotator())
 
-		weapon:SetDamage(10)
+		weapon:SetDamage(15)
 		weapon:SetCadence(1.5)
 		weapon:SetRecoil(5)
 		weapon:SetSpread(70)
@@ -206,6 +206,8 @@ HalloweenSettings = {
 			-- Picked up the Pumpkin, destroys it
 			local pumpkin_location = prop:GetLocation()
 			prop:Destroy()
+
+			if (Halloween.pumpkins_found > Halloween.total_pumpkins) then return false end
 
 			Halloween.pumpkins_found = Halloween.pumpkins_found + 1
 
