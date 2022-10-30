@@ -8,6 +8,7 @@ body {
 	user-select: none;
 	background-size: 100%;
 	color: white;
+	overflow: hidden;
 }
 
 #players_heads {

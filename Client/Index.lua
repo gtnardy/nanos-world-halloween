@@ -161,6 +161,20 @@ Events.Subscribe("KnightWins", function(player_mvp, player_most_damage, player_m
 	end
 end)
 
+function ClearServer()
+	Halloween.current_role = 0
+	Halloween.current_spectating_index = 1
+	Halloween.pumpkins_found = 0
+	Halloween.is_trapdoor_opened = false
+	Halloween.flashlight_enabled = true
+
+	if (Halloween.match_state ~= 0) then
+		for k, s in pairs(Sound.GetAll()) do s:Destroy() end
+	end
+
+	HUD:CallEvent("ClearHUD")
+end
+
 Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_pumpkins, pumpkins_found)
 	remaining_time = remaining_time - 1
 	Halloween.total_pumpkins = total_pumpkins
@@ -177,17 +191,7 @@ Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_p
 		HUD:CallEvent("SetLabel", "PREPARING")
 	elseif (new_state == MATCH_STATES.WAITING_PLAYERS) then
 
-		Halloween.current_role = 0
-		Halloween.current_spectating_index = 1
-		Halloween.pumpkins_found = 0
-		Halloween.is_trapdoor_opened = false
-		Halloween.flashlight_enabled = true
-
-		if (Halloween.match_state ~= 0) then
-			for k, s in pairs(Sound.GetAll()) do s:Destroy() end
-		end
-
-		HUD:CallEvent("ClearHUD")
+		ClearServer()
 		HUD:CallEvent("SetLabel", "WAITING PLAYERS")
 	elseif (new_state == MATCH_STATES.IN_PROGRESS) then
 
@@ -319,7 +323,8 @@ Timer.SetInterval(function()
 	-- TODO: if more than 2 pumpkins is close, it triggers the first even if it's distant
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		for k, c in pairs(Character) do
-			if (c:GetValue("Role") ~= ROLES.KNIGHT) then
+			local player = c:GetPlayer()
+			if (player and player:GetValue("Role") ~= ROLES.KNIGHT) then
 				local distance = local_character:GetLocation():Distance(c:GetLocation())
 
 				if (local_character ~= c and distance < 5000 and c:GetHealth() > 0) then

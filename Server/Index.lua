@@ -632,6 +632,7 @@ function SpawnCharacter(player)
 		character:SetHealth(1000)
 		character:SetScale(Vector(1.5, 1.5, 1.5))
 		character:SetPainSound("nanos-world::A_Male_01_Growl")
+		character:SetPhysicalMaterial("nanos-world::PM_Flesh")
 
 		-- Knight light
 		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.66, 0.57), LightType.Spot, 2, 7500, 60, 0, 15000, false, true, true)
@@ -643,6 +644,9 @@ function SpawnCharacter(player)
 
 		weapon = HalloweenSettings.weapon_knight()
 	end
+
+    character:SetJumpZVelocity(600)
+    character:SetCapsuleSize(36, 96)
 
 	player:Possess(character)
 
@@ -761,15 +765,12 @@ Timer.SetInterval(function()
 			Halloween.current_knights_special_cooldown = Halloween.current_knights_special_cooldown - 1
 		end
 	elseif (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
-
+		if (Player.GetCount() >= HalloweenSettings.players_to_start) then
+			UpdateMatchState(MATCH_STATES.PREPARING)
+		end
 	elseif (Halloween.match_state == MATCH_STATES.POST_TIME) then
 		if (DecreaseRemainingTime()) then
-			if (Player.GetCount() >= HalloweenSettings.players_to_start) then
-				ClearServer()
-				UpdateMatchState(MATCH_STATES.PREPARING)
-			else
-				UpdateMatchState(MATCH_STATES.WAITING_PLAYERS)
-			end
+			UpdateMatchState(MATCH_STATES.WAITING_PLAYERS)
 		end
 	end
 end, 1000)

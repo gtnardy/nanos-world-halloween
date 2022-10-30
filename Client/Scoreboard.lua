@@ -19,6 +19,10 @@ Player.Subscribe("Spawn", function(player)
 	UpdatePlayerScoreboard(player)
 end)
 
+Player.Subscribe("Destroy", function(player)
+	HUD:CallEvent("UpdatePlayer", player:GetID(), false)
+end)
+
 -- Updates the ping every 5 seconds
 Timer.SetInterval(function()
 	for k, player in pairs(Player.GetPairs()) do
