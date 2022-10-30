@@ -120,7 +120,7 @@ function SpectateNext(index_increment)
 		end
 	end
 
-	Client.Spectate(players[Halloween.current_spectating_index])
+	Client.GetLocalPlayer():Spectate(players[Halloween.current_spectating_index])
 end
 
 Events.Subscribe("MatchWillBegin", function()
