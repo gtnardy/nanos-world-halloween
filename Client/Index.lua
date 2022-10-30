@@ -319,17 +319,19 @@ Timer.SetInterval(function()
 	-- TODO: if more than 2 pumpkins is close, it triggers the first even if it's distant
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		for k, c in pairs(Character) do
-			local distance = local_character:GetLocation():Distance(c:GetLocation())
+			if (c:GetValue("Role") ~= ROLES.KNIGHT) then
+				local distance = local_character:GetLocation():Distance(c:GetLocation())
 
-			if (local_character ~= c and distance < 5000 and c:GetHealth() > 0) then
-				HUD:CallEvent("TriggerRadar")
+				if (local_character ~= c and distance < 5000 and c:GetHealth() > 0) then
+					HUD:CallEvent("TriggerRadar")
 
-				local pitch = 1
-				if distance < 2000 then pitch = 1.5 end
+					local pitch = 1
+					if distance < 2000 then pitch = 1.5 end
 
-				Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, SoundType.SFX, 0.5, pitch)
+					Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, SoundType.SFX, 0.5, pitch)
 
-				return
+					return
+				end
 			end
 		end
 	else
