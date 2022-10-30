@@ -400,6 +400,8 @@ end)
 
 Character.Subscribe("WeaponAimModeChanged", function(character, old_state, new_state)
 	local player = character:GetPlayer()
+	if (not player) then return end
+
 	local player_role = player:GetValue("Role")
 
 	if (player_role == ROLES.SURVIVOR) then
@@ -763,6 +765,7 @@ Timer.SetInterval(function()
 	elseif (Halloween.match_state == MATCH_STATES.POST_TIME) then
 		if (DecreaseRemainingTime()) then
 			if (Player.GetCount() >= HalloweenSettings.players_to_start) then
+				ClearServer()
 				UpdateMatchState(MATCH_STATES.PREPARING)
 			else
 				UpdateMatchState(MATCH_STATES.WAITING_PLAYERS)
