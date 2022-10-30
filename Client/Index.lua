@@ -11,6 +11,9 @@ Halloween = {
 -- Stores the UI Instance
 HUD = nil
 
+-- Disable Debug settings
+Client.SetDebugEnabled(false)
+
 -- Creates a WebUI for the Inventory when the package loads
 Package.Subscribe("Load", function()
 	HUD = WebUI("HUD", "file:///UI/index.html")
@@ -44,7 +47,7 @@ end)
 
 -- Configures Keybindings Inputs
 Input.Register("HalloweenFlashlight", "F")
-Input.Register("HalloweenSpecial", "Q")
+Input.Register("HalloweenSpecial", "X")
 Input.Register("SpectatePrev", "Left")
 Input.Register("SpectateNext", "Right")
 Input.Register("Unspectate", "SpaceBar")
@@ -82,7 +85,7 @@ end)
 
 Input.Bind("Unspectate", InputEvent.Pressed, function()
 	if (Client.GetLocalPlayer():GetControlledCharacter()) then return end
-	Client.Unspectate()
+	Client.GetLocalPlayer():ResetCamera()
 end)
 
 -- Flick the Flashlight
@@ -300,7 +303,7 @@ end)
 
 Events.Subscribe("TrapdoorOpened", function(trapdoor)
 	Halloween.is_trapdoor_opened = true
-	Sound(trapdoor:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, SoundType.SFX, 2, 1, 1000, 25000, AttenuationFunction.Logarithmic, true)
+	Sound(trapdoor:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, SoundType.SFX, 2, 1, 1000, 35000, AttenuationFunction.Logarithmic, true)
 end)
 
 Events.Subscribe("SurvivorEscaped", function()

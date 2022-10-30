@@ -79,6 +79,7 @@ Events.Subscribe("ClearHUD", function() {
 	$("#label").html("");
 	$("#mvp").hide();
 	$("#label_big").html("");
+	$("#radar_inner").hide();
 
 	current_time = 0;
 	special_cooldown = 0;

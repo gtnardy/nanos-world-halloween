@@ -197,40 +197,46 @@ HalloweenSettings = {
 		return weapon
 	end,
 	pumpkin_spawn = function(location, rotation)
-		local pumpkin = Prop(location, rotation, "halloween-city-park::SM_Pumpkin_Lit", CollisionType.NoCollision, false, true, true)
+		local pumpkin = Prop(location, rotation, "halloween-city-park::SM_Pumpkin_Lit", CollisionType.NoCollision, false, GrabMode.Disabled, CCDMode.Disabled)
 
-		pumpkin:Subscribe("Interact", function(prop, character)
-			local player = character:GetPlayer()
-			if (not player:GetValue("IsAlive") or player:GetValue("Role") ~= ROLES.SURVIVOR) then return end
+		local pumpkin_light = Light(location + Vector(0, 0, 100), Rotator(), Color(1, 0.7, 0.4), LightType.Point, 1, 300, 44, 0, 1000, true, false)
+		pumpkin_light:AttachTo(pumpkin, AttachmentRule.KeepWorld, "", 0)
 
-			-- Picked up the Pumpkin, destroys it
-			local pumpkin_location = prop:GetLocation()
-			prop:Destroy()
+		local trigger = Trigger(location, Rotator(), Vector(200))
+		trigger:SetValue("Pumpkin", pumpkin)
 
-			if (Halloween.pumpkins_found > Halloween.total_pumpkins) then return false end
+		-- pumpkin:Subscribe("Interact", function(prop, character)
+		-- 	local player = character:GetPlayer()
+		-- 	if (not player:GetValue("IsAlive") or player:GetValue("Role") ~= ROLES.SURVIVOR) then return end
 
-			Halloween.pumpkins_found = Halloween.pumpkins_found + 1
+		-- 	-- Picked up the Pumpkin, destroys it
+		-- 	local pumpkin_location = prop:GetLocation()
+		-- 	prop:Destroy()
 
-			player:SetValue("PickedUpPumpkins", player:GetValue("PickedUpPumpkins", 0) + 1, true)
+		-- 	if (Halloween.pumpkins_found > Halloween.total_pumpkins) then return false end
 
-			Server.BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
-			Events.BroadcastRemote("PumpkinFound", pumpkin_location)
+		-- 	Halloween.pumpkins_found = Halloween.pumpkins_found + 1
 
-			-- If already found enough Pumpkins, opens the Door
-			if (Halloween.pumpkins_found >= Halloween.total_pumpkins) then
-				local trapdoor_location = Halloween.trapdoor:GetLocation()
-				local trapdoor_rotation = Halloween.trapdoor:GetRotation()
+		-- 	player:SetValue("PickedUpPumpkins", player:GetValue("PickedUpPumpkins", 0) + 1, true)
 
-				Halloween.trapdoor:Destroy()
-				Halloween.trapdoor = StaticMesh(trapdoor_location, trapdoor_rotation, "halloween-city-park::SM_Trapdoor_Opened", CollisionType.NoCollision)
-				Light(trapdoor_location + Vector(0, 0, 100), Rotator(), Color(0.73, 0.67, 0.42), 0, 10, 1000)
-				Halloween.is_trapdoor_opened = true
+		-- 	Server.BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
+		-- 	Events.BroadcastRemote("PumpkinFound", pumpkin_location)
 
-				Server.BroadcastChatMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
-				Events.BroadcastRemote("TrapdoorOpened", Halloween.trapdoor)
-			end
-			return false
-		end)
+		-- 	-- If already found enough Pumpkins, opens the Door
+		-- 	if (Halloween.pumpkins_found >= Halloween.total_pumpkins) then
+		-- 		local trapdoor_location = Halloween.trapdoor:GetLocation()
+		-- 		local trapdoor_rotation = Halloween.trapdoor:GetRotation()
+
+		-- 		Halloween.trapdoor:Destroy()
+		-- 		Halloween.trapdoor = StaticMesh(trapdoor_location, trapdoor_rotation, "halloween-city-park::SM_Trapdoor_Opened", CollisionType.NoCollision)
+		-- 		Light(trapdoor_location + Vector(0, 0, 100), Rotator(), Color(0.73, 0.67, 0.42), 0, 10, 1000)
+		-- 		Halloween.is_trapdoor_opened = true
+
+		-- 		Server.BroadcastChatMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
+		-- 		Events.BroadcastRemote("TrapdoorOpened", Halloween.trapdoor)
+		-- 	end
+		-- 	return false
+		-- end)
 	end,
 	entities_spawn = function()
 		-- Spawn Trapdoor
@@ -301,6 +307,41 @@ Trigger.Subscribe("BeginOverlap", function(trigger, actor_triggering)
 
 		return
 	end
+
+	-- Temp: If triggered Pumpkin
+	local pumpkin = trigger:GetValue("Pumpkin")
+	if (not Halloween.is_trapdoor_opened and pumpkin and pumpkin:IsValid()) then
+
+		-- Picked up the Pumpkin, destroys it
+		local pumpkin_location = pumpkin:GetLocation()
+		pumpkin:Destroy()
+		trigger:Destroy()
+
+		if (Halloween.pumpkins_found > Halloween.total_pumpkins) then return false end
+
+		player:SetValue("PickedUpPumpkins", player:GetValue("PickedUpPumpkins", 0) + 1, true)
+
+		Halloween.pumpkins_found = Halloween.pumpkins_found + 1
+
+		Server.BroadcastChatMessage("The Survivor '" .. player:GetName() .. "' found a <green>Pumpkin</>! " .. (Halloween.total_pumpkins - Halloween.pumpkins_found) .. " remaining!")
+		Events.BroadcastRemote("PumpkinFound", pumpkin_location)
+
+		-- If already found enough Pumpkins, opens the Door
+		if (Halloween.pumpkins_found >= Halloween.total_pumpkins) then
+			local location = Halloween.trapdoor:GetLocation()
+			local rotation = Halloween.trapdoor:GetRotation()
+
+			Halloween.trapdoor:Destroy()
+			Halloween.trapdoor = StaticMesh(location, rotation, "halloween-city-park::SM_Trapdoor_Opened", CollisionType.NoCollision)
+			Light(location + Vector(0, 0, 100), Rotator(), Color(0.73, 0.67, 0.42), LightType.Point, 10, 1000)
+			Halloween.is_trapdoor_opened = true
+
+			Server.BroadcastChatMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
+			Events.BroadcastRemote("TrapdoorOpened", Halloween.trapdoor)
+		end
+
+		return
+	end
 end)
 
 -- When player fully connects (custom event)
@@ -350,7 +391,11 @@ Player.Subscribe("Destroy", function (player)
 		character:SetHealth(0)
 	end
 
-	Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has left the server")
+	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
+		Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has left the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.players_to_start .. ")")
+	else
+		Server.BroadcastChatMessage("<green>" .. player:GetName() .. "</> has left the server")
+	end
 end)
 
 Character.Subscribe("WeaponAimModeChanged", function(character, old_state, new_state)
@@ -366,7 +411,7 @@ Character.Subscribe("WeaponAimModeChanged", function(character, old_state, new_s
 			light:SetRelativeRotation(Rotator(0, 87, 0))
 		elseif (old_state == AimMode.None) then
 			light:AttachTo(weapon, AttachmentRule.SnapToTarget, "muzzle")
-			light:SetRelativeLocation(Vector(-50, -10, 5))
+			light:SetRelativeLocation(Vector(-40, -10, 5))
 		end
 	end
 end)
@@ -564,7 +609,7 @@ function SpawnCharacter(player)
 		character:SetCanDrop(false)
 
 		-- Survivor light
-		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.76, 0.46), LightType.Spot, 0.15, 6000, 25, 0.95, 15000, false, true, true)
+		local my_light = Light(Vector(), Rotator(), Color(0.97, 0.76, 0.46), LightType.Spot, 0.15, 6000, 30, 0.95, 15000, false, true, true)
 		my_light:SetValue("Enabled", true)
 		my_light:SetTextureLightProfile(LightProfile.Shattered_02)
 		my_light:AttachTo(character, AttachmentRule.SnapToTarget, "head")
