@@ -398,7 +398,7 @@ Player.Subscribe("Destroy", function (player)
 	end
 end)
 
-Character.Subscribe("WeaponAimModeChanged", function(character, old_state, new_state)
+Character.Subscribe("WeaponAimModeChange", function(character, old_state, new_state)
 	local player = character:GetPlayer()
 	if (not player) then return end
 
@@ -554,11 +554,11 @@ function FinishRound(role_winner)
 	end
 
 	if (role_winner == ROLES.SURVIVOR) then
-		Package.Log("[Halloween] Round finished! Survivors win!")
+		Console.Log("[Halloween] Round finished! Survivors win!")
 		Server.BroadcastChatMessage("Round finished! <blue>Survivors</> Win!")
 		Events.BroadcastRemote("SurvivorWins", player_mvp:GetName(), player_most_damage:GetName() .. " - " .. value_most_damage, player_most_pumpkins:GetName() .. " - " .. value_most_pumpkins)
 	else
-		Package.Log("[Halloween] Round finished! Knights win!")
+		Console.Log("[Halloween] Round finished! Knights win!")
 		Server.BroadcastChatMessage("Round finished! <red>Horseless Headless Horseman</> Win!")
 		Events.BroadcastRemote("KnightWins", player_mvp:GetName(), player_most_damage:GetName() .. " - " .. value_most_damage, player_most_pumpkins:GetName() .. " - " .. value_most_pumpkins)
 	end
@@ -714,10 +714,10 @@ function UpdateMatchState(new_state)
 
 		HalloweenSettings.entities_spawn()
 
-		Package.Log("[Halloween] Warm-up! We have " .. tostring(knight_count) .. " Knights and " .. tostring(player_count - knight_count) .. " Survivors!")
+		Console.Log("[Halloween] Warm-up! We have " .. tostring(knight_count) .. " Knights and " .. tostring(player_count - knight_count) .. " Survivors!")
 
 	elseif (new_state == MATCH_STATES.IN_PROGRESS) then
-		Package.Log("[Halloween] Round started!")
+		Console.Log("[Halloween] Round started!")
 		Server.BroadcastChatMessage("<grey>Round Started!</>")
 
 		Halloween.current_knights_special_cooldown = 15
@@ -730,7 +730,7 @@ function UpdateMatchState(new_state)
 		Halloween.remaining_time = HalloweenSettings.match_time
 
 	elseif (new_state == MATCH_STATES.WAITING_PLAYERS) then
-		Package.Log("[Halloween] Waiting for players to start the match... Type 'start' here to force start!")
+		Console.Log("[Halloween] Waiting for players to start the match... Type 'start' here to force start!")
 		Server.BroadcastChatMessage("<grey>Waiting for players (" .. Player.GetCount() .. "/" .. HalloweenSettings.players_to_start .. ").</>")
 
 		ClearServer()

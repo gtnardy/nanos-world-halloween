@@ -202,7 +202,7 @@ Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_p
 		if (Halloween.current_role == 0) then
 			HUD:CallEvent("UpdatePumpkinsFound", total_pumpkins, pumpkins_found)
 
-			-- Updates amount of knights and survivors 
+			-- Updates amount of knights and survivors
 			for k, p in pairs(Player.GetPairs()) do
 				local role = p:GetValue("Role")
 				local is_alive = p:GetValue("IsAlive")
@@ -343,7 +343,7 @@ Timer.SetInterval(function()
 		if (not Halloween.is_trapdoor_opened) then
 			for k, p in pairs(Prop) do
 				local distance = local_character:GetLocation():Distance(p:GetLocation())
-				if (p:GetAssetName() == "halloween-city-park::SM_Pumpkin_Lit" and distance < 5000) then
+				if (p:GetMesh() == "halloween-city-park::SM_Pumpkin_Lit" and distance < 5000) then
 					HUD:CallEvent("TriggerRadar")
 
 					local pitch = 1
