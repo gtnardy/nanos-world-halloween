@@ -5,7 +5,7 @@
     # contributors
     author =                "nanos™"
     # version
-    version =               "1.3.5"
+    version =               "1.4.0"
 
 # game-mode configurations
 [game_mode]
@@ -19,19 +19,19 @@
     compatibility_version = "1.62"
     # packages requirements
     packages_requirements = [
-
+                            "default-weapons",
     ]
     # asset packs requirements
     assets_requirements = [
-        "halloween-city-park",
+                            "halloween-city-park",
     ]
     # compatible maps - maps to be highlighted when starting a new game through main menu
     compatible_maps = [
-        "halloween-city-park::Halloween_CityPark",
+                            "halloween-city-park-map",
     ]
 
 # game-mode custom settings configurations
 # those settings can be configured through new game menu, Config.toml and server command line
 # and can be accessed through Server.GetCustomSettings() method from any package
 [custom_settings]
-    # my_toggle = { label = "awesome toggle", type = "boolean", description = "press this!", default = true }
+    # my_toggle_example = { label = "awesome toggle", type = "boolean", description = "press this!", default = true }

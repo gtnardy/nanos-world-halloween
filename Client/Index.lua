@@ -23,7 +23,7 @@ end)
 Client.SetHighlightColor(Color(3, 0, 0, 1.5), 0, HighlightMode.Always)
 
 -- Set's someone Role
-Events.Subscribe("SetPlayerRole", function(player, role)
+Events.SubscribeRemote("SetPlayerRole", function(player, role)
 	player:SetValue("Role", role)
 
 	-- If it's me
@@ -123,15 +123,15 @@ function SpectateNext(index_increment)
 	Client.GetLocalPlayer():Spectate(players[Halloween.current_spectating_index])
 end
 
-Events.Subscribe("MatchWillBegin", function()
+Events.SubscribeRemote("MatchWillBegin", function()
 	Sound(Vector(), "halloween-city-park::A_Announcer_MatchBegin", true, true)
 end)
 
-Events.Subscribe("MatchEnding", function()
+Events.SubscribeRemote("MatchEnding", function()
 	Sound(Vector(), "halloween-city-park::A_Announcer_Cooldown", true, true)
 end)
 
-Events.Subscribe("FlashlightToggled", function(player, location, enabled)
+Events.SubscribeRemote("FlashlightToggled", function(player, location, enabled)
 	Halloween.flashlight_enabled = enabled
 
 	Sound(location, "halloween-city-park::A_Flashlight")
@@ -141,7 +141,7 @@ Events.Subscribe("FlashlightToggled", function(player, location, enabled)
 	end
 end)
 
-Events.Subscribe("SurvivorWins", function(player_mvp, player_most_damage, player_most_pumpkins)
+Events.SubscribeRemote("SurvivorWins", function(player_mvp, player_most_damage, player_most_pumpkins)
 	HUD:CallEvent("SetLabelBig", "SURVIVORS WIN!", player_mvp, player_most_damage, player_most_pumpkins)
 
 	if (Halloween.current_role == ROLES.SURVIVOR) then
@@ -151,7 +151,7 @@ Events.Subscribe("SurvivorWins", function(player_mvp, player_most_damage, player
 	end
 end)
 
-Events.Subscribe("KnightWins", function(player_mvp, player_most_damage, player_most_pumpkins)
+Events.SubscribeRemote("KnightWins", function(player_mvp, player_most_damage, player_most_pumpkins)
 	HUD:CallEvent("SetLabelBig", "HORSELESS HEADLESS HORSEMAN WIN!", player_mvp, player_most_damage, player_most_pumpkins)
 
 	if (Halloween.current_role == ROLES.KNIGHT) then
@@ -175,7 +175,7 @@ function ClearServer()
 	HUD:CallEvent("ClearHUD")
 end
 
-Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_pumpkins, pumpkins_found)
+Events.SubscribeRemote("UpdateMatchState", function(new_state, remaining_time, total_pumpkins, pumpkins_found)
 	remaining_time = remaining_time - 1
 	Halloween.total_pumpkins = total_pumpkins
 
@@ -233,7 +233,7 @@ Events.Subscribe("UpdateMatchState", function(new_state, remaining_time, total_p
 	Halloween.match_state = new_state
 end)
 
-Events.Subscribe("CharacterDeath", function(character, role)
+Events.SubscribeRemote("CharacterDeath", function(character, role)
 	-- Sets his corpose as Highlight for 5 seconds
 	if (Halloween.current_role == ROLES.SURVIVOR) then
 		character:SetHighlightEnabled(true, 0)
@@ -255,13 +255,13 @@ Events.Subscribe("CharacterDeath", function(character, role)
 	end
 end)
 
-Events.Subscribe("SetSpecialCooldown", function(current_knights_special_cooldown)
+Events.SubscribeRemote("SetSpecialCooldown", function(current_knights_special_cooldown)
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		HUD:CallEvent("SetSpecialCooldown", current_knights_special_cooldown)
 	end
 end)
 
-Events.Subscribe("TriggerSpecial", function(location)
+Events.SubscribeRemote("TriggerSpecial", function(location)
 	if (Halloween.current_role == ROLES.KNIGHT) then
 		-- Makes everyone red for 10 seconds
 		for k, character in pairs(Character.GetPairs()) do
@@ -298,19 +298,19 @@ Timer.SetTimeout(function()
 	Events.CallRemote("PlayerReady")
 end, 3000)
 
-Events.Subscribe("PumpkinFound", function(pumpkin_location)
+Events.SubscribeRemote("PumpkinFound", function(pumpkin_location)
 	Sound(pumpkin_location, "halloween-city-park::A_Pumpkin_Pickup", false)
 
 	Halloween.pumpkins_found = Halloween.pumpkins_found + 1
 	HUD:CallEvent("UpdatePumpkinsFound", Halloween.total_pumpkins, Halloween.pumpkins_found)
 end)
 
-Events.Subscribe("TrapdoorOpened", function(trapdoor)
+Events.SubscribeRemote("TrapdoorOpened", function(trapdoor)
 	Halloween.is_trapdoor_opened = true
 	Sound(trapdoor:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, SoundType.SFX, 2, 1, 1000, 35000, AttenuationFunction.Logarithmic, true)
 end)
 
-Events.Subscribe("SurvivorEscaped", function()
+Events.SubscribeRemote("SurvivorEscaped", function()
 	HUD:CallEvent("EscapeSurvivor")
 	Sound(Vector(), "halloween-city-park::A_Pumpkin_Pickup", true)
 end)
