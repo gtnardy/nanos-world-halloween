@@ -3,7 +3,7 @@
 		<meta charset="UTF-8">
 
 		<!-- Main -->
-		<script src="jquery-3.5.1.min.js"></script>
+		<script src="jquery-3.7.1.min.js"></script>
 		<script src="index.js"></script>
 		<link rel="stylesheet" href="style.css">
 
@@ -14,61 +14,167 @@
 		<!-- Google Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Creepster&family=Roboto&display=swap" rel="stylesheet"> 
+		<link href="https://fonts.googleapis.com/css2?family=Germania+One&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 	</head>
-	<body>
-		<div id="mvp">
-			<div id="mvp_pumpkins">
-				<span id="mvp_pumpkins_value"></span>
-				<span id="mvp_pumpkins_label">Most Picked Up Pumpkins</span>
+	<body class="match_not_started">
+	<!-- <body class="survivor"> -->
+	<!-- <body class="knight"> -->
+	<!-- <body class="spectating"> -->
+	<!-- <body class="post_time"> -->
+		<div id="tally">
+			<div id="tally_survivors">
+				<div class="tally_title">SURVIVORS</div>
+				<div id="tally_players_header">
+					<span id="tally_players_header_name"></span>
+					<span id="tally_survivors_header_status">STATUS</span>
+					<span id="tally_players_header_distance">DISTANCE</span>
+					<span id="tally_players_header_score">SCORE</span>
+					<span id="tally_players_header_medals">
+						<span id="tally_survivors_header_medal_objective">OBJECTIVE</span>
+						<span id="tally_survivors_header_medal_survival">SURVIVAL</span>
+						<span id="tally_survivors_header_medal_evader">BRAVERY</span>
+					</span>
+				</div>
+				<div id="tally_survivors_list" class="tally_list"></div>
 			</div>
-			<div id="mvp_player">
-				<span id="mvp_value"></span>
-				<span id="mvp_label">MVP</span>
-			</div>
-			<div id="mvp_damage">
-				<span id="mvp_damage_value"></span>
-				<span id="mvp_damage_label">Most Damage</span>
+			<div id="tally_knights">
+				<div class="tally_title">HORSELESS HEADLESS HORSEMEN</div>
+				<div id="tally_players_header">
+					<span id="tally_players_header_name"></span>
+					<span id="tally_players_header_damage">DAMAGE</span>
+					<span id="tally_players_header_distance">DISTANCE</span>
+					<span id="tally_players_header_score">SCORE</span>
+					<span id="tally_players_header_medals">
+						<span id="tally_knights_header_medal_devout">MURDER</span>
+						<span id="tally_knights_header_medal_brutality">SAVAGE</span>
+						<span id="tally_knights_header_medal_chaser">CHASER</span>
+					</span>
+				</div>
+				<div id="tally_knights_list" class="tally_list"></div>
 			</div>
 		</div>
 
-		<div id="label_big"></div>
-		<div id="horseman_paper"></div>
-		<div id="survivor_paper"></div>
-		<img id="logo" src="./images/logo.png" />
-		<img id="map" src="./images/map.jpg" />
+		<img id="logo" src="./images/logo.webp" />
+		<img id="map" src="./images/map.webp" />
+		<div id="help">
+			<img class="survivor" src="./images/newspaper-survivor.webp" />
+			<img class="knight" src="./images/newspaper-knight.webp" />
+		</div>
 
-		<div id="players_heads">
-			<div id="survivor_heads">
-				<!-- <span class="head survivor_head_alive"></span> -->
+		<div id="name_tag">
+			SyedMuhammad
+		</div>
+
+		<div id="top_bar">
+			<div id="top_bar_left">
+				<div id="survivor_heads">
+					<!-- <span class="head survivor_head_dead"></span>
+					<span class="head survivor_head_dead"></span>
+					<span class="head survivor_head_alive"></span>
+					<span class="head survivor_head_escaped"></span> -->
+				</div>
 			</div>
-			<div id="knight_heads"></div>
+
+			<div id="top_bar_center">
+				<div id="clock">
+					00:00
+				</div>
+			</div>
+
+			<div id="top_bar_right">
+				<div id="knight_heads">
+					<!-- <span class="head knight_head_alive"></span>
+					<span class="head knight_head_alive"></span>
+					<span class="head knight_head_alive"></span>
+					<span class="head knight_head_alive"></span> -->
+				</div>
+			</div>
+
+			<div id="objective">COLLECT PUMPKINS TO OPEN THE HATCH</div>
+		</div>
+
+		<div id="feed">
+			<!-- <div class="feed-item"><span class="feed-item-name">SyedMuhammad</span> found <span class="feed-item-image feed-item-pumpkin"></span></div>
+			<div class="feed-item"><span class="feed-item-name">SyedMuhammad</span> found <span class="feed-item-image feed-item-pumpkin"></span></div>
+			<div class="feed-item"><span class="feed-item-name">SyedMuhammad</span> found <span class="feed-item-image feed-item-goggles"></span></div>
+			<div class="feed-item"><span class="feed-item-name">SyedMuhammad</span> found <span class="feed-item-image feed-item-lollipop"></span></div> -->
+		</div>
+
+		<div id="top_bar_label_container">
+			<div id="top_bar_pumpkins_remaining">
+				<span id="pumpkins_found_count">32</span>
+				<img id="pumpkins_icon" src="./images/pumpkin.webp">
+				REMAINING
+			</div>
+			<div id="top_bar_label">
+				WAITING
+			</div>
 		</div>
 
 		<div id="status_bar">
-			<div id="clock">
-				00:00
-			</div>
-			<div id="label">
-				WAITING FOR HOST
-			</div>
-			<div id="radar" class="survivor"> 
-				<div id="radar_inner"></div>
-				<span id="radar_label">RADAR</span>
-			</div>
-			<div id="flashlight" class="enabled"> 
-				<span id="flashlight_label">TORCH (F)</span>
-			</div>
-			<div id="map_status"> 
-				<span id="map_label">MAP (M)</span>
-			</div>
-			<div id="special">
-				<span id="special_cooldown">0</span>
-				<span id="special_label">SMELL (X)</span>
+			<div id="status_bar_left">
+				<div id="status_bar_playing">
+					<div id="special" class="status_item ready">
+						<span id="special_title" class="status_label">THE WRAITH</span>
+						<span id="special_cooldown">0</span>
+						<span id="special_label" class="status_label">SPECIAL</span>
+						<img class="keybinding" data-keybinding="HalloweenAbility" src="./images/key-placeholder.webp"/>
+					</div>
+					<div id="attack" class="status_item ready">
+						<span id="attack_label" class="status_label">ATTACK</span>
+						<img class="keybinding" data-keybinding="LeftClick" src="./images/key-placeholder.webp"/>
+					</div>
+					<div id="sprint" class="status_item ready">
+						<span id="sprint_label" class="status_label">SPRINT</span>
+						<img class="keybinding" data-keybinding="Sprint" src="./images/key-placeholder.webp"/>
+					</div>
+					<div id="flashlight" class="enabled status_item">
+						<span id="flashlight_label" class="status_label">TORCH</span>
+						<img class="keybinding" data-keybinding="HalloweenFlashlight" src="./images/key-placeholder.webp"/>
+					</div>
+				</div>
+
+				<div id="status_bar_spectating">
+					<div id="spectate_select" class="status_item">
+						<span id="spectate_select_label" class="status_label">SPECTATE<br />PLAYER</span>
+						<img id="spectate_keybinding_left" class="keybinding keybinding_left" data-keybinding="SpectatePrev" src="./images/key-placeholder.webp"/>
+						<img id="spectate_keybinding_right" class="keybinding" data-keybinding="SpectateNext" src="./images/key-placeholder.webp"/>
+					</div>
+					<div id="spectate_free" class="status_item">
+						<span id="spectate_free_label" class="status_label">SPECTATE FREE</span>
+						<img class="keybinding" data-keybinding="Unspectate" src="./images/key-placeholder.webp"/>
+					</div>
+				</div>
+
+				<div id="status_bar_help">
+					<div id="map_status" class="status_item">
+						<span id="map_label" class="status_label">MAP</span>
+						<img class="keybinding" data-keybinding="HalloweenMap" src="./images/key-placeholder.webp"/>
+					</div>
+					<div id="help_status" class="status_item">
+						<span id="help_label" class="status_label">HELP</span>
+						<img class="keybinding" data-keybinding="HalloweenHelp" src="./images/key-placeholder.webp"/>
+					</div>
+				</div>
 			</div>
 
-			<div id="pumpkins_found"> 
-				<div id="pumpkins_found_count">0 / 0</div>
+			<div id="status_bar_right">
+				<div id="lollipop" class="status_item powerup_item">
+					<span id="lollipop_label" class="status_label">EXTRA<br/>LIFE</span>
+				</div>
+				<div id="night_vision" class="status_item powerup_item">
+					<span id="night_vision_label" class="status_label">ENHANCED VISION</span>
+				</div>
+				<div id="special_active" class="status_item">
+					<span id="special_active_remaining_time">0</span>
+					<span id="special_active_label" class="status_label">SPECIAL ABILITY</span>
+				</div>
+				<div id="spotted" class="status_item">
+					<span id="spotted_label" class="status_label">YOU ARE REVEALED</span>
+				</div>
+				<div id="radar" class="status_item">
+					<span id="radar_label" class="status_label">PUMPKIN NEARBY</span>
+				</div>
 			</div>
 		</div>
 	</body>

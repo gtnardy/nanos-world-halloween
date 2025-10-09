@@ -1,4 +1,5 @@
 ROLES = {
+	NONE = 0,
 	SURVIVOR = 1,
 	KNIGHT = 2
 }
@@ -10,3 +11,5 @@ MATCH_STATES = {
 	POST_TIME = 4,
 	PREPARING = 5,
 }
+
+KNIGHT_ARCHETYPES = {}
