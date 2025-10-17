@@ -146,7 +146,7 @@ function SurvivorCharacter:Constructor(location, rotation)
  	self:SetMorphTarget("Close_Mouth", 1)
 
 	-- Hat
-	self:AddStaticMeshAttached("pumpkin", "city-park::SM_MinerHat_02", "head", Vector(12, 1, 0) + (mesh_data.head_offset or Vector(0)), Rotator(-90, 0, 0))
+	self:AddStaticMeshAttached("pumpkin", "halloween-city-park::SM_MinerHat_02", "head", Vector(12, 1, 0) + (mesh_data.head_offset or Vector(0)), Rotator(-90, 0, 0))
 
 	-- Blocks movement until match starts
 	self:SetInputEnabled(false)
@@ -162,7 +162,7 @@ end
 
 function SurvivorCharacter:EquipGoggles()
 	self.has_goggles = true
-	self:AddStaticMeshAttached("goggles", "city-park::SM_Goggles", "head", Vector(3.5, 6, 0) + self.goggles_offset, Rotator(-90, 0, 0))
+	self:AddStaticMeshAttached("goggles", "halloween-city-park::SM_Goggles", "head", Vector(3.5, 6, 0) + self.goggles_offset, Rotator(-90, 0, 0))
 
 	self:CallRemoteEvent("EquipGoggles", self:GetPlayer())
 end
@@ -173,7 +173,7 @@ function SurvivorCharacter:EquipLollipop()
 	-- Adds 50 Health
 	self:SetHealth(self:GetHealth() + 50)
 
-	self:AddStaticMeshAttached("lollipop", "city-park::SM_Lollipop", "hand_r_socket", Vector(2, -1, -5), Rotator(0, 0, 0))
+	self:AddStaticMeshAttached("lollipop", "halloween-city-park::SM_Lollipop", "hand_r_socket", Vector(2, -1, -5), Rotator(0, 0, 0))
 
 	self:CallRemoteEvent("EquipLollipop", self:GetPlayer(), true)
 end
@@ -190,7 +190,7 @@ function SurvivorCharacter:OnTakeDamage(damage, bone, type, from, instigator, ca
 	-- If has Lollipop, ignore the damage and unequip it
 	-- WRONG, BERSERKER DOESNT KILL LOLLIPOP
 	-- TODO should we just ignore the hit? instead of adding health
-	if (self.has_lollipop) then
+	if (self.has_lollipop and not self:IsDead()) then
 		self:UnequipLollipop()
 	end
 end
@@ -224,7 +224,7 @@ function SurvivorCharacter:OnDeath(last_damage_taken, last_bone_damaged, damage_
 	Timer.Bind(
 		Timer.SetTimeout(function(p)
 			p:UnPossess()
-		end, 2000, player),
+		end, 10000, player),
 		player
 	)
 end
@@ -243,14 +243,14 @@ function SurvivorCharacter:TriggerAbility(player)
 
 	-- Cooldown check
 	local curr_time = os.time()
-	if (self.ability_last_used and os.difftime(curr_time, self.ability_last_used) < HalloweenSettings.survivor_scream_cooldown) then
+	if (self.ability_last_used and os.difftime(curr_time, self.ability_last_used) < HalloweenSettings.custom_settings.survivor_scream_cooldown) then
 		Chat.SendMessage(player, "<red>The Ability is on cooldown!</>")
 		return
 	end
 
 	self.ability_last_used = curr_time
 
-	self:BroadcastRemoteEvent("TriggerAbility", HalloweenSettings.survivor_scream_cooldown)
+	self:BroadcastRemoteEvent("TriggerAbility", HalloweenSettings.custom_settings.survivor_scream_cooldown)
 
 	self:PlayAnimation("nanos-world::A_Mannequin_Taunt_Praise", AnimationSlotType.UpperBody, false, 0.2, 0.6, 1.1)
 
@@ -276,7 +276,7 @@ function SurvivorCharacter:TriggerAbility(player)
 	for k, c in pairs(KnightCharacter.GetPairs()) do
 		local distance = survivor_location:Distance(c:GetLocation())
 
-		if (distance < 500 and c:GetHealth() > 0) then
+		if (distance < 500 and not c:IsDead()) then
 			c:Stun()
 			player:SetValue("StunnedKnights", (player:GetValue("StunnedKnights") or 0) + 1)
 		end

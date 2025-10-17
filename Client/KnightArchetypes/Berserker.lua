@@ -29,4 +29,4 @@ function THE_BERSERKER.active_ability.cancel_client(character)
 	PostProcess.SetBloom(0.675)
 end
 
-table.insert(KNIGHT_ARCHETYPES, THE_BERSERKER)
+ADD_KNIGHT_ARCHETYPE(THE_BERSERKER)

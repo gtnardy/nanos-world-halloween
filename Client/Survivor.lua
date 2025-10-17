@@ -56,14 +56,14 @@ function SurvivorCharacter:OnDeath()
 
 	-- Global Scream
 	-- TODO it seems we can hear both Pain and this
-	Sound(self:GetLocation(), "city-park::A_Scream", false, true, SoundType.SFX, 1, 1, 1000, 50000, AttenuationFunction.Logarithmic, true)
+	Sound(self:GetLocation(), "halloween-city-park::A_Scream", false, true, SoundType.SFX, 1, 1, 1000, 50000, AttenuationFunction.Logarithmic, true)
 
 	-- Sets his corpse as Highlight
 	self:SetHighlight(true)
 end
 
 function SurvivorCharacter:OnTriggerAbility(cooldown)
-	local scream = Sound(self:GetLocation(), "city-park::A_Scream", false, true, SoundType.SFX, 1, 1.2, 400, 10000, AttenuationFunction.NaturalSound)
+	local scream = Sound(self:GetLocation(), "halloween-city-park::A_Scream", false, true, SoundType.SFX, 1, 1.2, 400, 10000, AttenuationFunction.NaturalSound)
 	scream:AttachTo(self, AttachmentRule.SnapToTarget, "head", 0)
 
 	-- Make me highlight for all knights and me
@@ -84,8 +84,9 @@ SurvivorCharacter.Subscribe("Death", SurvivorCharacter.OnDeath)
 -- Radar triggers at each 2 seconds
 local survivor_interval_radar_flipflop = false
 Timer.SetInterval(function()
-	if (not Halloween.local_character or Halloween.match_state ~= MATCH_STATES.IN_PROGRESS) then return end
+	if (not NanosUtils.IsEntityValid(Halloween.local_character) or Halloween.match_state ~= MATCH_STATES.IN_PROGRESS) then return end
 	if (Halloween.current_role ~= ROLES.SURVIVOR) then return end
+	if (Halloween.local_character:IsDead()) then return end
 
 	local local_character_location = Halloween.local_character:GetLocation()
 
@@ -102,7 +103,7 @@ Timer.SetInterval(function()
 				local pitch = 1
 				if distance < 2000 * 2000 then pitch = 1.5 end
 
-				Sound(Vector(), "city-park::A_Sonar_Ping", true, true, SoundType.SFX, 0.4, pitch)
+				Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, SoundType.SFX, 0.4, pitch)
 				break
 			end
 		end
@@ -112,7 +113,7 @@ Timer.SetInterval(function()
 	local has_knight_nearby = false
 	for k, c in pairs(KnightCharacter.GetPairs()) do
 		local distance = local_character_location:DistanceSquared(c:GetLocation())
-		if (distance < 2000 * 2000 and c:GetHealth() > 0) then
+		if (distance < 2000 * 2000 and not c:IsDead()) then
 			has_knight_nearby = true
 			break
 		end

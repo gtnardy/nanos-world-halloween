@@ -6,7 +6,7 @@ function SetHelpEnabled(enabled)
 	Halloween.is_help_opened = enabled
 
 	HUD:CallEvent("HelpToggled", Halloween.is_help_opened)
-	Sound(Vector(), "city-park::A_Paper", true, true, SoundType.UI, 0.7)
+	Sound(Vector(), "halloween-city-park::A_Paper", true, true, SoundType.UI, 0.7)
 
 	if (Halloween.is_help_opened and Halloween.is_map_opened) then
 		Halloween.is_map_opened = false

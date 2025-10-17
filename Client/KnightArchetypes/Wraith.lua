@@ -29,4 +29,4 @@ function THE_WRAITH.active_ability.cancel_client(character)
 	character.vanish_light:Destroy()
 end
 
-table.insert(KNIGHT_ARCHETYPES, THE_WRAITH)
+ADD_KNIGHT_ARCHETYPE(THE_WRAITH)

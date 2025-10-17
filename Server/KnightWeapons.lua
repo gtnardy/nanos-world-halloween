@@ -1,7 +1,5 @@
 GreatAxe = Melee.Inherit("GreatAxe")
 
--- OLIVATO PODE FICAR CLIANDO COM MELEE VARIAS VEZES POR PING
-
 function GreatAxe:Constructor(location, rotation)
 	self.Super:Constructor(location or Vector(), rotation or Rotator(), "weapon-pack::SM_GreatAxe", CollisionType.Normal, true, HandlingMode.DoubleHandedMelee)
 
@@ -14,7 +12,7 @@ function GreatAxe:Constructor(location, rotation)
 	self:SetDamageSettings(0.5, 0.6)
 	self:SetCooldown(self.cooldown)
 	self:SetBaseDamage(self.base_damage)
-	self:SetImpactSound(SurfaceType.Flesh, "city-park::A_SplashBlood_Cue")
+	self:SetImpactSound(SurfaceType.Flesh, "halloween-city-park::A_SplashBlood_Cue")
 	self:SetImpactSound(SurfaceType.Default, "nanos-world::A_MetalHeavy_Impact_MS")
 
 	self:SetAttachmentSettings(Vector(), Rotator(10, 0, 0))
@@ -35,7 +33,7 @@ function Sickle:Constructor(location, rotation)
 	self:SetDamageSettings(1.25, 1.5)
 	self:SetCooldown(self.cooldown)
 	self:SetBaseDamage(self.base_damage)
-	self:SetImpactSound(SurfaceType.Flesh, "city-park::A_SplashBlood_Cue")
+	self:SetImpactSound(SurfaceType.Flesh, "halloween-city-park::A_SplashBlood_Cue")
 	self:SetImpactSound(SurfaceType.Default, "nanos-world::A_MetalHeavy_Impact_MS")
 
 	self:SetAttachmentSettings(Vector(), Rotator(-10, 180, -30))
@@ -56,7 +54,7 @@ function GreatHammer:Constructor(location, rotation)
 	self:SetDamageSettings(1.3, 0.5)
 	self:SetCooldown(self.cooldown)
 	self:SetBaseDamage(self.base_damage)
-	self:SetImpactSound(SurfaceType.Flesh, "city-park::A_SplashBlood_Cue")
+	self:SetImpactSound(SurfaceType.Flesh, "halloween-city-park::A_SplashBlood_Cue")
 	self:SetImpactSound(SurfaceType.Default, "nanos-world::A_MetalHeavy_Impact_MS")
 
 	self:SetAttachmentSettings(Vector(), Rotator(10, 0, 0))

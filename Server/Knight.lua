@@ -8,8 +8,6 @@ function KnightCharacter:Constructor(location, rotation)
 	self.speed_multiplier = 1.5
 	self.light_intensity = 0.2
 
-	-- todo remove fall damage?
-
 	self:SetAnimationIdleWalkRunStanding("nanos-world::BS_BossyEnemy_Standing")
 	self:AddStaticMeshAttached("pumpkin", pumpkin_mesh, "head", Vector(-10, 0, 0), Rotator(20, 90, -90))
 	self:SetSpeedMultiplier(self.speed_multiplier)
@@ -27,6 +25,7 @@ function KnightCharacter:Constructor(location, rotation)
 	self:HideBone("neck_01")
 	self:SetCanCrouch(false)
 	self:SetAccelerationSettings(1500)
+	self:SetFallDamageTaken(0)
 	self:SetPhysicsAsset("nanos-world::PHYS_Mannequin")
 	-- self:SetBrakingSettings(2, 2, 1)
 

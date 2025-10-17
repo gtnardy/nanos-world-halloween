@@ -3,9 +3,9 @@ function CalculateEndScores()
 	local survivors = {}
 	local knights = {}
 
-	local knight_initial_count = math.ceil(Halloween.initial_player_count / (HalloweenSettings.survivors_per_knight + 1))
+	local knight_initial_count = math.ceil(Halloween.initial_player_count / (HalloweenSettings.custom_settings.survivors_per_knight + 1))
 	local survivor_initial_count = Halloween.initial_player_count - knight_initial_count
-	local survivors_per_knight_actual = math.min(survivor_initial_count, HalloweenSettings.survivors_per_knight)
+	local survivors_per_knight_actual = math.min(survivor_initial_count, HalloweenSettings.custom_settings.survivors_per_knight)
 
 	local total_survivors = 0
 	local total_knights = 0
@@ -53,10 +53,10 @@ function CalculateEndScores()
 				stunned_knights * 300
 
 			-- Objective Medal
-			if (player_data.pumpkins >= HalloweenSettings.pumpkins_per_player * 2) then
+			if (player_data.pumpkins >= HalloweenSettings.custom_settings.pumpkins_per_player * 2) then
 				player_data.objective_medal = "gold"
 				player_data.score = player_data.score + 1000
-			elseif (player_data.pumpkins >= HalloweenSettings.pumpkins_per_player) then
+			elseif (player_data.pumpkins >= HalloweenSettings.custom_settings.pumpkins_per_player) then
 				player_data.objective_medal = "silver"
 				player_data.score = player_data.score + 500
 			elseif (player_data.pumpkins >= 1) then

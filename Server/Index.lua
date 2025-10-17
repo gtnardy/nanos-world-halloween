@@ -14,32 +14,42 @@ Package.Require("KnightArchetypes/Berserker.lua")
 Package.Require("KnightArchetypes/Crusher.lua")
 
 -- Static Settings
--- TODO: update those to GameMode Settings
 HalloweenSettings = {
-	warmup_time = 3, -- 30,
-	match_time = 600,
-	post_time = 90,
-	trapdoor_time = 90,
-	preparing_time = 10,
-	players_to_start = 4,
-	survivors_per_knight = 4,
-	pumpkins_per_player = 3,
-	pumpkins_extra_percent = 1.4,
-	pumpkins_min_count = 10,
-	knights_xray_cooldown = 30,
-	knights_xray_initial_cooldown = 15,
-	survivor_scream_cooldown = 40,
-	config = {}, -- Parsed from map
+	 -- Parsed from map
+	config = {},
+
+	 -- Parsed from server/game-mode
+	custom_settings = {
+		warmup_time = 30,
+		match_time = 600,
+		post_time = 90,
+		trapdoor_time = 90,
+		preparing_time = 10,
+		players_to_start = 4,
+		survivors_per_knight = 4,
+		pumpkins_per_player = 3,
+		pumpkins_extra_percent = 1.4,
+		pumpkins_min_count = 10,
+		knights_xray_cooldown = 30,
+		knights_xray_initial_cooldown = 15,
+		survivor_scream_cooldown = 40,
+	},
+
+	-- Knight Head Pumpkin meshes
 	knight_pumpkins = {
-		"city-park::SM_Pumpkin_Carved_00",
-		"city-park::SM_Pumpkin_Carved_01",
-		"city-park::SM_Pumpkin_Carved_02",
+		"halloween-city-park::SM_Pumpkin_Carved_00",
+		"halloween-city-park::SM_Pumpkin_Carved_01",
+		"halloween-city-park::SM_Pumpkin_Carved_02",
 	},
+
+	-- Map Pumpkin meshes
 	pumpkin_meshes = {
-		"city-park::SM_Pumpkin_Carved_00",
-		"city-park::SM_Pumpkin_Carved_01",
-		"city-park::SM_Pumpkin_Carved_02",
+		"halloween-city-park::SM_Pumpkin_Carved_00",
+		"halloween-city-park::SM_Pumpkin_Carved_01",
+		"halloween-city-park::SM_Pumpkin_Carved_02",
 	},
+
+	-- Survivor pain sounds
 	survivor_pain_sounds = {
 		"nanos-world::A_Female_01_Pain",
 		"nanos-world::A_Female_02_Pain",
@@ -52,11 +62,11 @@ HalloweenSettings = {
 	}
 }
 
--- Current Game Settings
+-- Current Match Status
 Halloween = {
 	remaining_time = 0,
 	match_state = MATCH_STATES.WAITING_PLAYERS,
-	current_knights_global_xray_cooldown = HalloweenSettings.knights_xray_cooldown,
+	current_knights_global_xray_cooldown = 0,
 	is_trapdoor_opened = false,
 	trapdoor = nil,
 	pumpkins_found = 0,
@@ -71,10 +81,10 @@ Events.SubscribeRemote("PlayerReady", function(player)
 	Events.CallRemote("UpdateMatchState", player, Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins, Halloween.pumpkins_found)
 
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
-		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has joined the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.players_to_start .. ")!")
+		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has joined the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.custom_settings.players_to_start .. ")!")
 		Chat.SendMessage(player, "<grey>Welcome to the Server! Waiting players to start the match! Use Headphones to have a better experience!</>")
 
-		if (Player.GetCount() >= HalloweenSettings.players_to_start) then
+		if (Player.GetCount() >= HalloweenSettings.custom_settings.players_to_start) then
 			UpdateMatchState(MATCH_STATES.PREPARING)
 		end
 	else
@@ -110,7 +120,7 @@ Player.Subscribe("Destroy", function (player)
 	end
 
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
-		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has left the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.players_to_start .. ")")
+		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has left the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.custom_settings.players_to_start .. ")")
 	else
 		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has left the server")
 	end
@@ -118,6 +128,8 @@ end)
 
 -- Adds damage dealt when damaging
 Character.Subscribe("TakeDamage", function(character, damage, bone, type, from, instigator, causer)
+	if (character:IsDead()) then return end
+
 	-- If it's suicide, ignore it
 	local character_player = character:GetPlayer()
 	if (not instigator or instigator == character_player) then
@@ -262,10 +274,10 @@ function SpawnEntities()
 	end
 
 	-- Spawns more pumpkins than the needed
-	local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins * HalloweenSettings.pumpkins_extra_percent)
+	local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins * HalloweenSettings.custom_settings.pumpkins_extra_percent)
 
 	-- Minimum pumpkins spawned
-	total_pumpkins_to_spawn = math.min(math.max(total_pumpkins_to_spawn, HalloweenSettings.pumpkins_min_count), #HalloweenSettings.config.pumpkins_spawn_locations)
+	total_pumpkins_to_spawn = math.min(math.max(total_pumpkins_to_spawn, HalloweenSettings.custom_settings.pumpkins_min_count), #HalloweenSettings.config.pumpkins_spawn_locations)
 
 	-- Spawns total_pumpkins_to_spawn pumpkins
 	for i = 1, total_pumpkins_to_spawn do
@@ -290,15 +302,22 @@ end
 function UpdateMatchState(new_state)
 	Halloween.match_state = new_state
 
-	if (new_state == MATCH_STATES.WARM_UP) then
+	if (new_state == MATCH_STATES.PREPARING) then
+		-- During preparing, we just wait a few more seconds so more players can connect before starting
+		Halloween.remaining_time = HalloweenSettings.custom_settings.preparing_time
+
+		Console.Log("Preparing to start!")
+		Chat.BroadcastMessage("<grey>Preparing to start!</>")
+
+	elseif (new_state == MATCH_STATES.WARM_UP) then
 		-- During warm-up, set all player's a role and spawns a Character for each
-		Halloween.remaining_time = HalloweenSettings.warmup_time
+		Halloween.remaining_time = HalloweenSettings.custom_settings.warmup_time
 
 		-- Incredible random function to select random Knights
 		local player_count = Player.GetCount()
 		local player_list = {}
 
-		local knight_count = math.ceil(player_count / (HalloweenSettings.survivors_per_knight + 1))
+		local knight_count = math.ceil(player_count / (HalloweenSettings.custom_settings.survivors_per_knight + 1))
 
 		-- Randomly select players
 		for k, player in pairs(Player.GetPairs()) do
@@ -332,7 +351,7 @@ function UpdateMatchState(new_state)
 		end
 
 		-- Sets how many pumpkins needed to open trapdoor
-		Halloween.total_pumpkins = player_count * HalloweenSettings.pumpkins_per_player
+		Halloween.total_pumpkins = player_count * HalloweenSettings.custom_settings.pumpkins_per_player
 
 		SpawnEntities()
 
@@ -342,22 +361,22 @@ function UpdateMatchState(new_state)
 		Console.Log("Round started!")
 		Chat.BroadcastMessage("<grey>Round Started!</>")
 
-		Halloween.current_knights_global_xray_cooldown = HalloweenSettings.knights_xray_initial_cooldown
+		Halloween.current_knights_global_xray_cooldown = HalloweenSettings.custom_settings.knights_xray_initial_cooldown
 
 		for k, character in pairs(Character.GetPairs()) do
 			character:SetInputEnabled(true)
 		end
 
-		Halloween.remaining_time = HalloweenSettings.match_time
+		Halloween.remaining_time = HalloweenSettings.custom_settings.match_time
 
 	elseif (new_state == MATCH_STATES.WAITING_PLAYERS) then
 		Console.Log("Waiting for players to start the match... Type 'start' here to force start!")
-		Chat.BroadcastMessage("<grey>Waiting for players (" .. Player.GetCount() .. "/" .. HalloweenSettings.players_to_start .. ").</>")
+		Chat.BroadcastMessage("<grey>Waiting for players (" .. Player.GetCount() .. "/" .. HalloweenSettings.custom_settings.players_to_start .. ").</>")
 
 		ClearServer()
 
 	elseif (new_state == MATCH_STATES.POST_TIME) then
-		Halloween.remaining_time = HalloweenSettings.post_time
+		Halloween.remaining_time = HalloweenSettings.custom_settings.post_time
 	end
 
 	Events.BroadcastRemote("UpdateMatchState", new_state, Halloween.remaining_time, Halloween.total_pumpkins)
@@ -387,7 +406,7 @@ Timer.SetInterval(function()
 		end
 
 		if (Halloween.current_knights_global_xray_cooldown <= 0) then
-			Halloween.current_knights_global_xray_cooldown = HalloweenSettings.knights_xray_cooldown
+			Halloween.current_knights_global_xray_cooldown = HalloweenSettings.custom_settings.knights_xray_cooldown
 			Events.BroadcastRemote("TriggerXRay")
 		end
 
@@ -398,7 +417,7 @@ Timer.SetInterval(function()
 		VerifyEndConditions()
 
 	elseif (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
-		if (Player.GetCount() >= HalloweenSettings.players_to_start) then
+		if (Player.GetCount() >= HalloweenSettings.custom_settings.players_to_start) then
 			UpdateMatchState(MATCH_STATES.PREPARING)
 		end
 	elseif (Halloween.match_state == MATCH_STATES.POST_TIME) then
@@ -477,7 +496,10 @@ Trigger.Subscribe("BeginOverlap", function(trigger, actor_triggering)
 end)
 
 Package.Subscribe("Load", function()
-	-- Loads configuration
+	-- Loads Custom Settings
+	HalloweenSettings.custom_settings = Server.GetCustomSettings()
+
+	-- Loads Map Configuration
 	HalloweenSettings.config = Server.GetMapConfig() or {}
 	HalloweenSettings.config.survivors_spawn_locations = Server.GetMapSpawnPoints()
 
@@ -494,8 +516,6 @@ Package.Subscribe("Load", function()
 
 		Console.Warn("Map config missing 'knights_spawn_locations'. Using default.")
 	end
-
-	HalloweenSettings.config.survivors_spawn_locations = HalloweenSettings.config.knights_spawn_locations
 
 	if (HalloweenSettings.config.pumpkins_spawn_locations == nil) then
 		HalloweenSettings.config.pumpkins_spawn_locations = {

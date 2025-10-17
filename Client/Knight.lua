@@ -86,7 +86,7 @@ function KnightCharacter:OnDeath()
 	HUD:CallEvent("KillKnight")
 
 	-- Global Scream
-	Sound(self:GetLocation(), "city-park::A_Monster_Shout", false, true, SoundType.SFX, 1, 1, 5000, 50000, AttenuationFunction.Logarithmic, true)
+	Sound(self:GetLocation(), "halloween-city-park::A_Monster_Shout", false, true, SoundType.SFX, 1, 1, 5000, 50000, AttenuationFunction.Logarithmic, true)
 
 	-- Sets his corpse as Highlight for 5 seconds
 	self:SetHighlightEnabled(true, 0)
@@ -116,13 +116,13 @@ Timer.SetInterval(function()
 	-- TODO: if more than 2 pumpkins/characters are close, it triggers the first even if it's distant
 	for k, c in pairs(SurvivorCharacter.GetPairs()) do
 		local distance = local_character_location:DistanceSquared(c:GetLocation())
-		if (distance < 5000 * 5000 and c:GetHealth() > 0) then
+		if (distance < 5000 * 5000 and not c:IsDead()) then
 			HUD:CallEvent("TriggerRadar")
 
 			local pitch = 1
 			if distance < 2000 * 2000 then pitch = 1.5 end
 
-			Sound(Vector(), "city-park::A_Sonar_Ping", true, true, SoundType.SFX, 0.4, pitch)
+			Sound(Vector(), "halloween-city-park::A_Sonar_Ping", true, true, SoundType.SFX, 0.4, pitch)
 			break
 		end
 	end

@@ -2,7 +2,7 @@ Lollipop = StaticMesh.Inherit("Lollipop")
 
 function Lollipop:Constructor(location, rotation)
 	-- Spawns me
-	self.Super:Constructor((location or Vector()) + Vector(0, 0, 0), rotation or Rotator(), "city-park::SM_Lollipop", CollisionType.NoCollision)
+	self.Super:Constructor((location or Vector()) + Vector(0, 0, 0), rotation or Rotator(), "halloween-city-park::SM_Lollipop", CollisionType.NoCollision)
 	self:SetScale(Vector(4))
 
 	-- Spawns Light

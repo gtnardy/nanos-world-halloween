@@ -4,6 +4,8 @@ THE_CRUSHER = {
 	active_ability = {
 		name = "Slam",
 		cooldown = 30,
+		slam_damage = 40,
+		slam_radius = 750,
 		callback_server = nil,
 		finish_server = nil,
 		cancel_server = nil,
@@ -31,12 +33,11 @@ end
 function THE_CRUSHER.active_ability.finish_server(player, character)
 	-- Do the crush
 	local killer_location = character:GetLocation()
-	local radius = 750
 
 	for k, survivor in pairs(SurvivorCharacter.GetPairs()) do
-		if (survivor:GetHealth() > 0 and killer_location:IsNear(survivor:GetLocation(), radius)) then
+		if (not survivor:IsDead() and killer_location:IsNear(survivor:GetLocation(), THE_CRUSHER.active_ability.slam_radius)) then
 			-- Do Damage
-			survivor:ApplyDamage(40, "", DamageType.Melee, killer_location, player, character)
+			survivor:ApplyDamage(THE_CRUSHER.active_ability.slam_damage, "", DamageType.Melee, killer_location, player, character)
 
 			-- TODO Stun?
 		end
@@ -44,8 +45,7 @@ function THE_CRUSHER.active_ability.finish_server(player, character)
 
 	character:DoAttackDebuff(true)
 	character:SetInputEnabled(true)
-	-- TODO CORRECT id
-	character:BroadcastRemoteEvent("FinishAbility", 3)
+	character:BroadcastRemoteEvent("FinishAbility", THE_CRUSHER.id)
 end
 
-table.insert(KNIGHT_ARCHETYPES, THE_CRUSHER)
+ADD_KNIGHT_ARCHETYPE(THE_CRUSHER)

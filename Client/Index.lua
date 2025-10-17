@@ -94,7 +94,7 @@ Client.SetHighlightColor(Color(1, 0, 0, 0.05), 0, HighlightMode.Always)
 
 -- Creates a WebUI for the Inventory when the package loads
 Package.Subscribe("Load", function()
-	Sound(Vector(), "city-park::A_Music_End", true, true, SoundType.Music, 0.5)
+	Sound(Vector(), "halloween-city-park::A_Music_End", true, true, SoundType.Music, 0.5)
 
 	-- Initialize existing Sky
 	Sky.Spawn(false, true)
@@ -158,7 +158,7 @@ Player.Subscribe("Possess", function(player, character)
 		light:AttachTo(character, AttachmentRule.KeepRelative, "head", 0)
 
 		if (character:IsA(KnightCharacter)) then
-			character:SetCameraOffset(Vector(0, 0, 60))
+			player:SetCameraSocketOffset(Vector(0, 0, 60))
 		end
 	end
 end)
@@ -216,11 +216,10 @@ Events.SubscribeRemote("SetPlayerRole", function(player, role)
 			Sky.SetNightBrightness(0.05)
 			Sky.SetFog(1)
 
-			Halloween.heartbeat_sound = Sound(Vector(), "city-park::A_Heartbeat_Cue", true, false, SoundType.SFX, 1, 1)
-			Halloween.heartbeat_sound:Stop()
+			Halloween.heartbeat_sound = Sound(Vector(), "halloween-city-park::A_Heartbeat_Cue", true, false, SoundType.SFX, 1, 1, 400, 3600, 0, false, 0, false)
 		end
 
-		Sound(Vector(), "city-park::A_Paper", true)
+		Sound(Vector(), "halloween-city-park::A_Paper", true)
 	end
 
 	if (role == ROLES.KNIGHT) then
@@ -251,11 +250,11 @@ Input.Bind("HalloweenAbility", InputEvent.Pressed, function()
 end)
 
 Events.SubscribeRemote("MatchWillBegin", function()
-	Sound(Vector(), "city-park::A_Announcer_MatchBegin_Cue", true, true)
+	Sound(Vector(), "halloween-city-park::A_Announcer_MatchBegin_Cue", true, true)
 end)
 
 Events.SubscribeRemote("MatchEnding", function()
-	Sound(Vector(), "city-park::A_Announcer_Cooldown", true, true)
+	Sound(Vector(), "halloween-city-park::A_Announcer_Cooldown", true, true)
 end)
 
 function ClearServer()
@@ -373,7 +372,7 @@ Events.SubscribeRemote("UpdateMatchState", function(new_state, remaining_time, t
 
 		HUD:CallEvent("SetPostTime", true)
 		HUD:CallEvent("SetClock", remaining_time)
-		Sound(Vector(), "city-park::A_Music_End", true, true, SoundType.Music, 0.5)
+		Sound(Vector(), "halloween-city-park::A_Music_End", true, true, SoundType.Music, 0.5)
 	end
 
 	Halloween.match_state = new_state
@@ -396,7 +395,7 @@ Events.SubscribeRemote("TriggerXRay", function()
 
 		-- Makes everyone red for 10 seconds
 		for k, character in pairs(SurvivorCharacter.GetPairs()) do
-			if (character:GetHealth() > 0) then
+			if (not character:IsDead()) then
 				character:SetHighlight(true)
 			end
 		end
@@ -411,7 +410,7 @@ Events.SubscribeRemote("TriggerXRay", function()
 	for k, character in pairs(Character.GetPairs()) do
 		local player = character:GetPlayer()
 		if (player and player:GetValue("Role") == ROLES.KNIGHT) then
-			local laugh = Sound(character:GetLocation(), "city-park::A_Evil_Laugh_Cue", false, true, SoundType.SFX, 3, 0.9, 5000, 50000, AttenuationFunction.Logarithmic, true)
+			local laugh = Sound(character:GetLocation(), "halloween-city-park::A_Evil_Laugh_Cue", false, true, SoundType.SFX, 3, 0.9, 5000, 50000, AttenuationFunction.Logarithmic, true)
 			laugh:AttachTo(character, AttachmentRule.SnapToTarget, "", 0)
 		end
 	end

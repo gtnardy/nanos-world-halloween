@@ -26,4 +26,4 @@ function THE_CRUSHER.active_ability.finish_client_global(character)
 	p:SetScale(Vector(2, 2, 2))
 end
 
-table.insert(KNIGHT_ARCHETYPES, THE_CRUSHER)
+ADD_KNIGHT_ARCHETYPE(THE_CRUSHER)

@@ -2,7 +2,7 @@ Goggles = StaticMesh.Inherit("Goggles")
 
 function Goggles:Constructor(location, rotation)
 	-- Spawns me
-	self.Super:Constructor((location or Vector()) + Vector(0, 0, 15), rotation or Rotator(), "city-park::SM_Goggles", CollisionType.NoCollision)
+	self.Super:Constructor((location or Vector()) + Vector(0, 0, 15), rotation or Rotator(), "halloween-city-park::SM_Goggles", CollisionType.NoCollision)
 	self:SetScale(Vector(2))
 
 	-- Spawns Light

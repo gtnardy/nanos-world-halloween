@@ -8,7 +8,7 @@ end)
 Events.SubscribeRemote("FlashlightToggled", function(player, location, enabled)
 	Halloween.flashlight_enabled = enabled
 
-	Sound(location, "city-park::A_Flashlight")
+	Sound(location, "halloween-city-park::A_Flashlight")
 
 	if (player == Client.GetLocalPlayer()) then
 		HUD:CallEvent("FlashlightToggled", enabled)

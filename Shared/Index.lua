@@ -13,3 +13,8 @@ MATCH_STATES = {
 }
 
 KNIGHT_ARCHETYPES = {}
+
+function ADD_KNIGHT_ARCHETYPE(archetype)
+	archetype.id = #KNIGHT_ARCHETYPES + 1
+	table.insert(KNIGHT_ARCHETYPES, archetype)
+end

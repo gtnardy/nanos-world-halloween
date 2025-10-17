@@ -86,10 +86,9 @@ function THE_WRAITH.active_ability.cancel_server(player)
 
 	character:Unsubscribe("PullUse")
 
-	-- TODO
-	character:BroadcastRemoteEvent("CancelAbility", 1)
+	character:BroadcastRemoteEvent("CancelAbility", THE_WRAITH.id)
 
 	return true
 end
 
-table.insert(KNIGHT_ARCHETYPES, THE_WRAITH)
+ADD_KNIGHT_ARCHETYPE(THE_WRAITH)

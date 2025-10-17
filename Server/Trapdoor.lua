@@ -2,7 +2,7 @@ Trapdoor = StaticMesh.Inherit("Trapdoor")
 
 function Trapdoor:Constructor(location, rotation)
 	-- Spawns me
-	self.Super:Constructor(location or Vector(), rotation or Rotator(), "city-park::SM_Trapdoor_Closed", CollisionType.NoCollision)
+	self.Super:Constructor(location or Vector(), rotation or Rotator(), "halloween-city-park::SM_Trapdoor_Closed", CollisionType.NoCollision)
 
 	-- Spawns Trigger
 	self.trigger = Trigger(location, Rotator(), Vector(300), TriggerType.Sphere, false, Color.BLACK, { "Character" })
@@ -11,12 +11,12 @@ function Trapdoor:Constructor(location, rotation)
 end
 
 function Trapdoor:Open()
-	self:SetMesh("city-park::SM_Trapdoor_Opened")
+	self:SetMesh("halloween-city-park::SM_Trapdoor_Opened")
 	Halloween.is_trapdoor_opened = true
 
 	-- Sets additional time
-	if (Halloween.remaining_time < HalloweenSettings.trapdoor_time) then
-		Halloween.remaining_time = HalloweenSettings.trapdoor_time
+	if (Halloween.remaining_time < HalloweenSettings.custom_settings.trapdoor_time) then
+		Halloween.remaining_time = HalloweenSettings.custom_settings.trapdoor_time
 	end
 
 	Chat.BroadcastMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
