@@ -25,7 +25,7 @@
     assets_requirements = [
                             "halloween-city-park",
                             "gknight",
-                            "weapon-pack",
+                            "fantasy-weapon-pack",
     ]
     # compatible maps - maps to be highlighted when starting a new game through main menu
     compatible_maps = [
@@ -40,11 +40,11 @@
     knights_xray_initial_cooldown = { label = "Knights XRay Initial Cooldown", type = "integer", description = "Initial delay before knights can use XRay for the first time.", default = 15 }
     match_time = { label = "Match Time", type = "integer", description = "Duration of the match in seconds.", default = 600 }
     players_to_start = { label = "Players Required to Start", type = "integer", description = "Minimum number of players required for the match to begin.", default = 4 }
-    post_time = { label = "Post Match Time", type = "integer", description = "Time after match ends before returning to the menu.", default = 90 }
+    post_time = { label = "Post Match Time", type = "integer", description = "Time after match ends before returning to the menu.", default = 60 }
     preparing_time = { label = "Preparing Time", type = "integer", description = "Preparation time before warmup (short setup phase).", default = 10 }
-    pumpkins_extra_percent = { label = "Extra Pumpkins Percent", type = "floating", description = "Multiplier for extra pumpkin spawns (e.g. 1.4 = +40%).", default = 1.400000 }
+    pumpkins_extra_percent = { label = "Extra Pumpkins Percent", type = "floating", description = "Multiplier for extra pumpkin spawns (e.g. 1.4 = +40%).", default = 1.500000 }
     pumpkins_min_count = { label = "Minimum Pumpkins Count", type = "integer", description = "Minimum total pumpkins that must be present on the map.", default = 10 }
-    pumpkins_per_player = { label = "Pumpkins Per Player", type = "integer", description = "Base number of pumpkins each player starts with.", default = 3 }
+    pumpkins_per_player = { label = "Pumpkins Per Player", type = "integer", description = "Base number of pumpkins each player starts with.", default = 4 }
     survivor_scream_cooldown = { label = "Survivor Scream Cooldown", type = "integer", description = "Cooldown for survivor scream ability.", default = 40 }
     survivors_per_knight = { label = "Survivors Per Knight", type = "integer", description = "Number of survivors assigned per knight at round start.", default = 4 }
     trapdoor_time = { label = "Trapdoor Active Time", type = "integer", description = "Duration trapdoors remain active when triggered.", default = 90 }

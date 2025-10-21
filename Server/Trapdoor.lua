@@ -21,7 +21,7 @@ function Trapdoor:Open()
 
 	Chat.BroadcastMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
 
-	self:BroadcastRemoteEvent("Open")
+	self:BroadcastRemoteEvent("Open", Halloween.remaining_time)
 end
 
 function Trapdoor:OnTriggerBeginOverlap(trigger, player, character)

@@ -1,14 +1,17 @@
 Trapdoor = StaticMesh.Inherit("Trapdoor")
 
-function Trapdoor:OnOpen()
+function Trapdoor:OnOpen(new_remaining_time)
 	Halloween.is_trapdoor_opened = true
-	Sound(self:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, SoundType.SFX, 1.5, 1, 1000, 40000, AttenuationFunction.Logarithmic, true, SoundLoopMode.Forever)
+	Sound(self:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, SoundType.SFX, 1.5, 1, 1000, 60000, AttenuationFunction.Logarithmic, true, SoundLoopMode.Forever)
 
 	HUD:CallEvent("SetLabel", "THE HATCH HAS OPENED")
 
 	if (Halloween.current_role == ROLES.SURVIVOR) then
 		HUD:CallEvent("SetObjective", "ESCAPE THROUGH THE HATCH")
 	end
+
+	-- Updates remaining time
+	HUD:CallEvent("SetClock", new_remaining_time - 1)
 end
 
 function Trapdoor:OnSurvivorEscaped()

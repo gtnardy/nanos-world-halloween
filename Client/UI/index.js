@@ -408,7 +408,7 @@ Events.Subscribe("AddFeedItem", function(type, name1, name2) {
 		feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name1 + '</span> found a <span class="feed-item-image feed-item-goggles"></span></div>');
 	} else if (type === "kill") {
 		if (name2) {
-			feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name1 + '</span> killed <span class="feed-item-name">' + name2 + '</span></div>');
+			feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name2 + '</span> killed <span class="feed-item-name">' + name1 + '</span></div>');
 		} else {
 			feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name1 + '</span> died</div>');
 		}

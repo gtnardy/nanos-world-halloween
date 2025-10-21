@@ -1,9 +1,9 @@
 GreatAxe = Melee.Inherit("GreatAxe")
 
 function GreatAxe:Constructor(location, rotation)
-	self.Super:Constructor(location or Vector(), rotation or Rotator(), "weapon-pack::SM_GreatAxe", CollisionType.Normal, true, HandlingMode.DoubleHandedMelee)
+	self.Super:Constructor(location or Vector(), rotation or Rotator(), "fantasy-weapon-pack::SM_GreatAxe", CollisionType.Normal, true, HandlingMode.DoubleHandedMelee)
 
-	self.cooldown = 1
+	self.cooldown = 1.1
 	self.base_damage = 25
 
 	self:SetScale(Vector(1.1, 1.1, 1.8))
@@ -22,7 +22,7 @@ end
 Sickle = Melee.Inherit("Sickle")
 
 function Sickle:Constructor(location, rotation)
-	self.Super:Constructor(location or Vector(), rotation or Rotator(), "weapon-pack::SM_Sickle", CollisionType.Normal, true, HandlingMode.DoubleHandedMelee)
+	self.Super:Constructor(location or Vector(), rotation or Rotator(), "fantasy-weapon-pack::SM_Sickle", CollisionType.Normal, true, HandlingMode.DoubleHandedMelee)
 
 	self.cooldown = 3
 	self.base_damage = 50
@@ -43,7 +43,7 @@ end
 GreatHammer = Melee.Inherit("GreatHammer")
 
 function GreatHammer:Constructor(location, rotation)
-	self.Super:Constructor(location or Vector(), rotation or Rotator(), "weapon-pack::SM_GreatHammer", CollisionType.Normal, true, HandlingMode.DoubleHandedMelee)
+	self.Super:Constructor(location or Vector(), rotation or Rotator(), "fantasy-weapon-pack::SM_GreatHammer", CollisionType.Normal, true, HandlingMode.DoubleHandedMelee)
 
 	self.cooldown = 4
 	self.base_damage = 60

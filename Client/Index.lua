@@ -87,7 +87,8 @@ When the game ends, players are awarded emblems based on their performance:
 HUD = WebUI("HUD", "file:///UI/index.html")
 
 -- Disable Debug settings
--- Client.SetDebugEnabled(false)
+Client.SetDebugEnabled(false)
+Client.SetSettingGammaOverride(true, 1)
 
 -- Configure Highlight
 Client.SetHighlightColor(Color(1, 0, 0, 0.05), 0, HighlightMode.Always)
@@ -246,7 +247,9 @@ end)
 Input.Register("HalloweenAbility", "X", "Special Ability")
 
 Input.Bind("HalloweenAbility", InputEvent.Pressed, function()
-	Halloween.local_character:CallRemoteEvent("TriggerAbility")
+	if (NanosUtils.IsEntityValid(Halloween.local_character)) then
+		Halloween.local_character:CallRemoteEvent("TriggerAbility")
+	end
 end)
 
 Events.SubscribeRemote("MatchWillBegin", function()
@@ -301,6 +304,7 @@ end)
 Events.SubscribeRemote("UpdateMatchState", function(new_state, remaining_time, total_pumpkins, pumpkins_found)
 	remaining_time = remaining_time - 1
 	Halloween.total_pumpkins = total_pumpkins
+	Halloween.pumpkins_found = pumpkins_found
 
 	if (new_state == MATCH_STATES.WAITING_PLAYERS) then
 

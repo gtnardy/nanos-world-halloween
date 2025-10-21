@@ -22,13 +22,13 @@ HalloweenSettings = {
 	custom_settings = {
 		warmup_time = 30,
 		match_time = 600,
-		post_time = 90,
+		post_time = 60,
 		trapdoor_time = 90,
 		preparing_time = 10,
 		players_to_start = 4,
 		survivors_per_knight = 4,
-		pumpkins_per_player = 3,
-		pumpkins_extra_percent = 1.4,
+		pumpkins_per_player = 4,
+		pumpkins_extra_percent = 1.5,
 		pumpkins_min_count = 10,
 		knights_xray_cooldown = 30,
 		knights_xray_initial_cooldown = 15,
@@ -238,8 +238,8 @@ function SetPlayerRole(player, role)
 
 	-- For now, randomly selects an archetype for the Knight
 	if (role == ROLES.KNIGHT) then
-		-- SetKnightArchetype(player, character, math.random(#KNIGHT_ARCHETYPES))
-		SetKnightArchetype(player, character, 3)
+		SetKnightArchetype(player, character, math.random(#KNIGHT_ARCHETYPES))
+		-- SetKnightArchetype(player, character, 3)
 	end
 end
 
@@ -379,7 +379,7 @@ function UpdateMatchState(new_state)
 		Halloween.remaining_time = HalloweenSettings.custom_settings.post_time
 	end
 
-	Events.BroadcastRemote("UpdateMatchState", new_state, Halloween.remaining_time, Halloween.total_pumpkins)
+	Events.BroadcastRemote("UpdateMatchState", new_state, Halloween.remaining_time, Halloween.total_pumpkins, 0)
 end
 
 -- Server Tick to check remaining times
