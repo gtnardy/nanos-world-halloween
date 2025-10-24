@@ -5,7 +5,7 @@ function KnightCharacter:Constructor(location, rotation)
 
 	local pumpkin_mesh = HalloweenSettings.knight_pumpkins[math.random(#HalloweenSettings.knight_pumpkins)]
 
-	self.speed_multiplier = 1.5
+	self.speed_multiplier = HalloweenSettings.custom_settings.knight_speed_multiplier
 	self.light_intensity = 0.2
 
 	self:SetAnimationIdleWalkRunStanding("nanos-world::BS_BossyEnemy_Standing")
@@ -66,7 +66,7 @@ function KnightCharacter:DoAttackDebuff(hit_success)
 	end
 
 	-- Resets after 2 or seconds depending it hit
-	local cooldown = hit_success and 3000 or 2000
+	local cooldown = hit_success and 2500 or 1750
 	self.attack_debuff_timer = Timer.SetTimeout(KnightCharacter.CancelAttackDebuff, cooldown, self)
 
 	Timer.Bind(self.attack_debuff_timer, self)

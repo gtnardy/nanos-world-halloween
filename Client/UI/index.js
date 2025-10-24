@@ -408,19 +408,19 @@ Events.Subscribe("AddFeedItem", function(type, name1, name2) {
 		feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name1 + '</span> found a <span class="feed-item-image feed-item-goggles"></span></div>');
 	} else if (type === "kill") {
 		if (name2) {
-			feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name2 + '</span> killed <span class="feed-item-name">' + name1 + '</span></div>');
+			feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name2 + '</span> killed <span class="feed-item-name">' + name1 + '</span><span class="feed-item-image feed-item-kill"></span></div>');
 		} else {
-			feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name1 + '</span> died</div>');
+			feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name1 + '</span> died<span class="feed-item-image feed-item-kill"></span></div>');
 		}
 	} else if (type === "escaped") {
-		feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name1 + '</span> escaped alive</div>');
+		feedItem = $('<div class="feed-item"><span class="feed-item-name">' + name1 + '</span> escaped alive<span class="feed-item-image feed-item-escaped"></span></div>');
 	} else {
 		feedItem = $('<div class="feed-item">' + name1 + '</div>');
 	}
 
 	$("#feed").append(feedItem);
 
-	feedItem.delay(7000).fadeOut("normal", function() {
+	feedItem.delay(10000).fadeOut("normal", function() {
 		$(this).remove();
 	});
 });

@@ -20,19 +20,20 @@ HalloweenSettings = {
 
 	 -- Parsed from server/game-mode
 	custom_settings = {
-		warmup_time = 30,
-		match_time = 600,
-		post_time = 60,
-		trapdoor_time = 90,
-		preparing_time = 10,
-		players_to_start = 4,
-		survivors_per_knight = 4,
-		pumpkins_per_player = 4,
-		pumpkins_extra_percent = 1.5,
-		pumpkins_min_count = 10,
-		knights_xray_cooldown = 30,
-		knights_xray_initial_cooldown = 15,
-		survivor_scream_cooldown = 40,
+		warmup_time = nil,
+		match_time = nil,
+		post_time = nil,
+		trapdoor_time = nil,
+		preparing_time = nil,
+		players_to_start = nil,
+		survivors_per_knight = nil,
+		pumpkins_per_player = nil,
+		extra_pumpkins = nil,
+		knights_xray_cooldown = nil,
+		knights_xray_initial_cooldown = nil,
+		survivor_scream_cooldown = nil,
+		knight_speed_multiplier = nil,
+		survivor_speed_multiplier = nil,
 	},
 
 	-- Knight Head Pumpkin meshes
@@ -226,20 +227,16 @@ function SetPlayerRole(player, role)
 	player:SetValue("Role", role, true)
 	player:SetValue("IsAlive", true, true)
 
-	if (role == ROLES.KNIGHT) then
-		Chat.BroadcastMessage(player:GetName() .. " is a <red>Horseless Headless Horseman</>!")
-	elseif (role == ROLES.SURVIVOR) then
-		Chat.SendMessage(player, "You are a <blue>Survivor</>!")
-	end
-
 	Events.BroadcastRemote("SetPlayerRole", player, role)
 
 	local character = SpawnCharacter(player, role)
 
-	-- For now, randomly selects an archetype for the Knight
 	if (role == ROLES.KNIGHT) then
+		-- For now, randomly selects an archetype for the Knight
 		SetKnightArchetype(player, character, math.random(#KNIGHT_ARCHETYPES))
-		-- SetKnightArchetype(player, character, 3)
+	elseif (role == ROLES.SURVIVOR) then
+		-- Tells him he is a survivor
+		Chat.SendMessage(player, "You are a <blue>Survivor</>!")
 	end
 end
 
@@ -259,7 +256,7 @@ function SetKnightArchetype(player, character, archetype)
 
 	Events.BroadcastRemote("SetKnightArchetype", player, archetype)
 
-	Chat.SendMessage(player, "You are <red>" .. archetype_data.name .. "</>!")
+	Chat.BroadcastMessage(player:GetName() .. " is a <red>Horseless Headless Horseman (" .. archetype_data.name .. ")</>!")
 end
 
 function SpawnEntities()
@@ -274,10 +271,10 @@ function SpawnEntities()
 	end
 
 	-- Spawns more pumpkins than the needed
-	local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins * HalloweenSettings.custom_settings.pumpkins_extra_percent)
+	local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins + HalloweenSettings.custom_settings.extra_pumpkins)
 
-	-- Minimum pumpkins spawned
-	total_pumpkins_to_spawn = math.min(math.max(total_pumpkins_to_spawn, HalloweenSettings.custom_settings.pumpkins_min_count), #HalloweenSettings.config.pumpkins_spawn_locations)
+	-- Maximum pumpkins spawned
+	total_pumpkins_to_spawn = math.min(total_pumpkins_to_spawn, #pumpkins_list_location)
 
 	-- Spawns total_pumpkins_to_spawn pumpkins
 	for i = 1, total_pumpkins_to_spawn do
@@ -522,21 +519,27 @@ Package.Subscribe("Load", function()
 			{ location = Vector(500, 0, 0) },
 			{ location = Vector(1000, 0, 0) },
 			{ location = Vector(1500, 0, 0) },
+			{ location = Vector(2000, 0, 0) },
 			{ location = Vector(500, 500, 0) },
 			{ location = Vector(1000, 500, 0) },
 			{ location = Vector(1500, 500, 0) },
+			{ location = Vector(2000, 500, 0) },
 			{ location = Vector(500, -500, 0) },
 			{ location = Vector(1000, -500, 0) },
 			{ location = Vector(1500, -500, 0) },
+			{ location = Vector(2000, -500, 0) },
 			{ location = Vector(-500, 0, 0) },
 			{ location = Vector(-1000, 0, 0) },
 			{ location = Vector(-1500, 0, 0) },
+			{ location = Vector(-2000, 0, 0) },
 			{ location = Vector(-500, 500, 0) },
 			{ location = Vector(-1000, 500, 0) },
 			{ location = Vector(-1500, 500, 0) },
+			{ location = Vector(-2000, 500, 0) },
 			{ location = Vector(-500, -500, 0) },
 			{ location = Vector(-1000, -500, 0) },
 			{ location = Vector(-1500, -500, 0) },
+			{ location = Vector(-2000, -500, 0) },
 		}
 
 		Console.Warn("Map config missing 'pumpkins_spawn_locations'. Using default.")

@@ -811,3 +811,11 @@ body.knight #attack {
 .feed-item-goggles {
 	background-image: url("./images/binoculars.webp");
 }
+
+.feed-item-kill {
+	background-image: url("./images/dead.webp");
+}
+
+.feed-item-escaped {
+	background-image: url("./images/emergency-exit.webp");
+}

@@ -128,7 +128,7 @@ function SurvivorCharacter:Constructor(location, rotation)
 	end
 
 	self.light_intensity = 0.02
-	self.speed_multiplier = 1.15
+	self.speed_multiplier = HalloweenSettings.custom_settings.survivor_speed_multiplier
 
 	self:SetSpeedMultiplier(self.speed_multiplier)
 	self:SetCameraMode(CameraMode.FPSOnly)

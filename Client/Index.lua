@@ -95,10 +95,13 @@ Client.SetHighlightColor(Color(1, 0, 0, 0.05), 0, HighlightMode.Always)
 
 -- Creates a WebUI for the Inventory when the package loads
 Package.Subscribe("Load", function()
+	-- Plays music
 	Sound(Vector(), "halloween-city-park::A_Music_End", true, true, SoundType.Music, 0.5)
 
 	-- Initialize existing Sky
 	Sky.Spawn(false, true)
+	-- Sky.Spawn(true, true)
+	-- Sky.ChangeWeather(WeatherType.RainLight, 0)
 	Sky.SetTimeOfDay(0, 0)
 	Sky.SetAnimateTimeOfDay(false)
 
@@ -293,7 +296,9 @@ end)
 
 function UpdateWaitingPlayers()
 	local player_count = Player.GetCount()
-	HUD:CallEvent("SetLabel", "WAITING PLAYERS (" .. player_count .. "/4)")
+
+	-- TODO: We don't have the information of needed players, so just show current count
+	HUD:CallEvent("SetLabel", "WAITING PLAYERS (" .. player_count .. ")")
 end
 
 Events.SubscribeRemote("UpdatePostTimeResults", function(result_label, survivors, knights)
