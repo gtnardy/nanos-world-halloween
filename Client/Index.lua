@@ -424,3 +424,11 @@ Events.SubscribeRemote("TriggerXRay", function()
 		end
 	end
 end)
+
+-- Steam Scoreboard
+Steam.FindLeaderboard("halloween")
+Client.SetEscapeMenuLeaderboard(true, "halloween", "Halloween Top Players Leaderboard")
+
+Events.SubscribeRemote("SubmitScoreToSteamLeaderboard", function(score)
+	Steam.IncrementLeaderboardScore("halloween", score)
+end)

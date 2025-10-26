@@ -53,10 +53,10 @@ function CalculateEndScores()
 				stunned_knights * 300
 
 			-- Objective Medal
-			if (player_data.pumpkins >= HalloweenSettings.custom_settings.pumpkins_per_player * 2) then
+			if (player_data.pumpkins >= HalloweenSettings.custom_settings.pumpkins_per_player + 1) then
 				player_data.objective_medal = "gold"
 				player_data.score = player_data.score + 1000
-			elseif (player_data.pumpkins >= HalloweenSettings.custom_settings.pumpkins_per_player) then
+			elseif (player_data.pumpkins >= HalloweenSettings.custom_settings.pumpkins_per_player / 2) then
 				player_data.objective_medal = "silver"
 				player_data.score = player_data.score + 500
 			elseif (player_data.pumpkins >= 1) then
@@ -110,10 +110,10 @@ function CalculateEndScores()
 				((player_data.damage_dealt * 100) / 20)
 
 			-- Devout Medal
-			if (player_data.kills >= survivors_per_knight_actual or (player_data.kills >= 0 and player_data.kills == total_survivors)) then
+			if (total_survivors > 0 and (player_data.kills >= survivors_per_knight_actual or (player_data.kills >= 0 and player_data.kills == total_survivors))) then
 				player_data.devout_medal = "gold"
 				player_data.score = player_data.score + 1000
-			elseif (player_data.kills >= survivors_per_knight_actual / 2) then
+			elseif (total_survivors > 0 and player_data.kills >= survivors_per_knight_actual / 2) then
 				player_data.devout_medal = "silver"
 				player_data.score = player_data.score + 500
 			elseif (player_data.kills >= 1) then
@@ -124,10 +124,10 @@ function CalculateEndScores()
 			end
 
 			-- Brutality Medal
-			if (player_data.damage_dealt >= survivors_per_knight_actual * 100) then
+			if (total_survivors > 0 and player_data.damage_dealt >= survivors_per_knight_actual * 100) then
 				player_data.brutality_medal = "gold"
 				player_data.score = player_data.score + 1000
-			elseif (player_data.damage_dealt >= survivors_per_knight_actual * 50) then
+			elseif (total_survivors > 0 and player_data.damage_dealt >= survivors_per_knight_actual * 50) then
 				player_data.brutality_medal = "silver"
 				player_data.score = player_data.score + 500
 			elseif (player_data.damage_dealt > 0) then
@@ -140,7 +140,7 @@ function CalculateEndScores()
 			-- Chaser Medal
 			local average_chase_time = player:GetValue("AverageChaseTime", 0)
 
-			if (average_chase_time <= 45 and (player_data.kills >= 2 or (player_data.kills >= 0 and player_data.kills == total_survivors))) then
+			if (total_survivors > 0 and average_chase_time <= 45 and (player_data.kills >= 2 or (player_data.kills >= 0 and player_data.kills == total_survivors))) then
 				player_data.chaser_medal = "gold"
 				player_data.score = player_data.score + 1000
 			elseif (average_chase_time <= 90 and player_data.kills >= 2) then
@@ -155,6 +155,8 @@ function CalculateEndScores()
 
 			table.insert(knights, player_data)
 		end
+
+		Events.CallRemote("SubmitScoreToSteamLeaderboard", player, player_data.score)
 	end
 
 	local result_label = ""
