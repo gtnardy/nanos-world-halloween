@@ -271,7 +271,7 @@ function SpawnEntities()
 	end
 
 	-- Spawns more pumpkins than the needed
-	local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins + HalloweenSettings.custom_settings.extra_pumpkins)
+	local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins * 1.1 + HalloweenSettings.custom_settings.extra_pumpkins)
 
 	-- Maximum pumpkins spawned
 	total_pumpkins_to_spawn = math.min(total_pumpkins_to_spawn, #pumpkins_list_location)

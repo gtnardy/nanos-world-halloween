@@ -47,10 +47,11 @@ function CalculateEndScores()
 
 			-- Score
 			player_data.score =
-				player_data.pumpkins * 100 +
-				player_data.lollipops * 200 +
-				player_data.goggles * 200 +
-				stunned_knights * 300
+				player_data.pumpkins * 150 +
+				player_data.lollipops * 300 +
+				player_data.goggles * 300 +
+				stunned_knights * 300 +
+				math.floor(player_data.distance_traveled / 100) * 10
 
 			-- Objective Medal
 			if (player_data.pumpkins >= HalloweenSettings.custom_settings.pumpkins_per_player + 1) then
