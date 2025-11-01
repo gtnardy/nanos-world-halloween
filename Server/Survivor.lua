@@ -136,6 +136,8 @@ function SurvivorCharacter:Constructor(location, rotation)
 	self:SetCanDrop(false)
 	self:SetCanAim(false)
 	self:SetCanPunch(false)
+	-- Note: weapons are dropped when Knight dies, but no one can pickup so it's fine
+	self:SetCanPickupPickables(false)
 	self:SetJumpZVelocity(500)
 	self:SetCapsuleSize(36, 96)
 	self:SetCanCrouch(false)

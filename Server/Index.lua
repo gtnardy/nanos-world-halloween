@@ -73,7 +73,8 @@ Halloween = {
 	pumpkins_found = 0,
 	total_pumpkins = 0,
 	players_saved = 0,
-	initial_player_count = 0
+	initial_player_count = 0,
+	joined_position = 0,
 }
 
 -- When player fully connects (custom event)
@@ -92,6 +93,10 @@ Events.SubscribeRemote("PlayerReady", function(player)
 		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has joined the server as Spectator!")
 		Chat.SendMessage(player, "<grey>Welcome to the Server! Match in progress! Please wait until the match finishes! Use Headphones to have a better experience!</>")
 	end
+
+	-- Increases joined position
+	Halloween.joined_position = Halloween.joined_position + 1
+	player:SetValue("JoinedPosition", Halloween.joined_position)
 end)
 
 function StartMatch()
@@ -272,25 +277,25 @@ function SpawnEntities()
 
 	-- Spawns more pumpkins than the needed
 	local total_pumpkins_to_spawn = math.ceil(Halloween.total_pumpkins * 1.1 + HalloweenSettings.custom_settings.extra_pumpkins)
+	local total_goggles_to_spawn = math.ceil(Halloween.total_pumpkins / 5)
+	local total_lollipops_to_spawn = math.ceil(Halloween.total_pumpkins / 5)
 
-	-- Maximum pumpkins spawned
+	-- Maximum items spawned (limited by spawn count)
 	total_pumpkins_to_spawn = math.min(total_pumpkins_to_spawn, #pumpkins_list_location)
+	total_goggles_to_spawn = math.min(total_goggles_to_spawn, #pumpkins_list_location - total_pumpkins_to_spawn)
+	total_lollipops_to_spawn = math.min(total_lollipops_to_spawn, #pumpkins_list_location - total_pumpkins_to_spawn - total_goggles_to_spawn)
 
-	-- Spawns total_pumpkins_to_spawn pumpkins
+	-- Spawns Pumpkins
 	for i = 1, total_pumpkins_to_spawn do
 		Pumpkin(pumpkins_list_location[i], Rotator(0, math.random(0, 360), 0))
 	end
 
 	-- Spawns Goggles
-	local total_goggles_to_spawn = math.ceil(Halloween.total_pumpkins / 5)
-
 	for i = 1, total_goggles_to_spawn do
 		Goggles(pumpkins_list_location[total_pumpkins_to_spawn + i], Rotator(0, math.random(0, 360), 0))
 	end
 
 	-- Spawns Lollipops
-	local total_lollipops_to_spawn = math.ceil(Halloween.total_pumpkins / 5)
-
 	for i = 1, total_lollipops_to_spawn do
 		Lollipop(pumpkins_list_location[total_pumpkins_to_spawn + total_goggles_to_spawn + i], Rotator(0, math.random(0, 360), 0))
 	end
@@ -312,14 +317,16 @@ function UpdateMatchState(new_state)
 
 		-- Incredible random function to select random Knights
 		local player_count = Player.GetCount()
-		local player_list = {}
+		local player_list = Player.GetAll()
 
 		local knight_count = math.ceil(player_count / (HalloweenSettings.custom_settings.survivors_per_knight + 1))
 
-		-- Randomly select players
-		for k, player in pairs(Player.GetPairs()) do
-			table.insert(player_list, math.random(1, #player_list + 1), player)
-		end
+		-- Sort players by their JoinedPosition
+		table.sort(player_list, function(a, b)
+			local pos_a = a:GetValue("JoinedPosition") or 0
+			local pos_b = b:GetValue("JoinedPosition") or 0
+			return pos_a < pos_b
+		end)
 
 		for k, player in pairs(player_list) do
 			-- Cleanup Player data
@@ -342,6 +349,10 @@ function UpdateMatchState(new_state)
 
 			if (k <= knight_count) then
 				SetPlayerRole(player, ROLES.KNIGHT)
+
+				-- Increases global joined position
+				Halloween.joined_position = Halloween.joined_position + 1
+				player:SetValue("JoinedPosition", Halloween.joined_position)
 			else
 				SetPlayerRole(player, ROLES.SURVIVOR)
 			end

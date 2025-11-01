@@ -14,6 +14,8 @@ function KnightCharacter:Constructor(location, rotation)
 	self:SetCameraMode(CameraMode.TPSOnly)
 	self:SetTeam(2)
 	self:SetCanDrop(false)
+	-- Note: weapons are dropped when Knight dies, but no one can pickup so it's fine
+	self:SetCanPickupPickables(false)
 	self:SetCanAim(false)
 	self:SetMaxHealth(1000)
 	self:SetJumpZVelocity(500)
