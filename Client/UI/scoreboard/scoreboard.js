@@ -34,7 +34,7 @@ function UpdatePlayer(id, active, name, ping) {
 	if (active) {
 		if (existing_scoreboard_entry) {
 			const scoreboard_ping = existing_scoreboard_entry.querySelector("td.scoreboard_ping");
-			scoreboard_ping.innerHTML = ping;
+			scoreboard_ping.textContent = ping;
 			return;
 		}
 
@@ -43,17 +43,17 @@ function UpdatePlayer(id, active, name, ping) {
 
 		const scoreboard_entry_td_id = document.createElement("td");
 		scoreboard_entry_td_id.className = "scoreboard_id";
-		scoreboard_entry_td_id.innerHTML = id;
+		scoreboard_entry_td_id.textContent = id;
 		scoreboard_entry_tr.appendChild(scoreboard_entry_td_id);
-		
+
 		const scoreboard_entry_td_name = document.createElement("td");
 		scoreboard_entry_td_name.className = "scoreboard_name";
-		scoreboard_entry_td_name.innerHTML = name;
+		scoreboard_entry_td_name.textContent = name;
 		scoreboard_entry_tr.appendChild(scoreboard_entry_td_name);
-		
+
 		const scoreboard_entry_td_ping = document.createElement("td");
 		scoreboard_entry_td_ping.className = "scoreboard_ping";
-		scoreboard_entry_td_ping.innerHTML = ping;
+		scoreboard_entry_td_ping.textContent = ping;
 		scoreboard_entry_tr.appendChild(scoreboard_entry_td_ping);
 
 		document.querySelector("#scoreboard_tbody").prepend(scoreboard_entry_tr);

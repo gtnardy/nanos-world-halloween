@@ -67,6 +67,13 @@ setInterval(function() {
 }, 1000);
 
 
+function createTallyPlayerName(name) {
+	const span = document.createElement("span");
+	span.textContent = name == null ? "Unknown" : name;
+	span.classList.add("tally_player_name");
+	return span.outerHTML;
+}
+
 function createKnightHTML(knight) {
 	// Create items HTML (kills)
 	let itemsHTML = '';
@@ -77,7 +84,7 @@ function createKnightHTML(knight) {
 	return `
 		<span class="tally_player">
 			<span class="tally_player_left">
-				<span class="tally_player_name">${knight.name || 'Unknown'}</span>
+				${createTallyPlayerName(knight.name)}
 				<span class="tally_player_items">
 					${itemsHTML}
 				</span>
@@ -137,7 +144,7 @@ function createSurvivorHTML(survivor) {
 	return `
 		<span class="tally_player">
 			<span class="tally_player_left">
-				<span class="tally_player_name">${survivor.name || 'Unknown'}</span>
+				${createTallyPlayerName(survivor.name)}
 				<span class="tally_player_items">
 					${itemsHTML}
 				</span>
