@@ -1,4 +1,4 @@
-Input.Register("Scoreboard", "Tab")
+Input.Register("Scoreboard", "Tab", "Toggles the Scoreboard")
 
 -- Toggles the Scoreboard
 Input.Bind("Scoreboard", InputEvent.Released, function()

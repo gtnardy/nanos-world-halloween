@@ -3,9 +3,9 @@
     # friendly name
     title =                 "Halloween"
     # contributors
-    author =                "nanos™"
+    author =                "nanos world™"
     # version
-    version =               "1.4.0"
+    version =               "2.0.3"
 
 # game-mode configurations
 [game_mode]
@@ -16,14 +16,16 @@
     # whether to load all level entities on client - only enable it if your package needs to use level static meshes entities
     load_level_entities =   false
     # the game version (major.minor) at the time this package was created, for granting compatibility between breaking changes
-    compatibility_version = "1.62"
+    compatibility_version = "1.93"
     # packages requirements
     packages_requirements = [
-                            "default-weapons",
+                            
     ]
     # asset packs requirements
     assets_requirements = [
                             "halloween-city-park",
+                            "gknight",
+                            "fantasy-weapon-pack",
     ]
     # compatible maps - maps to be highlighted when starting a new game through main menu
     compatible_maps = [
@@ -34,4 +36,17 @@
 # those settings can be configured through new game menu, Config.toml and server command line
 # and can be accessed through Server.GetCustomSettings() method from any package
 [custom_settings]
-    # my_toggle_example = { label = "awesome toggle", type = "boolean", description = "press this!", default = true }
+    extra_pumpkins = { label = "Extra Pumpkins", type = "integer", description = "Number of extra pumpkins to spawn.", default = 15 }
+    knight_speed_multiplier = { label = "Knight Speed Multiplier", type = "floating", description = "Multiplier for knight movement speed.", default = 1.550000 }
+    knights_xray_cooldown = { label = "Knights XRay Cooldown", type = "integer", description = "Cooldown between knight XRay ability uses.", default = 25 }
+    knights_xray_initial_cooldown = { label = "Knights XRay Initial Cooldown", type = "integer", description = "Initial delay before knights can use XRay for the first time.", default = 15 }
+    match_time = { label = "Match Time", type = "integer", description = "Duration of the match in seconds.", default = 480 }
+    players_to_start = { label = "Players Required to Start", type = "integer", description = "Minimum number of players required for the match to begin.", default = 5 }
+    post_time = { label = "Post Match Time", type = "integer", description = "Time after match ends before returning to the menu.", default = 30 }
+    preparing_time = { label = "Preparing Time", type = "integer", description = "Preparation time before warmup (short setup phase).", default = 10 }
+    pumpkins_per_player = { label = "Pumpkins Per Player", type = "integer", description = "Base number of pumpkins each player starts with.", default = 5 }
+    survivor_scream_cooldown = { label = "Survivor Scream Cooldown", type = "integer", description = "Cooldown for survivor scream ability.", default = 35 }
+    survivor_speed_multiplier = { label = "Survivor Speed Multiplier", type = "floating", description = "Multiplier for survivor movement speed.", default = 1.150000 }
+    survivors_per_knight = { label = "Survivors Per Knight", type = "integer", description = "Number of survivors assigned per knight at round start.", default = 4 }
+    trapdoor_time = { label = "Trapdoor Active Time", type = "integer", description = "Duration trapdoors remain active when triggered.", default = 90 }
+    warmup_time = { label = "Warmup Time", type = "integer", description = "Time in seconds before the match warmup starts.", default = 20 }

@@ -1,4 +1,5 @@
 ROLES = {
+	NONE = 0,
 	SURVIVOR = 1,
 	KNIGHT = 2
 }
@@ -10,3 +11,10 @@ MATCH_STATES = {
 	POST_TIME = 4,
 	PREPARING = 5,
 }
+
+KNIGHT_ARCHETYPES = {}
+
+function ADD_KNIGHT_ARCHETYPE(archetype)
+	archetype.id = #KNIGHT_ARCHETYPES + 1
+	table.insert(KNIGHT_ARCHETYPES, archetype)
+end

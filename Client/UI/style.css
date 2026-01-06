@@ -9,98 +9,251 @@ body {
 	background-size: 100%;
 	color: white;
 	overflow: hidden;
+	/* background-color: rgba(0, 0, 0, 0.59); */
 }
 
-#players_heads {
-	text-align: center;
-	margin-top: 25px;
+#top_bar_label {
+	background-color: #0000001a;
+	border-radius: 5px;
+	font-size: 22px;
+	padding: 5px 10px;
+	display: none;
+}
+
+/* TODO more general solution, add class to each element that needs to be visible when body.class is active */
+body.post_time #top_bar_pumpkins_remaining,
+body.post_time #status_bar_right,
+body.post_time #status_bar_playing,
+body.post_time #status_bar_spectating,
+body.post_time #objective,
+body.post_time #status_bar_help {
+	display: none;
+}
+
+body.match_not_started #top_bar,
+body.match_not_started #top_bar_pumpkins_remaining,
+body.match_not_started #status_bar_right,
+body.match_not_started #status_bar_playing,
+body.match_not_started #status_bar_spectating,
+body.match_not_started #objective {
+	display: none;
+}
+
+body.spectating #status_bar_right,
+body.spectating #status_bar_playing {
+	display: none;
+}
+
+#top_bar_label_container {
 	position: absolute;
+	top: 65px;
+	font-size: 22px;
 	width: 100%;
+	display: flex;
+	justify-content: center;
+}
+
+#top_bar_pumpkins_remaining {
+	background-color: #0000001a;
+	border-radius: 5px;
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	align-items: center;
+	padding: 2px 10px;
+}
+
+#pumpkins_icon {
+	width: 31px;
+	height: 31px;
+	margin-top: -1px;
+}
+
+#pumpkins_found_count {
+	font-weight: bold;
+	font-size: 40px;
+	line-height: 40px;
+}
+
+#top_bar {
+	position: absolute;
+	top: 10px;
+	font-size: 22px;
+	width: 100%;
+	display: flex;
+  	align-items: center;
+}
+
+#top_bar_left {
+	position: absolute;
+	right: 50%;
+	box-sizing: border-box;
+  	padding: 0 50px 0 300px;
+	width: 50%;
+}
+
+#top_bar_center {
+	background-color: #0000003d;
+	border-radius: 5px;
+	text-align: center;
+	padding: 10px 10px;
+	width: 60px;
+	margin: 0 auto;
+}
+
+#top_bar_right {
+	position: absolute;
+	left: 50%;
+	box-sizing: border-box;
+  	padding: 0 310px 0 50px;
+	width: 50%;
+}
+
+#survivor_heads,
+#knight_heads {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	overflow: hidden;
+}
+
+#survivor_heads {
+	flex-direction: row-reverse;
+}
+
+#knight_heads {
+  	flex-direction: row;
 }
 
 .head {
-	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-color: #00000017;
+	border-radius: 5px;
 	width: 20px;
 	height: 30px;
-	background-size: 100% auto;
-	background-repeat: no-repeat;
-	margin: 3px;
+	flex-shrink: 0;
+}
+
+#knight_heads .head {
+	background-size: 60%;
+}
+
+#survivor_heads .head {
+	background-size: 80%;
 }
 
 .survivor_head_alive {
-	background-image: url("images/worker.png");
+	background-image: url("images/worker.webp");
 }
 
 .survivor_head_dead {
-	background-image: url("images/worker_dead.png");
+	background-image: url("images/dead.webp");
 }
 
 .survivor_head_escaped {
-	background-image: url("images/worker_escaped.png");
+	background-image: url("images/emergency-exit.webp");
+	background-size: 95% !important;
 }
 
 .knight_head_alive {
-	background-image: url("images/knight.png");
+	background-image: url("images/knight.webp");
 }
 
 .knight_head_dead {
-	background-image: url("images/knight_dead.png");
-}
-
-#status_bar div {
-	background-color: #0000003d;
-	border-radius: 5px;
-	display: inline-block;
-	height: 50px;
-	line-height: 50px;
-	text-align: center;
+	background-image: url("images/knight_dead.webp");
 }
 
 #clock {
-	width: 75px;
-	margin-left: 25px;
+	font-family: "Germania One", system-ui;
+	font-size: 24px;
+	line-height: 25px;
 }
 
 #label {
-	width: 250px;
+	font-size: 12px;
+}
+
+.status_item {
+	background-color: #0000003d;
+	border-radius: 5px;
+	height: 50px;
+	line-height: 50px;
+	position: relative;
+	text-align: center;
+}
+
+.status_label {
+	position: absolute;
+	font-size: 10px;
+	width: 100%;
+	display: block;
+	bottom: 0;
+	line-height: 10px;
+	margin-bottom: 5px;
 }
 
 #special {
-	width: 70px;
-	font-size: 15px;
+	width: 100px !important;
+	height: 100px !important;
+	font-size: 20px;
+	text-transform: uppercase;
 }
 
-#special.ready {
-	color: #2adb3e;
+#special::before {
+	background-size: 65%;
+	background-repeat: no-repeat;
+	background-position: 50% 10px;
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	opacity: 0.3;
+	z-index: -1;
+}
+
+#special.ready::before {
+	opacity: 1;
+}
+
+body.survivor #special::before {
+	background-image: url("./images/face.webp");
+}
+
+body.knight #special::before {
+	background-image: url("./images/ghost-face.webp");
+}
+
+#special_label {
+	font-size: 15px;
+	color: rgb(129, 129, 129);
+	margin-bottom: 10px;
+}
+
+#special_title {
+	font-size: 10px;
+	top: -20px;
+	opacity: 0.5;
+}
+
+#special.ready #special_label {
+	color: white;
+}
+
+#special.ready #special_cooldown {
+	display: none;
 }
 
 #special_cooldown {
 	display: block;
-	font-size: 16px;
+	font-size: 45px;
 	position: relative;
-	line-height: 55px;
-	bottom: 7px;
+	top: 18px;
 }
 
-#special_label {
-	display: block;
-	position: absolute;
-	bottom: -15px;
-	font-size: 10px;
-	width: 70px;
-}
-
-#label_big {
-	position: absolute;
-	top: 100px;
-	color: white;
-	font-size: 60px;
-	width: 100%;
-	text-align: center;
-	font-family: 'Creepster', cursive;
-}
-
-#logo, #map {
+#logo, #map, #help {
 	position: absolute;
 	left: 50%;
 	top: 50%;
@@ -109,174 +262,560 @@ body {
 
 #map {
 	display: none;
-	opacity: 0.95;
+	opacity: 0.99;
+	height: 85%;
 }
 
-#radar {
-	width: 50px;
-	background-size: 50%;
-	background-repeat: no-repeat;
-	background-position: 50% 5px;
-	position: relative;
+#help {
+	display: none;
+	opacity: 0.99;
+	height: 80%;
+	width: 100%;
+	text-align: center;
+}
+
+#help img {
+	height: 100%;
+}
+
+body.survivor #help img.knight {
+	display: none;
+}
+
+body.knight #help img.survivor {
+	display: none;
 }
 
 #map_status {
-	width: 60px;
-	background-size: 38%;
-	background-repeat: no-repeat;
-	background-position: 50% 6px;
-	position: relative;
-	background-image: url("./images/map_disabled.png");
+	background-size: 45% !important;
+	background-position: 50% 9px !important;
+	background-image: url("./images/map_disabled.webp");
 }
 
 #map_status.enabled {
-	background-image: url("./images/map_enabled.png");
+	background-image: url("./images/map_enabled.webp");
 }
 
-#map_label {
-	position: absolute;
-	font-size: 10px;
-	width: 100%;
-	top: 15px;
-	left: 0;
+#help_status {
+	background-image: url("./images/guidebook.webp");
 }
 
-#flashlight {
-	width: 70px;
-	background-size: 40%;
+#help_status.enabled {
+	background-image: url("./images/guidebook_enabled.webp");
+}
+
+#radar {
+	transition: all 1s;
+}
+
+body.survivor #radar {
+	background-image: url("./images/pumpkin_disabled.webp");
+}
+
+body.survivor #radar.enabled {
+	background-image: url("./images/pumpkin_enabled.webp");
+}
+
+body.knight #radar {
+	background-image: url("./images/workers_disabled.webp");
+}
+
+body.knight #radar.enabled {
+	background-image: url("./images/workers_enabled.webp");
+}
+
+#radar.enabled {
+	opacity: 1 !important;
+	color: #ffb400;
+	transition: all 0s;
+}
+
+#special_active::before {
+	background-image: url("./images/ghost-face.webp");
+	background-size: 60%;
 	background-repeat: no-repeat;
 	background-position: 50% 5px;
-	position: relative;
-	background-image: url("./images/flashlight_disabled.png");
-}
-
-#flashlight.enabled {
-	background-image: url("./images/flashlight_enabled.png");
-}
-
-#flashlight_label {
+	content: "";
 	position: absolute;
-	font-size: 10px;
-	width: 100%;
-	top: 15px;
-	left: 0;
-}
-
-#status_bar {
-	color: white;
-	position: absolute;
-	bottom: 25px;
-	font-size: 22px;
-	width: 100%;
-	text-align: left;
-}
-
-#radar_label {
-	position: absolute;
-	font-size: 10px;
-	width: 100%;
-	top: 15px;
-	left: 0;
-}
-
-#radar_inner {
-	background-color: #0000 !important;
-	position: absolute;
-	background-size: 50%;
-	background-repeat: no-repeat;
-	background-position: 50% 5px;
 	top: 0;
-	width: 100%;
 	left: 0;
-}
-
-#radar.survivor #radar_inner {
-	background-image: url("./images/pumpkin_enabled.png");
-}
-
-#radar.knight #radar_inner {
-	background-image: url("./images/workers_enabled.png");
-}
-
-#radar.survivor {
-	background-image: url("./images/pumpkin_disabled.png");
-}
-
-#radar.knight {
-	background-image: url("./images/workers_disabled.png");
-}
-
-#horseman_paper, #survivor_paper {
-	display: none;
-	position: absolute;
-	transform: translate(-50%, -50%);
 	width: 100%;
-	left: 50%;
-	background-size: 50%;
-	background-position: 50%;
-	background-repeat: no-repeat;
 	height: 100%;
-	top: 50%;
+	opacity: 0.3;
+	color: red;
 }
 
-#horseman_paper {
-	background-image: url("./images/paper_horseman.png");
-}
-
-#survivor_paper {
-	background-image: url("./images/paper_survivor.png");
-}
-
-#pumpkins_found {
-	position: relative;
-	background-size: 50%;
-	background-repeat: no-repeat;
-	background-position: 50% 5px;
-	background-image: url("./images/pumpkins.png");
-	width: 50px;
-	float: right;
-	margin-right: 25px;
-}
-
-#pumpkins_found_count {
-	background-color: transparent !important;
-    position: absolute;
-    font-size: 14px;
-    width: 100%;
-    top: 13px;
-	left: 0;
-}
-
-#mvp {
-	text-align: center;
-	position: absolute;
-	top: 200px;
-	width: 100%;
-	color: white;
+#special_active {
 	display: none;
+	opacity: 1 !important;
+	text-transform: uppercase;
 }
 
-#mvp > div {
-	width: 350px;
-	display: inline-block;
-}
-
-#mvp span {
+#special_active.enabled {
 	display: block;
 }
 
-#mvp_label {
-	font-size: 25px;
-}
-
-#mvp_value {
-	font-size: 45px;
-}
-
-#mvp_pumpkins_label, #mvp_damage_label {
-
-}
-
-#mvp_pumpkins_value, #mvp_damage_value {
+#special_active_remaining_time {
 	font-size: 30px;
+}
+
+#spotted {
+	display: none;
+	background-image: url("./images/eye_disabled.webp");
+}
+
+body.survivor #spotted {
+	display: block;
+}
+
+#spotted.enabled {
+	opacity: 1 !important;
+	color: #fe2f00;
+	background-image: url("./images/eye_enabled.webp");
+	box-shadow: 0px 0px 10px 0px #ff00002d;
+}
+
+#night_vision {
+	background-size: 40% !important;
+	background-position: 50% 8px !important;
+	background-image: url("./images/binoculars.webp");
+}
+
+#lollipop {
+	background-size: 35% !important;
+	background-position: 50% 8px !important;
+	background-image: url("./images/lollipop.webp");
+}
+
+.powerup_item {
+	display: none;
+	width: 60px !important;
+	height: 60px !important;
+	border-radius: 20px;
+	background-color: #0059a86b;
+	opacity: 1 !important;
+}
+
+.powerup_item .status_label {
+	font-size: 9px;
+}
+
+#flashlight {
+	background-image: url("./images/flashlight_disabled.webp");
+}
+
+#flashlight.enabled {
+	background-image: url("./images/flashlight_enabled.webp");
+}
+
+#status_bar_right .status_item {
+	position: relative;
+	width: 70px;
+	height: 70px;
+	background-size: 50%;
+	background-repeat: no-repeat;
+	background-position: 50% 5px;
+	opacity: 0.2;
+}
+
+#status_bar_playing .status_item,
+#status_bar_help .status_item {
+	position: relative;
+	width: 65px;
+	height: 60px;
+	background-size: 50%;
+	background-repeat: no-repeat;
+	background-position: 50% 5px;
+}
+
+#status_bar_spectating .status_item {
+	position: relative;
+	width: 70px;
+	height: 60px;
+}
+
+#status_bar_spectating .status_item .status_label {
+	top: 50%;
+	left: 50%;
+	bottom: initial;
+	transform: translate(-50%, -50%);
+}
+
+body.spectating #status_bar_spectating {
+	display: flex;
+}
+
+body.match_not_started #status_bar_spectating {
+	display: none;
+}
+
+#attack {
+	display: none;
+	background-image: url("./images/axe.webp");
+}
+
+#attack.enabled {
+	background-image: url("./images/axe.webp");
+}
+
+body.knight #attack {
+	display: block;
+}
+
+#sprint {
+	background-image: url("./images/race.webp");
+}
+
+#status_bar {
+	position: absolute;
+	bottom: 30px;
+	font-size: 22px;
+	width: 100%;
+	display: flex;
+  	justify-content: space-between;
+}
+
+#status_bar_left {
+	display: flex;
+	align-items: flex-end;
+	gap: 15px;
+	margin-left: 25px;
+}
+
+#status_bar_spectating {
+	display: none;
+	align-items: flex-end;
+	gap: 15px;
+}
+
+#status_bar_playing,
+#status_bar_help {
+	display: flex;
+	align-items: flex-end;
+	gap: 15px;
+}
+
+#status_bar_right {
+	display: flex;
+	align-items: flex-end;
+	gap: 10px;
+	margin-right: 25px;
+}
+
+#objective {
+	position: absolute;
+	right: 25px;
+	font-size: 12px;
+	background-color: #0000001a;
+	border-radius: 5px;
+	padding: 10px 10px;
+	text-transform: uppercase;
+}
+
+.keybinding {
+	width: 30px;
+	opacity: 0.9;
+	position: absolute;
+	bottom: -5px;
+	right: -15px;
+}
+
+.keybinding_left {
+	left: -15px;
+}
+
+#name_tag {
+	display: none;
+	background-color: #0000001a;
+	border-radius: 5px;
+	font-size: 12px;
+	padding: 2px 5px;
+	position: absolute;
+	top: 55%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+
+#tally {
+	display: none;
+	background-color: #00000070;
+	border-radius: 5px;
+	font-size: 12px;
+	position: absolute;
+	padding: 20px 0;
+	transform: translate(-50%, 0);
+	left: 50%;
+	top: 150px;
+	width: 65%;
+	max-width: 1400px;
+	max-height: 80%;
+	box-sizing: border-box;
+}
+
+#tally_survivors, #tally_knights {
+	flex-basis: 50%;
+	padding: 0 20px;
+	display: flex;
+  	flex-direction: column;
+}
+
+#tally_survivors {
+	border-right: 1px solid #ffffff21;
+}
+
+#tally_knights {
+}
+
+.tally_title {
+	font-family: "Germania One", system-ui;
+	font-size: 30px;
+	font-weight: bold;
+}
+
+.tally_list {
+	margin-top: 10px;
+	overflow: auto;
+}
+
+.tally_player {
+	display: flex;
+	border-top: 1px solid #ffffff21;
+	padding: 5px 0;
+	align-items: center;
+	gap: 20px;
+}
+
+.tally_player_left {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+}
+
+.tally_player_name {
+	text-transform: uppercase;
+	font-size: 14px;
+	margin-left: 2px;
+}
+
+.tally_player_items {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.tally_player_items span {
+	background-size: 75%;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	width: 15px;
+	height: 15px;
+}
+
+.tally_player_pumpkin {
+	background-image: url("./images/pumpkin_enabled.webp");
+}
+
+.tally_player_lollipop {
+	background-image: url("./images/lollipop.webp");
+}
+
+.tally_player_skull {
+	background-image: url("./images/skull.webp");
+}
+
+.tally_player_binoculars {
+	background-image: url("./images/binoculars.webp");
+}
+
+.tally_player_medals,
+#tally_players_header_medals {
+	display: flex;
+	flex-shrink: 0;
+}
+
+.tally_player_medals span,
+#tally_players_header_medals span {
+	background-size: 90%;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	width: 40px;
+	height: 35px;
+	filter: sepia(20%);
+}
+
+#tally_players_header_medals span {
+	background-size: 55%;
+	background-position: 50% 15%;
+	font-size: 7px;
+	text-align: center;
+	line-height: 60px;
+}
+
+#tally_survivors_header_medal_objective {
+	background-image: url("./images/target.webp");
+}
+
+#tally_survivors_header_medal_survival {
+	background-image: url("./images/camping-fire.webp");
+}
+
+#tally_survivors_header_medal_evader {
+	background-size: 60% !important;
+	background-image: url("./images/power.webp");
+}
+
+#tally_knights_header_medal_devout {
+	background-image: url("./images/knife.webp");
+}
+
+#tally_knights_header_medal_brutality {
+	background-image: url("./images/hemoptysis.webp");
+}
+
+#tally_knights_header_medal_chaser {
+	background-image: url("./images/ghost.webp");
+}
+
+.tally_player_medal_gold {
+	background-image: url("./images/gold-badge.webp");
+}
+
+.tally_player_medal_silver {
+	background-image: url("./images/silver-badge.webp");
+}
+
+.tally_player_medal_bronze {
+	background-image: url("./images/bronze-badge.webp");
+	filter: grayscale(30%);
+}
+
+.tally_player_medal_none {
+	background-image: url("./images/bronze-badge.webp");
+	opacity: 0.15;
+	filter: grayscale(100%);
+}
+
+.tally_player_score,
+#tally_players_header_score {
+	width: 65px;
+	text-align: right;
+}
+
+.tally_player_score {
+	font-size: 28px;
+	flex-shrink: 0;
+	font-family: "Germania One", system-ui;
+}
+
+.tally_player_damage,
+#tally_players_header_damage,
+.tally_player_distance,
+#tally_players_header_distance {
+	width: 55px;
+	text-align: right;
+}
+
+.tally_player_damage,
+.tally_player_distance {
+	font-size: 12px;
+	vertical-align: bottom;
+	flex-shrink: 0;
+	color: rgb(219, 219, 219);
+}
+
+.tally_player_status {
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	width: 45px;
+	height: 35px;
+	flex-shrink: 0;
+}
+
+.tally_player_status_escaped {
+	background-image: url("./images/emergency-exit.webp");
+	background-size: 75%;
+}
+
+.tally_player_status_dead {
+	background-image: url("./images/skull.webp");
+	background-size: 50%;
+}
+
+.tally_player_status_alive {
+	background-image: url("./images/worker.webp");
+	background-size: 50%;
+}
+
+#tally_players_header {
+	display: flex;
+	align-items: center;
+	opacity: 0.5;
+	gap: 20px;
+}
+
+#tally_players_header_name {
+	flex-grow: 1;
+}
+
+#tally_players_header_medals {
+	text-align: right;
+}
+
+#tally_survivors_header_status {
+	width: 45px;
+	text-align: center;
+}
+
+#tally.enabled {
+	display: flex;
+}
+
+#feed {
+	position: absolute;
+	right: 35px;
+	bottom: 110px;
+	font-size: 12px;
+  	opacity: 0.75;
+}
+
+.feed-item {
+	margin: 5px 0;
+	line-height: 20px;
+	color: #a8a8a8;
+	text-align: right;
+}
+
+.feed-item-image {
+	background-size: 100%;
+	background-repeat: no-repeat;
+	background-position: 50%;
+	width: 15px;
+	height: 15px;
+	display: inline-block;
+	vertical-align: middle;
+	margin-left: 2px;
+}
+
+.feed-item-name {
+	color: white;
+}
+
+.feed-item-pumpkin {
+	background-image: url("./images/pumpkin_enabled.webp");
+}
+
+.feed-item-lollipop {
+	background-image: url("./images/lollipop.webp");
+}
+
+.feed-item-goggles {
+	background-image: url("./images/binoculars.webp");
+}
+
+.feed-item-kill {
+	background-image: url("./images/dead.webp");
+}
+
+.feed-item-escaped {
+	background-image: url("./images/emergency-exit.webp");
 }
