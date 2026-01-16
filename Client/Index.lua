@@ -405,13 +405,13 @@ Events.SubscribeRemote("TriggerXRay", function()
 		-- Makes everyone red for 10 seconds
 		for k, character in pairs(SurvivorCharacter.GetPairs()) do
 			if (not character:IsDead()) then
-				character:SetHighlight(true)
+				character:SetHighlight(true, true)
 			end
 		end
 	else
 		-- Makes myself red as well
 		if (NanosUtils.IsEntityValid(Halloween.local_character)) then
-			Halloween.local_character:SetHighlight(true)
+			Halloween.local_character:SetHighlight(true, false)
 		end
 	end
 

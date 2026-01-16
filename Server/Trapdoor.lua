@@ -14,10 +14,8 @@ function Trapdoor:Open()
 	self:SetMesh("halloween-city-park::SM_Trapdoor_Opened")
 	Halloween.is_trapdoor_opened = true
 
-	-- Sets additional time
-	if (Halloween.remaining_time < HalloweenSettings.custom_settings.trapdoor_time) then
-		Halloween.remaining_time = HalloweenSettings.custom_settings.trapdoor_time
-	end
+	-- Sets trapdoor final time
+	Halloween.remaining_time = HalloweenSettings.custom_settings.trapdoor_time
 
 	Chat.BroadcastMessage("A <green>Trapdoor</> has been opened! Survivors must find it to escape!")
 

@@ -1,5 +1,14 @@
 Trapdoor = StaticMesh.Inherit("Trapdoor")
 
+function Trapdoor:ShowBillboard()
+	local my_billboard = Billboard(Vector(), "nanos-world::M_Default_Translucent_Unlit_Depth", Vector2D(0.025, 0.04), true)
+	my_billboard:SetMaterialTextureParameter("Texture", "package://halloween/Client/UI/images/emergency-exit.png")
+	my_billboard:SetMaterialScalarParameter("Opacity", 1)
+	my_billboard:SetMaterialColorParameter("Emissive", Color.ORANGE * 0.01)
+	my_billboard:AttachTo(self, AttachmentRule.SnapToTarget, "", 0)
+	my_billboard:SetRelativeLocation(Vector(0, 0, 100))
+end
+
 function Trapdoor:OnOpen(new_remaining_time)
 	Halloween.is_trapdoor_opened = true
 	Sound(self:GetLocation(), "halloween-city-park::A_Hatch_Cue", false, false, SoundType.SFX, 1.5, 1, 1000, 60000, AttenuationFunction.Logarithmic, true, SoundLoopMode.Forever)
@@ -8,6 +17,9 @@ function Trapdoor:OnOpen(new_remaining_time)
 
 	if (Halloween.current_role == ROLES.SURVIVOR) then
 		HUD:CallEvent("SetObjective", "ESCAPE THROUGH THE HATCH")
+
+		-- Shows billboard over the Hatch
+		self:ShowBillboard()
 	end
 
 	-- Updates remaining time

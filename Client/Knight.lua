@@ -11,7 +11,7 @@ function KnightCharacter:OnStun()
 
 		-- Disables Highlight, as it keeps appearing while screen is faded out
 		for k, c in pairs(SurvivorCharacter.GetPairs()) do
-			c:SetHighlight(false)
+			c:SetHighlight(false, true)
 		end
 
 		-- Sets effects on screen, to feel stunned

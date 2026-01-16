@@ -1,7 +1,13 @@
 SurvivorCharacter = Character.Inherit("SurvivorCharacter")
 
-function SurvivorCharacter:SetHighlight(highlight)
+function SurvivorCharacter:SetHighlight(highlight, with_billboard)
 	self:SetHighlightEnabled(highlight, 0)
+
+	-- Deletes any existing billboard
+	if (with_billboard and self.billboard) then
+		self.billboard:Destroy()
+		self.billboard = nil
+	end
 
 	if (highlight) then
 		-- If already running a timer, just resets it
@@ -9,12 +15,28 @@ function SurvivorCharacter:SetHighlight(highlight)
 			Timer.ResetElapsedTime(self.highlight_timer)
 		else
 			-- Backs to normal after 10 seconds
-			self.highlight_timer = Timer.SetTimeout(function(_char)
-				_char:SetHighlight(false)
+			self.highlight_timer = Timer.SetTimeout(function(_char, _with_billboard)
+				_char:SetHighlight(false, _with_billboard)
 				_char.highlight_timer = nil
-			end, 10000, self)
+			end, 10000, self, with_billboard)
 
 			Timer.Bind(self.highlight_timer, self)
+		end
+
+		if (with_billboard) then
+			-- Spawn billboard
+			local texture = "package://halloween/Client/UI/images/worker.png"
+			local color = Color.RED
+			local size = Vector2D(0.01, 0.013)
+
+			local my_billboard = Billboard(Vector(), "nanos-world::M_Default_Translucent_Unlit_Depth", size, true)
+			my_billboard:SetMaterialTextureParameter("Texture", texture)
+			my_billboard:SetMaterialScalarParameter("Opacity", 1)
+			my_billboard:SetMaterialColorParameter("Emissive", color * 0.01)
+			my_billboard:AttachTo(self, AttachmentRule.SnapToTarget, "", 0)
+			my_billboard:SetRelativeLocation(Vector(0, 0, 125))
+
+			self.billboard = my_billboard
 		end
 	else
 		if (self.highlight_timer and Timer.IsValid(self.highlight_timer)) then
@@ -59,7 +81,7 @@ function SurvivorCharacter:OnDeath()
 	Sound(self:GetLocation(), "halloween-city-park::A_Scream", false, true, SoundType.SFX, 1, 1, 1000, 50000, AttenuationFunction.Logarithmic, true)
 
 	-- Sets his corpse as Highlight
-	self:SetHighlight(true)
+	self:SetHighlight(true, false)
 end
 
 function SurvivorCharacter:OnTriggerAbility(cooldown)
@@ -68,7 +90,7 @@ function SurvivorCharacter:OnTriggerAbility(cooldown)
 
 	-- Make me highlight for all knights and me
 	if (Halloween.current_role == ROLES.KNIGHT or Halloween.local_character == self) then
-		self:SetHighlight(true)
+		self:SetHighlight(true, true)
 	end
 
 	if (Halloween.local_character == self) then

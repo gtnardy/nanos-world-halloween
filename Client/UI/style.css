@@ -152,7 +152,7 @@ body.spectating #status_bar_playing {
 }
 
 .survivor_head_escaped {
-	background-image: url("images/emergency-exit.webp");
+	background-image: url("images/emergency-exit.png");
 	background-size: 95% !important;
 }
 
@@ -732,7 +732,7 @@ body.knight #attack {
 }
 
 .tally_player_status_escaped {
-	background-image: url("./images/emergency-exit.webp");
+	background-image: url("./images/emergency-exit.png");
 	background-size: 75%;
 }
 
@@ -817,5 +817,5 @@ body.knight #attack {
 }
 
 .feed-item-escaped {
-	background-image: url("./images/emergency-exit.webp");
+	background-image: url("./images/emergency-exit.png");
 }

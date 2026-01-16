@@ -62,14 +62,22 @@ function UpdateSpectatingBillboards()
 				size = Vector2D(0.011, 0.011)
 			end
 
+			-- Deletes any existing billboard
+			if (character.billboard) then
+				character.billboard:Destroy()
+			end
+
 			local my_billboard = Billboard(Vector(), "nanos-world::M_Default_Translucent_Unlit_Depth", size, true)
 			my_billboard:SetMaterialTextureParameter("Texture", texture)
 			my_billboard:SetMaterialScalarParameter("Opacity", 1)
-			my_billboard:SetMaterialColorParameter("Emissive", color * 0.05)
+			my_billboard:SetMaterialColorParameter("Emissive", color * 0.02)
 			my_billboard:AttachTo(character, AttachmentRule.SnapToTarget, "", 0)
 			my_billboard:SetRelativeLocation(Vector(0, 0, 125))
 
 			character.billboard = my_billboard
 		end
 	end
+
+	-- Shows Trapdoor location
+	Trapdoor.GetByIndex(1):ShowBillboard()
 end
