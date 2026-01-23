@@ -387,13 +387,6 @@ Events.SubscribeRemote("UpdateMatchState", function(new_state, remaining_time, t
 	Halloween.match_state = new_state
 end)
 
-Events.SubscribeRemote("SetSpecialCooldown", function(current_knights_special_cooldown)
-	if (Halloween.current_role == ROLES.KNIGHT) then
-		HUD:CallEvent("SetSpecialCooldown", current_knights_special_cooldown)
-	end
-
-end)
-
 Events.SubscribeRemote("AddFeedItem", function(type, name1, name2)
 	HUD:CallEvent("AddFeedItem", type, name1, name2)
 end)
