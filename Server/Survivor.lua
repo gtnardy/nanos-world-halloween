@@ -127,7 +127,6 @@ function SurvivorCharacter:Constructor(location, rotation)
 		self:SetMaterial(selected_material, 0)
 	end
 
-	self.light_intensity = 0.02
 	self.speed_multiplier = HalloweenSettings.custom_settings.survivor_speed_multiplier
 
 	self:SetSpeedMultiplier(self.speed_multiplier)
@@ -154,7 +153,7 @@ function SurvivorCharacter:Constructor(location, rotation)
 	self:SetInputEnabled(false)
 
 	-- Survivor light
-	self.light = Light(Vector(), Rotator(), Color(0.97, 0.76, 0.46), LightType.Spot, self.light_intensity, 6000, 30, 0.75, 15000, false, true, true, 100)
+	self.light = Light(Vector(), Rotator(), Color(0.97, 0.76, 0.46), LightType.Spot, 0.02, 6000, 30, 0.75, 15000, false, true, true, 100)
 	self.light:SetValue("Enabled", true)
 	self.light:SetTextureLightProfile(LightProfile.Star_Burst_07)
 	self.light:AttachTo(self, AttachmentRule.SnapToTarget, "head", 0)

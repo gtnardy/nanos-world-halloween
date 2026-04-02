@@ -6,7 +6,6 @@ function KnightCharacter:Constructor(location, rotation)
 	local pumpkin_mesh = HalloweenSettings.knight_pumpkins[math.random(#HalloweenSettings.knight_pumpkins)]
 
 	self.speed_multiplier = HalloweenSettings.custom_settings.knight_speed_multiplier
-	self.light_intensity = 0.2
 
 	self:SetAnimationIdleWalkRunStanding("nanos-world::BS_BossyEnemy_Standing")
 	self:AddStaticMeshAttached("pumpkin", pumpkin_mesh, "head", Vector(-10, 0, 0), Rotator(20, 90, -90))
@@ -35,7 +34,7 @@ function KnightCharacter:Constructor(location, rotation)
 	self:SetInputEnabled(false)
 
 	-- Knight Light
-	self.light = Light(Vector(), Rotator(), Color(0.97, 0.66, 0.57), LightType.Spot, self.light_intensity, 8000, 50, 0.1, 15000, false, true, true, 100)
+	self.light = Light(Vector(), Rotator(), Color(0.97, 0.66, 0.57), LightType.Spot, 0.2, 8000, 50, 0.1, 15000, false, true, true, 100)
 	self.light:SetValue("Enabled", true)
 	self.light:AttachTo(self, AttachmentRule.SnapToTarget, "head", 0)
 	self.light:SetRelativeLocation(Vector(20, 35, 0))

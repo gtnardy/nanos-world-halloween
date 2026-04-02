@@ -5,7 +5,7 @@
     # contributors
     author =                "nanos world™"
     # version
-    version =               "2.1.0"
+    version =               "2.1.1"
 
 # game-mode configurations
 [game_mode]
@@ -19,7 +19,7 @@
     compatibility_version = "1.93"
     # packages requirements
     packages_requirements = [
-                            
+
     ]
     # asset packs requirements
     assets_requirements = [

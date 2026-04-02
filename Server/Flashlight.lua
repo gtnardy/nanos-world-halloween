@@ -9,7 +9,7 @@ function ToggleFlashlight(player)
 	if (light == nil) then return end
 
 	if (light:GetValue("Enabled")) then
-		light:SetIntensity(0)
+		light:SetVisibility(false)
 		light:SetValue("Enabled", false)
 
 		Events.BroadcastRemote("FlashlightToggled", player, character:GetLocation(), false)
@@ -17,7 +17,7 @@ function ToggleFlashlight(player)
 		-- Toggle head's mesh dark
 		character:SetMaterialScalarParameter("Emissive_Intensity", 0, 0, "pumpkin")
 	else
-		light:SetIntensity(character.light_intensity)
+		light:SetVisibility(true)
 		light:SetValue("Enabled", true)
 
 		Events.BroadcastRemote("FlashlightToggled", player, character:GetLocation(), true)
