@@ -25,7 +25,7 @@ function Lollipop:OnTriggerBeginOverlap(trigger, player, character)
 
 	self:BroadcastRemoteEvent("PickUp")
 
-	Events.BroadcastRemote("AddFeedItem", "lollipop", player:GetName())
+	Events.BroadcastRemote("AddFeedItem", Reliability.Reliable, "lollipop", player:GetName())
 
 	-- Picked up the Lollipop, destroys it
 	self:Destroy()

@@ -70,7 +70,7 @@ function THE_BERSERKER.active_ability.cancel_server(player)
 	character.light:SetColor(Color(0.97, 0.66, 0.57))
 	character:SetMaterialColorParameter("Emissive", Color(1, 0.32, 0), 0, "pumpkin")
 
-	character:BroadcastRemoteEvent("CancelAbility", THE_BERSERKER.id)
+	character:BroadcastRemoteEvent("CancelAbility", Reliability.Reliable, THE_BERSERKER.id)
 
 	return true
 end

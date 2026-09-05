@@ -157,7 +157,7 @@ function CalculateEndScores()
 			table.insert(knights, player_data)
 		end
 
-		Events.CallRemote("SubmitScoreToSteamLeaderboard", player, player_data.score)
+		Events.CallRemote("SubmitScoreToSteamLeaderboard", player, Reliability.Reliable, player_data.score)
 	end
 
 	local result_label = ""
@@ -181,5 +181,5 @@ function CalculateEndScores()
 	Chat.BroadcastMessage("Round finished! <green>" .. result_label .. "</>!")
 	Console.Log("Round finished! " .. result_label)
 
-	Events.BroadcastRemote("UpdatePostTimeResults", result_label, survivors, knights)
+	Events.BroadcastRemote("UpdatePostTimeResults", Reliability.Reliable, result_label, survivors, knights)
 end

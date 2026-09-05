@@ -155,7 +155,7 @@ function KnightCharacter:TriggerAbility(player)
 	-- Triggers Active Ability
 	local success = archetype_data.active_ability.callback_server(player)
 	if (success) then
-		self:BroadcastRemoteEvent("TriggerAbility", archetype, archetype_data.active_ability.cooldown, archetype_data.active_ability.duration)
+		self:BroadcastRemoteEvent("TriggerAbility", Reliability.Reliable, archetype, archetype_data.active_ability.cooldown, archetype_data.active_ability.duration)
 	end
 end
 

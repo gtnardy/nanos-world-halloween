@@ -80,7 +80,7 @@ Halloween = {
 -- When player fully connects (custom event)
 Events.SubscribeRemote("PlayerReady", function(player)
 	-- Sends the current state of the game to him
-	Events.CallRemote("UpdateMatchState", player, Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins, Halloween.pumpkins_found)
+	Events.CallRemote("UpdateMatchState", player, Reliability.Reliable, Halloween.match_state, Halloween.remaining_time, Halloween.total_pumpkins, Halloween.pumpkins_found)
 
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
 		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has joined the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.custom_settings.players_to_start .. ")!")
@@ -232,7 +232,7 @@ function SetPlayerRole(player, role)
 	player:SetValue("Role", role, true)
 	player:SetValue("IsAlive", true, true)
 
-	Events.BroadcastRemote("SetPlayerRole", player, role)
+	Events.BroadcastRemote("SetPlayerRole", Reliability.Reliable, player, role)
 
 	local character = SpawnCharacter(player, role)
 
@@ -259,7 +259,7 @@ function SetKnightArchetype(player, character, archetype)
 	local weapon = archetype_data.weapon(Vector(), Rotator())
 	character:PickUp(weapon)
 
-	Events.BroadcastRemote("SetKnightArchetype", player, archetype)
+	Events.BroadcastRemote("SetKnightArchetype", Reliability.Reliable, player, archetype)
 
 	Chat.BroadcastMessage(player:GetName() .. " is a <red>Horseless Headless Horseman (" .. archetype_data.name .. ")</>!")
 end
@@ -387,7 +387,7 @@ function UpdateMatchState(new_state)
 		Halloween.remaining_time = HalloweenSettings.custom_settings.post_time
 	end
 
-	Events.BroadcastRemote("UpdateMatchState", new_state, Halloween.remaining_time, Halloween.total_pumpkins, 0)
+	Events.BroadcastRemote("UpdateMatchState", Reliability.Reliable, new_state, Halloween.remaining_time, Halloween.total_pumpkins, 0)
 end
 
 -- Server Tick to check remaining times

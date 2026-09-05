@@ -176,7 +176,7 @@ function SurvivorCharacter:EquipLollipop()
 
 	self:AddStaticMeshAttached("lollipop", "halloween-city-park::SM_Lollipop", "hand_r_socket", Vector(2, -1, -5), Rotator(0, 0, 0))
 
-	self:CallRemoteEvent("EquipLollipop", self:GetPlayer(), true)
+	self:CallRemoteEvent("EquipLollipop", self:GetPlayer(), Reliability.Reliable, true)
 end
 
 function SurvivorCharacter:UnequipLollipop()
@@ -184,7 +184,7 @@ function SurvivorCharacter:UnequipLollipop()
 
 	self:RemoveStaticMeshAttached("lollipop")
 
-	self:CallRemoteEvent("EquipLollipop", self:GetPlayer(), false)
+	self:CallRemoteEvent("EquipLollipop", self:GetPlayer(), Reliability.Reliable, false)
 end
 
 function SurvivorCharacter:OnTakeDamage(damage, bone, type, from, instigator, causer)
@@ -215,9 +215,9 @@ function SurvivorCharacter:OnDeath(last_damage_taken, last_bone_damaged, damage_
 
 		instigator:SetValue("KilledSurvivors", killed_survivors + 1)
 
-		Events.BroadcastRemote("AddFeedItem", "kill", player:GetName(), instigator:GetName())
+		Events.BroadcastRemote("AddFeedItem", Reliability.Reliable, "kill", player:GetName(), instigator:GetName())
 	else
-		Events.BroadcastRemote("AddFeedItem", "kill", player:GetName())
+		Events.BroadcastRemote("AddFeedItem", Reliability.Reliable, "kill", player:GetName())
 	end
 
 	-- Chat.SendMessage(player, "You are <red>dead</>! You can spectate other players by switching <bold>Left</> or <bold>Right</> keys!")
@@ -251,7 +251,7 @@ function SurvivorCharacter:TriggerAbility(player)
 
 	self.ability_last_used = curr_time
 
-	self:BroadcastRemoteEvent("TriggerAbility", HalloweenSettings.custom_settings.survivor_scream_cooldown)
+	self:BroadcastRemoteEvent("TriggerAbility", Reliability.Reliable, HalloweenSettings.custom_settings.survivor_scream_cooldown)
 
 	self:PlayAnimation("nanos-world::A_Mannequin_Taunt_Praise", AnimationSlotType.UpperBody, false, 0.2, 0.6, 1.1)
 

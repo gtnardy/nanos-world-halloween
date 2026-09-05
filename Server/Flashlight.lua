@@ -12,7 +12,7 @@ function ToggleFlashlight(player)
 		light:SetVisibility(false)
 		light:SetValue("Enabled", false)
 
-		Events.BroadcastRemote("FlashlightToggled", player, character:GetLocation(), false)
+		Events.BroadcastRemote("FlashlightToggled", Reliability.Reliable, player, character:GetLocation(), false)
 
 		-- Toggle head's mesh dark
 		character:SetMaterialScalarParameter("Emissive_Intensity", 0, 0, "pumpkin")
@@ -20,7 +20,7 @@ function ToggleFlashlight(player)
 		light:SetVisibility(true)
 		light:SetValue("Enabled", true)
 
-		Events.BroadcastRemote("FlashlightToggled", player, character:GetLocation(), true)
+		Events.BroadcastRemote("FlashlightToggled", Reliability.Reliable, player, character:GetLocation(), true)
 
 		-- Toggle head's mesh bright
 		character:SetMaterialScalarParameter("Emissive_Intensity", 0.1, 0, "pumpkin")

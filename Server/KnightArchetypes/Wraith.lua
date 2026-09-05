@@ -86,7 +86,7 @@ function THE_WRAITH.active_ability.cancel_server(player)
 
 	character:Unsubscribe("PullUse")
 
-	character:BroadcastRemoteEvent("CancelAbility", THE_WRAITH.id)
+	character:BroadcastRemoteEvent("CancelAbility", Reliability.Reliable, THE_WRAITH.id)
 
 	return true
 end

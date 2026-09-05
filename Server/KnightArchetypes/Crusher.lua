@@ -45,7 +45,7 @@ function THE_CRUSHER.active_ability.finish_server(player, character)
 
 	character:DoAttackDebuff(true)
 	character:SetInputEnabled(true)
-	character:BroadcastRemoteEvent("FinishAbility", THE_CRUSHER.id)
+	character:BroadcastRemoteEvent("FinishAbility", Reliability.Reliable, THE_CRUSHER.id)
 end
 
 ADD_KNIGHT_ARCHETYPE(THE_CRUSHER)

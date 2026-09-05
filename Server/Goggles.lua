@@ -25,7 +25,7 @@ function Goggles:OnTriggerBeginOverlap(trigger, player, character)
 
 	self:BroadcastRemoteEvent("PickUp")
 
-	Events.BroadcastRemote("AddFeedItem", "goggles", player:GetName())
+	Events.BroadcastRemote("AddFeedItem", Reliability.Reliable, "goggles", player:GetName())
 
 	-- Picked up the Goggles, destroys it
 	self:Destroy()
