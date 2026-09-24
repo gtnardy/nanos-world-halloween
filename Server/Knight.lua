@@ -120,7 +120,11 @@ function KnightCharacter:CancelStun()
 
 	self.stun_timer = nil
 
-	self:CallRemoteEvent("CancelStun", self:GetPlayer())
+	local player = self:GetPlayer()
+
+	if (player) then
+		self:CallRemoteEvent("CancelStun", player)
+	end
 end
 
 -- Special Knight Ability (X)
@@ -161,6 +165,8 @@ end
 
 function KnightCharacter:CancelAbility()
 	local player = self:GetPlayer()
+	if (not player) then return end
+
 	local archetype = player:GetValue("KnightArchetype")
 	local archetype_data = KNIGHT_ARCHETYPES[archetype]
 

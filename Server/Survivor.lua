@@ -198,6 +198,7 @@ end
 
 function SurvivorCharacter:OnDeath(last_damage_taken, last_bone_damaged, damage_type_reason, hit_from_direction, instigator, causer)
 	local player = self:GetPlayer()
+	if (not player) then return end
 
 	if (instigator and instigator ~= player) then
 		local time_chasing = instigator:GetValue("ChaseTime") or 0

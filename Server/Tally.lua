@@ -157,7 +157,10 @@ function CalculateEndScores()
 			table.insert(knights, player_data)
 		end
 
-		Events.CallRemote("SubmitScoreToSteamLeaderboard", player, Reliability.Reliable, player_data.score)
+		-- Spectators and players that quit have no score to submit
+		if (player_data.score) then
+			Events.CallRemote("SubmitScoreToSteamLeaderboard", player, Reliability.Reliable, player_data.score)
+		end
 	end
 
 	local result_label = ""

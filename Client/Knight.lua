@@ -58,7 +58,10 @@ function KnightCharacter:OnCancelAbility(archetype)
 	if (Halloween.local_character == self) then
 
 		local archetype_data = KNIGHT_ARCHETYPES[archetype]
-		archetype_data.active_ability.cancel_client(self)
+
+		if (archetype_data.active_ability.cancel_client) then
+			archetype_data.active_ability.cancel_client(self)
+		end
 
 		HUD:CallEvent("SetSpecialActive", 0)
 	end

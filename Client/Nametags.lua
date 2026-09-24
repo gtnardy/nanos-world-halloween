@@ -36,7 +36,7 @@ Timer.SetInterval(function()
 		local player = trace_entity:GetPlayer()
 		if (player) then
 			local player_name = player:GetName()
-			if (not trace_entity:IsA(KnightCharacter) or not trace_entity:GetValue("IsInvisible") and nametag_active ~= player_name) then
+			if ((not trace_entity:IsA(KnightCharacter) or not trace_entity:GetValue("IsInvisible")) and nametag_active ~= player_name) then
 				nametag_active = player_name
 				HUD:CallEvent("ShowNameTag", true, player_name)
 			end

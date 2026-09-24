@@ -185,7 +185,7 @@ Character.Subscribe("Death", function (self, last_damage_taken, last_bone_damage
 	end
 
 	-- If I died, stop heartbeat sound
-	if (Halloween.local_character == self) then
+	if (Halloween.local_character == self and NanosUtils.IsEntityValid(Halloween.heartbeat_sound)) then
 		Halloween.heartbeat_sound:Stop()
 	end
 end)
@@ -278,6 +278,8 @@ function ClearServer()
 		for k, s in pairs(Sound.GetAll()) do s:Destroy() end
 		for k, l in pairs(Light.GetAll()) do l:Destroy() end
 	end
+
+	Halloween.heartbeat_sound = nil
 
 	HUD:CallEvent("ClearHUD")
 end

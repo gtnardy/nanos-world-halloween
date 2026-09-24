@@ -136,9 +136,9 @@ end)
 Character.Subscribe("TakeDamage", function(character, damage, bone, type, from, instigator, causer)
 	if (character:IsDead()) then return end
 
-	-- If it's suicide, ignore it
+	-- If it's suicide or the character has no Player anymore, ignore it
 	local character_player = character:GetPlayer()
-	if (not instigator or instigator == character_player) then
+	if (not instigator or not character_player or instigator == character_player) then
 		return
 	end
 
@@ -151,7 +151,7 @@ Character.Subscribe("TakeDamage", function(character, damage, bone, type, from, 
 
 	-- Does more debuff
 	local instigator_character = instigator:GetControlledCharacter()
-	if (instigator_character:IsA(KnightCharacter)) then
+	if (instigator_character and instigator_character:IsA(KnightCharacter)) then
 		instigator_character:DoAttackDebuff(true)
 	end
 end)
@@ -160,6 +160,7 @@ Character.Subscribe("Death", function(character)
 	if (Halloween.match_state ~= MATCH_STATES.IN_PROGRESS and Halloween.match_state ~= MATCH_STATES.WARM_UP) then return end
 
 	local player = character:GetPlayer()
+	if (not player) then return end
 
 	player:SetValue("IsAlive", false, true)
 	player:SetValue("KilledTime", Halloween.remaining_time)
@@ -387,14 +388,19 @@ function UpdateMatchState(new_state)
 		Halloween.remaining_time = HalloweenSettings.custom_settings.post_time
 	end
 
-	Events.BroadcastRemote("UpdateMatchState", Reliability.Reliable, new_state, Halloween.remaining_time, Halloween.total_pumpkins, 0)
+	Events.BroadcastRemote("UpdateMatchState", Reliability.Reliable, new_state, Halloween.remaining_time, Halloween.total_pumpkins, Halloween.pumpkins_found)
 end
 
 -- Server Tick to check remaining times
 Timer.SetInterval(function()
 	if (Halloween.match_state == MATCH_STATES.PREPARING) then
 		if (DecreaseRemainingTime()) then
-			UpdateMatchState(MATCH_STATES.WARM_UP)
+			-- Players may have left while preparing, so we go back to waiting instead of starting an empty match
+			if (Player.GetCount() < HalloweenSettings.custom_settings.players_to_start) then
+				UpdateMatchState(MATCH_STATES.WAITING_PLAYERS)
+			else
+				UpdateMatchState(MATCH_STATES.WARM_UP)
+			end
 		end
 	elseif (Halloween.match_state == MATCH_STATES.WARM_UP) then
 		if (DecreaseRemainingTime()) then

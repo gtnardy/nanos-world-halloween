@@ -48,7 +48,7 @@ end
 function THE_BERSERKER.active_ability.cancel_server(player)
 	local character = player:GetControlledCharacter()
 
-	if (not character.is_using_ability) then return false end
+	if (not character or not character.is_using_ability) then return false end
 
 	if (character.timer_cancel_ability and Timer.IsValid(character.timer_cancel_ability)) then
 		Timer.ClearTimeout(character.timer_cancel_ability)
@@ -61,7 +61,7 @@ function THE_BERSERKER.active_ability.cancel_server(player)
 
 	local weapon = character:GetPicked()
 	if (weapon and weapon:IsValid()) then
-		weapon:SetCooldown(weapon.cooldown / 2)
+		weapon:SetCooldown(weapon.cooldown)
 	end
 
 	character:SetFOVMultiplier(1)

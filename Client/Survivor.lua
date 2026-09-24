@@ -132,6 +132,8 @@ Timer.SetInterval(function()
 	end
 
 	-- Heartbeat Sound if Knight is nearby
+	if (not NanosUtils.IsEntityValid(Halloween.heartbeat_sound)) then return end
+
 	local has_knight_nearby = false
 	for k, c in pairs(KnightCharacter.GetPairs()) do
 		local distance = local_character_location:DistanceSquared(c:GetLocation())

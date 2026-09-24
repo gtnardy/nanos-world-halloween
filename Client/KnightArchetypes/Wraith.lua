@@ -26,7 +26,11 @@ function THE_WRAITH.active_ability.cancel_client(character)
 	PostProcess.SetChromaticAberration(0)
 	PostProcess.SetBloom(0.675)
 
-	character.vanish_light:Destroy()
+	if (NanosUtils.IsEntityValid(character.vanish_light)) then
+		character.vanish_light:Destroy()
+	end
+
+	character.vanish_light = nil
 end
 
 ADD_KNIGHT_ARCHETYPE(THE_WRAITH)

@@ -79,5 +79,9 @@ function UpdateSpectatingBillboards()
 	end
 
 	-- Shows Trapdoor location
-	Trapdoor.GetByIndex(1):ShowBillboard()
+	local trapdoor = Trapdoor.GetByIndex(1)
+
+	if (trapdoor) then
+		trapdoor:ShowBillboard()
+	end
 end

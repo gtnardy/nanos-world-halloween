@@ -60,7 +60,7 @@ function THE_WRAITH.active_ability.cancel_server(player)
 
 	local character = player:GetControlledCharacter()
 
-	if (not character.is_using_ability) then return false end
+	if (not character or not character.is_using_ability) then return false end
 
 	if (character.timer_cancel_ability and Timer.IsValid(character.timer_cancel_ability)) then
 		Timer.ClearTimeout(character.timer_cancel_ability)
@@ -80,7 +80,7 @@ function THE_WRAITH.active_ability.cancel_server(player)
 	character:SetSpeedMultiplier(character.speed_multiplier)
 
 	local wep = character:GetPicked()
-	if (wep and character:IsValid()) then
+	if (wep and wep:IsValid()) then
 		wep:ResetMaterial()
 	end
 

@@ -32,7 +32,7 @@ function Pumpkin:OnTriggerBeginOverlap(trigger, player, character)
 	Events.BroadcastRemote("AddFeedItem", Reliability.Reliable, "pumpkin", player:GetName())
 
 	-- If already found enough Pumpkins, opens the Trapdoor
-	if (Halloween.pumpkins_found >= Halloween.total_pumpkins) then
+	if (Halloween.pumpkins_found >= Halloween.total_pumpkins and NanosUtils.IsEntityValid(Halloween.trapdoor)) then
 		Halloween.trapdoor:Open()
 	end
 
