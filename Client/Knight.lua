@@ -117,9 +117,9 @@ Timer.SetInterval(function()
 	local local_character_location = Halloween.local_character:GetLocation()
 
 	-- TODO: if more than 2 pumpkins/characters are close, it triggers the first even if it's distant
-	for k, c in pairs(SurvivorCharacter.GetPairs()) do
-		local distance = local_character_location:DistanceSquared(c:GetLocation())
-		if (distance < 5000 * 5000 and not c:IsDead()) then
+	for k, c in pairs(Client.GetActorsInRadius(local_character_location, 5000, { "Character" })) do
+		if (c:IsA(SurvivorCharacter) and not c:IsDead()) then
+			local distance = local_character_location:DistanceSquared(c:GetLocation())
 			HUD:CallEvent("TriggerRadar")
 
 			local pitch = 1

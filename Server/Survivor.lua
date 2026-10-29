@@ -275,10 +275,8 @@ function SurvivorCharacter:TriggerAbility(player)
 	-- Stuns nearby Knights
 	local survivor_location = self:GetLocation()
 
-	for k, c in pairs(KnightCharacter.GetPairs()) do
-		local distance = survivor_location:Distance(c:GetLocation())
-
-		if (distance < 500 and not c:IsDead()) then
+	for k, c in pairs(Server.GetActorsInRadius(survivor_location, 500, { "Character" }, self:GetDimension())) do
+		if (c:IsA(KnightCharacter) and not c:IsDead()) then
 			c:Stun()
 			player:SetValue("StunnedKnights", (player:GetValue("StunnedKnights") or 0) + 1)
 		end

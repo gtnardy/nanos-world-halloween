@@ -126,7 +126,7 @@ Player.Subscribe("Destroy", function (player)
 	end
 
 	if (Halloween.match_state == MATCH_STATES.WAITING_PLAYERS) then
-		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has left the server (" .. Player.GetCount() .. "/" .. HalloweenSettings.custom_settings.players_to_start .. ")")
+		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has left the server (" .. Player.GetCount() - 1 .. "/" .. HalloweenSettings.custom_settings.players_to_start .. ")")
 	else
 		Chat.BroadcastMessage("<green>" .. player:GetName() .. "</> has left the server")
 	end

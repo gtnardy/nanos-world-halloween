@@ -34,8 +34,8 @@ function THE_CRUSHER.active_ability.finish_server(player, character)
 	-- Do the crush
 	local killer_location = character:GetLocation()
 
-	for k, survivor in pairs(SurvivorCharacter.GetPairs()) do
-		if (not survivor:IsDead() and killer_location:IsNear(survivor:GetLocation(), THE_CRUSHER.active_ability.slam_radius)) then
+	for k, survivor in pairs(Server.GetActorsInRadius(killer_location, THE_CRUSHER.active_ability.slam_radius, { "Character" }, character:GetDimension())) do
+		if (survivor:IsA(SurvivorCharacter) and not survivor:IsDead()) then
 			-- Do Damage
 			survivor:ApplyDamage(THE_CRUSHER.active_ability.slam_damage, "", DamageType.Melee, killer_location, player, character)
 

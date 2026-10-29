@@ -117,9 +117,9 @@ Timer.SetInterval(function()
 
 	-- TODO: if more than 2 pumpkins/characters are close, it triggers the first it finds even if it's distant
 	if (not Halloween.is_trapdoor_opened and survivor_interval_radar_flipflop) then
-		for k, p in pairs(Pumpkin.GetPairs()) do
-			local distance = local_character_location:DistanceSquared(p:GetLocation())
-			if (distance < 5000 * 5000) then
+		for k, p in pairs(Client.GetActorsInRadius(local_character_location, 5000, { "StaticMesh" })) do
+			if (p:IsA(Pumpkin)) then
+				local distance = local_character_location:DistanceSquared(p:GetLocation())
 				HUD:CallEvent("TriggerRadar")
 
 				local pitch = 1
@@ -135,9 +135,8 @@ Timer.SetInterval(function()
 	if (not NanosUtils.IsEntityValid(Halloween.heartbeat_sound)) then return end
 
 	local has_knight_nearby = false
-	for k, c in pairs(KnightCharacter.GetPairs()) do
-		local distance = local_character_location:DistanceSquared(c:GetLocation())
-		if (distance < 2000 * 2000 and not c:IsDead()) then
+	for k, c in pairs(Client.GetActorsInRadius(local_character_location, 2000, { "Character" })) do
+		if (c:IsA(KnightCharacter) and not c:IsDead()) then
 			has_knight_nearby = true
 			break
 		end
