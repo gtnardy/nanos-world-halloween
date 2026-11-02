@@ -1,7 +1,7 @@
 Trapdoor = StaticMesh.Inherit("Trapdoor")
 
 function Trapdoor:ShowBillboard()
-	local my_billboard = Billboard(Vector(), "nanos-world::M_Default_Translucent_Unlit_Depth", Vector2D(0.025, 0.04), true)
+	local my_billboard = Billboard(Vector(), "nanos-world::M_Default_Translucent_Unlit_Depth", Vector2D(0.04, 0.025), true)
 	my_billboard:SetMaterialTextureParameter("Texture", "package://halloween/Client/UI/images/emergency-exit.png")
 	my_billboard:SetMaterialScalarParameter("Opacity", 1)
 	my_billboard:SetMaterialColorParameter("Emissive", Color.ORANGE * 0.01)

@@ -27,7 +27,7 @@ function SurvivorCharacter:SetHighlight(highlight, with_billboard)
 			-- Spawn billboard
 			local texture = "package://halloween/Client/UI/images/worker.png"
 			local color = Color.RED
-			local size = Vector2D(0.01, 0.013)
+			local size = Vector2D(0.013, 0.01)
 
 			local my_billboard = Billboard(Vector(), "nanos-world::M_Default_Translucent_Unlit_Depth", size, true)
 			my_billboard:SetMaterialTextureParameter("Texture", texture)

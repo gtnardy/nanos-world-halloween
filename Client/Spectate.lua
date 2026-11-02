@@ -54,7 +54,7 @@ function UpdateSpectatingBillboards()
 			-- Spawn billboard
 			local texture = "package://halloween/Client/UI/images/worker.png"
 			local color = Color.BLUE
-			local size = Vector2D(0.01, 0.013)
+			local size = Vector2D(0.013, 0.01)
 
 			if (character:IsA(KnightCharacter)) then
 				texture = "package://halloween/Client/UI/images/knight.png"
