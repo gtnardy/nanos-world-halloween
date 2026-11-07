@@ -21,7 +21,7 @@ function THE_CRUSHER.active_ability.callback_server(player)
 	local play_rate = 1.5
 	character:PlayAnimation("nanos-world::A_Boss_Attack_Running_WithAOEBlow_RM", AnimationSlotType.FullBody, false, 0.25, 0.25, play_rate)
 
-	local timer_crush = Timer.SetTimeout(THE_CRUSHER.active_ability.finish_server, 2000 / play_rate, player, character)
+	local timer_crush = Timer.SetTimeout(function() THE_CRUSHER.active_ability.finish_server(player, character) end, 2000 / play_rate)
 	Timer.Bind(timer_crush, character)
 
 	-- Also applies debuff

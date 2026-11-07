@@ -68,7 +68,7 @@ function KnightCharacter:DoAttackDebuff(hit_success)
 
 	-- Resets after 2 or seconds depending it hit
 	local cooldown = hit_success and 2500 or 1750
-	self.attack_debuff_timer = Timer.SetTimeout(KnightCharacter.CancelAttackDebuff, cooldown, self)
+	self.attack_debuff_timer = Timer.SetTimeout(function() KnightCharacter.CancelAttackDebuff(self) end, cooldown)
 
 	Timer.Bind(self.attack_debuff_timer, self)
 end
@@ -105,7 +105,7 @@ function KnightCharacter:Stun()
 		Timer.ResetElapsedTime(self.stun_timer)
 	else
 		-- Resets after 4 seconds
-		self.stun_timer = Timer.SetTimeout(KnightCharacter.CancelStun, 4000, self)
+		self.stun_timer = Timer.SetTimeout(function() KnightCharacter.CancelStun(self) end, 4000)
 
 		Timer.Bind(self.stun_timer, self)
 	end

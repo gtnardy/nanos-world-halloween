@@ -39,7 +39,7 @@ function THE_BERSERKER.active_ability.callback_server(player)
 	end
 
 	-- Reset after duration
-	character.timer_cancel_ability = Timer.SetTimeout(THE_BERSERKER.active_ability.cancel_server, THE_BERSERKER.active_ability.duration * 1000, player, character)
+	character.timer_cancel_ability = Timer.SetTimeout(function() THE_BERSERKER.active_ability.cancel_server(player, character) end, THE_BERSERKER.active_ability.duration * 1000)
 	Timer.Bind(character.timer_cancel_ability, character)
 
 	return true

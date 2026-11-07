@@ -224,9 +224,9 @@ function SurvivorCharacter:OnDeath(last_damage_taken, last_bone_damaged, damage_
 	-- Chat.SendMessage(player, "You are <red>dead</>! You can spectate other players by switching <bold>Left</> or <bold>Right</> keys!")
 
 	Timer.Bind(
-		Timer.SetTimeout(function(p)
-			p:UnPossess()
-		end, 10000, player),
+		Timer.SetTimeout(function()
+			player:UnPossess()
+		end, 10000),
 		player
 	)
 end
@@ -264,10 +264,10 @@ function SurvivorCharacter:TriggerAbility(player)
 	if (self.debuff_timer and Timer.IsValid(self.debuff_timer)) then
 		Timer.ResetElapsedTime(self.debuff_timer)
 	else
-		self.debuff_timer = Timer.SetTimeout(function(cha)
-			cha:ResetDebuffs()
+		self.debuff_timer = Timer.SetTimeout(function()
+			self:ResetDebuffs()
 			self.debuff_timer = nil
-		end, 3000, self)
+		end, 3000)
 
 		Timer.Bind(self.debuff_timer, self)
 	end

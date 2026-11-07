@@ -15,10 +15,10 @@ function SurvivorCharacter:SetHighlight(highlight, with_billboard)
 			Timer.ResetElapsedTime(self.highlight_timer)
 		else
 			-- Backs to normal after 10 seconds
-			self.highlight_timer = Timer.SetTimeout(function(_char, _with_billboard)
-				_char:SetHighlight(false, _with_billboard)
-				_char.highlight_timer = nil
-			end, 10000, self, with_billboard)
+			self.highlight_timer = Timer.SetTimeout(function()
+				self:SetHighlight(false, with_billboard)
+				self.highlight_timer = nil
+			end, 10000)
 
 			Timer.Bind(self.highlight_timer, self)
 		end

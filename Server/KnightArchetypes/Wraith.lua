@@ -44,7 +44,7 @@ function THE_WRAITH.active_ability.callback_server(player)
 	character:SetValue("IsInvisible", true, true)
 
 	-- Reset after duration
-	character.timer_cancel_ability = Timer.SetTimeout(THE_WRAITH.active_ability.cancel_server, THE_WRAITH.active_ability.duration * 1000, player, character)
+	character.timer_cancel_ability = Timer.SetTimeout(function() THE_WRAITH.active_ability.cancel_server(player, character) end, THE_WRAITH.active_ability.duration * 1000)
 	Timer.Bind(character.timer_cancel_ability, character)
 
 	-- Cancels if using weapon

@@ -94,9 +94,9 @@ function KnightCharacter:OnDeath()
 	-- Sets his corpse as Highlight for 5 seconds
 	self:SetHighlightEnabled(true, 0)
 	Timer.Bind(
-		Timer.SetTimeout(function(_char)
-			_char:SetHighlightEnabled(false, 0)
-		end, 5000, self),
+		Timer.SetTimeout(function()
+			self:SetHighlightEnabled(false, 0)
+		end, 5000),
 		self
 	)
 end
